@@ -7,9 +7,9 @@
 ## Math 
 + Vector Fields
   - Green's Theorem 
-+Linear Algebra
++ Linear Algebra
   - PCA
-+Lagrange Multipler
++ Lagrange Multipler
 
 
 ## Machine Learning
