@@ -1,3 +1,3 @@
 # churis
 
-[link text](http://dev.nodeca.com)
+[link text](jyopari.github.io/MetropolisHastings)
