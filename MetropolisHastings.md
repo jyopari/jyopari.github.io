@@ -24,3 +24,38 @@ We now know how to calculate each component in MH. For our example, we set Q to 
   
 ## Coded Example
 <img src="MH/Screen%20Shot%202020-07-16%20at%208.28.42%20PM.png" width="400">
+This is the contour map of the 2D distribution that we want to sample from. I created it by combining 3 normal distributions, and we can get the value of the pdf by calling the following function:
+
+``` python
+pdf(0,0)
+```
+will return 0.0061428136030171505
+
+``` python
+# create our starting point 
+x = 0
+y = 0
+# xVals, yVals will store the coordinates of our samples
+xVals = []
+yVals = []
+for itter in range(10000): # running MH for 10000
+    #Sample the proposal distribution which is a standard normal distribution
+    xProposed,yProposed = np.random.multivariate_normal([x,y], [[1,0],[0,1]], 1)[0]
+    #Calculate the acceptance probability
+    AcceptancePrb = min(1,pdf(xProposed,yProposed)/pdf(x,y))
+    if(np.random.uniform()<=AcceptancePrb): #Randomly choose whether to keep the proposed sample
+        x = xProposed
+        y = yProposed
+        #Adding our new sample to our sample set
+        xVals.append(x) 
+        yVals.append(y)
+
+    else:
+        #Adding our original sample again to the sample set
+        xVals.append(x)
+        yVals.append(y)
+```
+After running the following code, we can plot `xVals, yVals`. 
+
+
+
