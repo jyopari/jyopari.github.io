@@ -10,7 +10,7 @@ The detail balance equation is a very imporant concept for MH. Say we have a pro
 ### Proposal Distribution
 First define a proposal distribution `Q(xi|xj)` . This distribition proposes canadate sampples. In this post, I will only talk about symmetric distributions for Q, more spefically I will let Q be the normal distribution. Lets define `Q(xi|xj) = N(xi|μ=xj,∑=1)`, and it should be clear why `Q(xi|xj) = Q(xj|xi)`. 
 ### Critic
-The final aspect of MH, is the critic. It will tell you the probabilty at which we should accept a proposed sample, produced by the proposal distribution. Lets denote this as `A(xi|xj)`. Now we have defined all the aspects of MH, we can write `T(xi|xj) = Q(xi|xj)A(xi|xj)`. However, we still don't know how to calculate A, our critic probability. Recall the detailed balance equation, we can expand to be:  `P(xj)Q(xi|xj)A(xi|xj) = P(xi)Q(xj|xi)A(xj|xi)`. We can shuffle some terms around to produce this equation `A(xi|xj)/A(xj|xi) = P(xi)Q(xj|xi) / P(xj)Q(xi|xj)`. The following information im going to explain is probably the most confusing. For every itteration where we sample Q given our current location, xj, and obtain the proposed sample, xi. We want to figure out `A(xi|xj)`, so what we can do is set `A(xj|xi) = 1` when `P(xi)Q(xj|xi) / P(xj)Q(xi|xj) < 1`. However, if `P(xi)Q(xj|xi) / P(xj)Q(xi|xj) > 1` then `A(xi|xj) = 1`. I think its important that you think about why what I just said is "allowed" mathematically. Our final equation is `A(xi|xj) = min(1, P(xi)Q(xj|xi) / P(xj)Q(xi|xj)`.
+The final aspect of MH, is the critic. It will tell you the probabilty at which we should accept a proposed sample, produced by the proposal distribution. Lets denote this as `A(xi|xj)`. Now we have defined all the aspects of MH, we can write `T(xi|xj) = Q(xi|xj)A(xi|xj)` for all `xi != xj`, if `xi = xj` then `T(xi|xj) = Q(xi|xj)A(xi|xj) + for all possible xj sum Q(xi|xj)(1-A(xi|xj))`. We will mainly refer to the case when `xi = xj` since its easier to write, but the following equations will still hold if `xi != xj`. With all this said, we still don't know how to calculate A, our critic probability. Recall the detailed balance equation, we can expand to be:  `P(xj)Q(xi|xj)A(xi|xj) = P(xi)Q(xj|xi)A(xj|xi)`. We can shuffle some terms around to produce this equation `A(xi|xj)/A(xj|xi) = P(xi)Q(xj|xi) / P(xj)Q(xi|xj)`. The following information im going to explain is probably the most confusing. For every itteration where we sample Q given our current location, xj, and obtain the proposed sample, xi. We want to figure out `A(xi|xj)`, so what we can do is set `A(xj|xi) = 1` when `P(xi)Q(xj|xi) / P(xj)Q(xi|xj) < 1`. However, if `P(xi)Q(xj|xi) / P(xj)Q(xi|xj) > 1` then `A(xi|xj) = 1`. I think its important that you think about why what I just said is "allowed" mathematically. Our final equation is `A(xi|xj) = min(1, P(xi)Q(xj|xi) / P(xj)Q(xi|xj)`.
 ### Pulling everything together
 We now know how to calculate each component in MH. For our example, we set Q to be a normal distribution, which mimics a random walk. Furthermore, as aforementioned, if we set Q to the normal its symmetric. This means that `A(xi|xj) = P(xi) / P(xj)`. So lets go over how MH would run for n itterations. 
 + Set a random starting point 
@@ -55,8 +55,10 @@ for itter in range(10000): # running MH for 10000
         xVals.append(x)
         yVals.append(y)
 ```
-After running the following code, we can plot `xVals, yVals`. 
-<img src="MH/Screen Shot 2020-07-17 at 8.58.49 AM.png" width="400">
-We can see that it resembles our original gaussian mixture distribution pretty well. Just to make sure, lets overall the original distribution with our samples. 
+## Results
+
+<img src="MH/Screen Shot 2020-07-17 at 9.01.33 AM.png" width="400">
+This is the scatter plot for `xVals, yVals` overlayed with the original distribution we wanted to sample from. We can see that it resembles the gaussian mixture pretty well.
+
 
 
