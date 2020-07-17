@@ -16,7 +16,7 @@ We now know how to calculate each component in MH. For our example, we set Q to 
 + Set a random starting point 
 + For n itterations
   - Obtain a proposed location (xj) by sampling Q given our current location (xi)
-  - set AcceptancePrb to equal `min(1, P(xi)Q(xj|xi) / P(xj)Q(xi|xj)`
+  - set AcceptancePrb to equal `min(1, P(xi)Q(xj|xi) / P(xj)Q(xi|xj))`
   - set x to equal a random value from 1 to 0
   - if(x < AcceptancePrb)
     * xj = xi
