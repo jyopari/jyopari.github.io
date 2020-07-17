@@ -56,6 +56,7 @@ for itter in range(10000): # running MH for 10000
         yVals.append(y)
 ```
 After running the following code, we can plot `xVals, yVals`. 
-
+<img src="MH/Screen Shot 2020-07-17 at 8.58.49 AM.png" width="400">
+We can see that it resembles our original gaussian mixture distribution pretty well. Just to make sure, lets overall the original distribution with our samples. 
 
 
