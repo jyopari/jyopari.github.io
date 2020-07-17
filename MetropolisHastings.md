@@ -1,6 +1,6 @@
 # Metropolis Hastings (MH)
 
-Sampling from a high dimensional distribution is hard. To illustrate this, say we have the following distribution that we want to sample: P(a,b,c,d). We can rewrite it as P(A=a)P(B=b|A=a)P(C=c|B=b,A=a)P(D=d|C=c,B=b,A=a). Sampling the first term to choose a random value for A is hard, it requires that we margionalize over 3 variables! Therefore, faster approaches have been developed to solve this problem, MCMC being a promenant high level technique. Metropolis Hastings is a type of MCMC approach. 
+Sampling from a high dimensional distribution is hard. To illustrate this, say we have the following distribution that we want to sample: P(a,b,c,d). We can rewrite it as `P(A=a)P(B=b|A=a)P(C=c|B=b,A=a)P(D=d|C=c,B=b,A=a)`. Sampling the first term to choose a random value for A is hard, it requires that we margionalize over 3 variables! Therefore, faster approaches have been developed to solve this problem, MCMC being a promenant high level technique. Metropolis Hastings is a type of MCMC approach. 
 
 ## Detailed Balance Equation
 
