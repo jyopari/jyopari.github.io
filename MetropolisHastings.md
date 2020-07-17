@@ -23,5 +23,4 @@ We now know how to calculate each component in MH. For our example, we set Q to 
   - add xj to our sample set
   
 ## Coded Example
-![contour](https://github.com/jyopari/jyopari.github.io/blob/master/MH/Screen%20Shot%202020-07-16%20at%208.28.42%20PM.png)
-  
+<img src="MH/Screen%20Shot%202020-07-16%20at%208.28.42%20PM.png" width="400">
