@@ -21,5 +21,7 @@
   - Monte Carlo Estimation
   - Gibbs Sampling
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
++ Gaussian Process
++ Variational Inference
   
  
