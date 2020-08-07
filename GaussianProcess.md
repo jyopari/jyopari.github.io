@@ -25,6 +25,7 @@ We just looked at a small chararacteristic of our GD. Recall that a GD requires 
 The diagonal from top left to bottom right repersents the variance for random variable f(x), where the variance f(x<sub>i</sub>) is on the i<sub>th</sub> row and column. The values on the i<sub>th</sub> column and j<sub>th</sub> row, repersents the covarriance between f(x<sub>i</sub>) and f(x<sub>j</sub>). So a kernel defines a function where K(x<sub>i</sub>, x<sub>j</sub>) = cov(f(x<sub>i</sub>),f(x<sub>j</sub>) if i ≠ j. If i = j, then it equals var(f(x<sub>i</sub>)). 
 
 ## Kernel(s)
+### Radial Basis Function Kernel
 Different Kernels model different fuctions with spefic characteristics. To play with the kernels visually take a look at this article (CITE), it does a great job of explaining gaussian process. 
 Lets take a look at an imporant kernel. This is called the RBF kernel (Radial basis function kernel) take a look at the Wikipedia page for its equation(CITE). Below is a simple code that produce a covariance matrix using this kernel from x = -5 to x = 5, and i set σ to 1. 
 
@@ -49,6 +50,40 @@ samples = np.random.multivariate_normal(np.zeros(21), K, 1000)
 plt.scatter(samples[:,0],samples[:,1])
 ```
 and this give us the following scatter plot, where the "x" axis repersents f(-10) and the "y" axis repersents f(-9). Therefore, we can see that the P(f(-9)|f(-10) = 2) is a normal distribution whose mean is around 1.5. This should make sense given their covariance is .6. Now if we sample from that distribution, and get f(-9) = 1. Then we can move on to sampling f(-8). To sample from f(-8) we would have to sample P(f(-8) | f(-9) = 1, f(-10) = 2). If we look at the covaraince matrix, the covaraince between f(-8) and f(-9) is .6, and the covariance between f(-8) and f(-10) is .1. This is imporant because a covariance closer to 0 means the two variables aren't as coorelated, and they are closer to becoming independent. So sampling f(-8) would aproimatinly equal to sampling from P(f(-8) | f(-9) = 2). However we don't do that in practice, because its not exact, this is just to give you an idea of how the covariances affect the function, and how to tell the nature of the function based on the covariance matrix. Sampling from the RBF kernel produces random but smooth functions because each new value of f(x) is most affected by f(x-1) and a bit less affected by f(x-2) and so forth. And this kernel has the parameter σ, which controlls how elgonated the smoothness is. Take a pause and look at the kernel equation here (CITE) to understand why that is. 
+
+### Periodic Kernel
+
+This is a very interesitng kernel, as it models peroidic functions. Again check out this article to play with the parameters as well as see the kernel equation (CITE). I set the parametrs as this: `σ = 1, l = 1, p = 3`. I produced the kernel using the following code:
+
+``` python
+K = np.zeros((21,21))
+
+for xi in range(-10,11):
+    for xj in range(-10,11):
+        K[xi+10,xj+10] = np.exp(-2*np.sin(math.pi*np.abs(xi-xj)/3.0)**2)
+
+print(np.round(K[0:4,0:4],1))
+
+plt.imshow(K)
+plt.show()
+```
+This yeilds us the following covariance matrix for x = -5 to x = 5. But every increment is .5. This is perodic and if we look at at the upper 7x7 matrix. We notice that it looks similar to the RBF kernel. But the second we try to sample the 7th value, we get something very interesting. The covaraince between the 7th value and the 1st value is 1, and since their variances are all 1, this is imporant. To understand why, take a look at this code followed by the result. 
+
+``` python
+# the first parameter is the mean, second is cov matrix
+samples = np.random.multivariate_normal([0,0], [[1,1],
+                                                [1,1]], 50) 
+plt.scatter(samples[:,0],samples[:,1])
+```
+
+This is a straight line, with absolutly no deviation! This is why the kernel is able to model a perodic function. If f(x<sub>1</sub>) = 1, f(x<sub>7</sub>) _has_ to equal 1, and this is true for pair of x<sub>i</sub> and x<sub>j</sub>. Meaning that if |i-j| = 7, then f(x<sub>i</sub>) = f(x<sub>j</sub>).
+
+### Linear Kernel
+The linear kernel took me a while to understand, and I will try to do a decent job of submmarizeing it. I would advise you to take a look at the Kernel Cookbook to see the equation (CITE). As you can see linear kernel has three parameters, the first is c, which controls the x intercept, where x=c is 0. The σ<sub>v</sub> controlls how much variance there is at f(c). This is imporant because if you know your x intercept, and also know around how constrained you want to be, you can model that. The final parameter, σ<sub>b</sub> controlls how steep the slope is, which is done by changing the variance of the starting point x<sub>0</sub>. The linear kernel takes in these 3 parameters, and for most of the time when you don't fully contrain the x intercept, it gives limited freedom for the first 2 values, but after the first 2 values are set, then there is 0 variance for the rest of the values since it has to be a linear line. 
+
+## Key Details to know
+We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of AX+b is a normal distribution which can be repersented as N(Aμ + b, AΣA<super>T</super>
+
 
 
 ## References
