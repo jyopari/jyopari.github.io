@@ -91,6 +91,7 @@ This is a straight line, with absolutly no deviation! This is why the kernel is 
 ### Linear Kernel
 <img src="/GP/lin.png" alt="drawing" width="200"/>
 The linear kernel took me a while to understand, and I will try to do a decent job of submmarizeing it. I would advise you to take a look at the Kernel Cookbook to see the equation (CITE). Here is a code to produce a covariance matrix using the linear kernel. 
+
 ``` python
 #Linear Kernel
 K = np.zeros((25,25))
@@ -106,17 +107,129 @@ with sns.axes_style("white"):
     plt.show()
 ```
 <img src="/GP/linKernel.png" alt="drawing" width="250"/>
-As you can see linear kernel has three parameters, the first is c, which controls the x intercept, where x=c is 0. The σ<sub>v</sub> controlls how much variance there is at f(c). This is imporant because if you know your x intercept, and also know around how constrained you want to be, you can model that. The final parameter, σ<sub>b</sub> controlls how steep the slope is, which is done by changing the variance of the starting point x<sub>0</sub>. The linear kernel takes in these 3 parameters, and for most of the time when you don't fully contrain the x intercept, it gives limited freedom for the first 2 values, but after the first 2 values are set, then there is 0 variance for the rest of the values since it has to be a linear line. 
+As you can see linear kernel has three parameters, the first is c, which controls the x intercept, where x=c is 0. The σ<sub>v</sub> controlls how much variance there is at f(c). This is imporant because if you know your x intercept, and also know around how constrained you want to be, you can model that. The final parameter, σ<sub>b</sub> controlls how steep the slope is, which is done by changing the variance of the starting point x<sub>0</sub>. If σ<sub>b</sub> = 0 then sampling the first two points will produce a perfectly straight line, since the second point has to be positioned so that the whole line crosses the x axis at x = c. 
+<img src="/GP/linCov.png" alt="drawing" width="300"/>
+However if σ<sub>b</sub> ≠ 0, then then sampling the first two points will produce more variation, since the 2nd point can have multiple values. 
+<img src="/GP/linCovwdev.png" alt="drawing" width="300"/>
 
 ## Affine Transformation
-We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be repersented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z. IMAGE of A = . This should make sense because we are collapsing the y dimension out, so its basis vector would just be the 0 vector. The μ<sub>y</sub> = 0, and the new covariance matrix would be the following. I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectly just have the following covariance matrix. 
+We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be repersented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z. 
+<img src="/GP/Amatrix.png" alt="drawing" width="2000"/>.
+This should make sense because we are collapsing the y dimension out, so its basis vector would just be the 0 vector. The μ<sub>y</sub> = 0, and the new covariance matrix would be the following. 
+<img src="/GP/affineTrans.png" alt="drawing" width="200"/>
+I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectly just have the following covariance matrix. 
 
 ## Combining Kernels
 If you know that your function can be writing as as the sum of two functions or a product of two functions, whose kernels are known, then you can combine their kernels to model the original function (there are other ways to decompose down a function but that is beyond the scope of this article). For example, imagine you know that your function is perdic and increasing, then you can add the perodic and liner kernels together. Why does this work? The intuition behind this is: you are producing a new kernel / covariance matrix that combines the characteristics of the individual kernels, because each point is going to be coorealted to their perodic component as well as its linear component. Take a look at the kernel below to understand this. 
-
+<img src="/GP/linper.png" alt="drawing" width="200"/>
 
 ## Posterior 
-Uptil now we haven't used a GP. So lets do that. To keep things simple, lets try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per K<sub>lin</sub> + K<sub>per</sub>
+Uptil now we haven't used a GP. So lets do that. To keep things simple, lets try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per</sub> = K<sub>lin</sub> + K<sub>per</sub>. The posterior is just a conditioal guassian distribution, and the conditional of a gaussian is another gaussian. So we just need to find the new parameters. This is how they are calculated. 
+      
+<img src="/GP/conditionalEq.png" alt="drawing" width="450"/>
+
+What the partioning means, is x1 = all the unobserved x values, and x2 = the observed x values. x2 is the given information, and a is the coressponding y values for x2. I really liked this [explanation](https://stats.stackexchange.com/questions/30588/deriving-the-conditional-distributions-of-a-multivariate-normal-distribution) by [Marco](https://stats.stackexchange.com/users/4856/macro) to understnad this equation. Here is an image of it. 
+<img src="/GP/Screen Shot 2020-08-10 at 4.54.28 PM.png" alt="drawing" width="600"/> 
+I've seen other explanations/proofs, but it clicked when I saw this one. 
+
+So lets test it out!
+Here is the data I generated, and how I did it. 
+
+``` python
+# Generate Data 
+x1 = []
+x2 = []
+y = []
+n = 26 # range from 0 to 25
+
+#X2 = observed points, y = correspoding value
+#X1 = the rest of the points (unobserved)
+for i in range(n):
+    if(np.random.uniform()<.5): # make 50% of the points observed
+        x2.append(i)
+        y.append(math.sin(i)*3+i) #Sin Wave with 2x original amplitude + linear line with slope = 1
+    else:
+        x1.append(i)
+        
+y_ = y # for plotting later
+
+y = np.asarray(y)
+y = y.reshape(y.shape[0],1)
+```
+This is a plot of the observed data. 
+<img src="/GP/50pts.png" alt="drawing" width="200"/> 
+Now we need to find Σ<sub>11</sub>, Σ<sub>12</sub>, Σ<sub>21</sub>, and Σ<sub>22</sub>. Here is the code that does that, and K is equivalent to Σ.
+``` python 
+def covii(x): # for Sigma_11 and Sigma_22
+    K = np.zeros((len(x),len(x)))
+    for i in range(len(x)):
+        for j in range(len(x)):
+            K[i][j] =  np.exp( -2*math.sin( math.pi*abs(x[i]-x[j])/(math.pi*2) )**2 ) + x[i]*x[j]
+    return(K)
+
+def cov12(x1,x2): # for Sigma_12 
+    K = np.zeros((len(x1),len(x2)))
+    for i in range(len(x1)):
+        for j in range(len(x2)):
+            K[i][j] = np.exp( -2*math.sin( math.pi*abs(x1[i]-x2[j])/(math.pi*2) )**2 ) + x1[i]*x2[j]
+    return(K)  
+
+def cov21(x1,x2): # for Sigma_21
+    return(cov12(x1,x2).T)
+```
+Now we can calculate K<sub>11</sub>, K<sub>12</sub>, K<sub>21</sub>, and K<sub>22</sub>. 
+
+``` python
+#Generate the covariance in block format
+K11 = covii(x1)
+K12 = cov12(x1,x2)
+K21 = cov21(x1,x2)
+K22 = covii(x2)
+print(K11.shape)
+print(K12.shape)
+print(K21.shape)
+print(K22.shape)
+```
+The shapes are
+```
+(22, 22)
+(22, 4)
+(4, 22)
+(4, 4)
+```
+
+We know have everything to calculate the new mu and K. The following is the equivalent to the equation we saw to find the conditional distribution.
+``` python
+# Calculate the mu and Sigma of the posterior
+mu = K12.dot(inv(K22)).dot(y)
+K = K11 - K12.dot(inv(K22)).dot(K21)
+```
+If we take a quick peek at K, we can start to get an idea of what the graph would look like. 
+``` python
+# Covariance of posterior
+with sns.axes_style("white"):
+    ax = sns.heatmap(K, square=True,  cmap=sns.cubehelix_palette(10,rot=-.2))
+    plt.show()
+```
+<img src="/GP/covfor50.png" alt="drawing" width="200"/>
+The darker areas on the variance diagonal, tell us that in those regions there can be more variance in the y values comparitvly to other areas, but its still insignificant since the max value is 0.016. So there is going to be very little variance. 
+
+Now lets actually plot μ ± σ.
+<img src="/GP/50fit.png" alt="drawing" width="200"/>
+
+The scatterplot contains dots for for both μ (orange) and 1 σ above (green) and below (red), along with the observed points (blue). However, we can't see individual points since they are practically on top of eachother. This is because there is low variance everywhere as we predicted. 
+
+Now lets run the whole thing again, but this time feed it less observed points. Instead of only including 50% of the whoel range in our observed points list, lets only use 20%. 
+We now get the following scatterplot. 
+<img src="/GP/20pts.png" alt="drawing" width="200"/>
+And after we run the same calculations, we can take a look at K. 
+<img src="/GP/covfor20.png" alt="drawing" width="200"/>
+We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Lets actually see this in the newly generated scatterplot.
+<img src="/GP/20fit.png" alt="drawing" width="200"/>
+Now we can actually see the seperate point markers, and in the regions where the posterior covarince matrix was dark on the variance diagonal, the μ ± σ markers are most seperated which makes sense, since there is less points to contrain the rest of the points. 
+
+
+
 ## References
 https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model 
 https://distill.pub/2019/visual-exploration-gaussian-processes/
