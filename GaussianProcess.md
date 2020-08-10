@@ -123,7 +123,7 @@ If you know that your function can be writing as as the sum of two functions or 
 <img src="/GP/linper.png" alt="drawing" width="300"/>
 
 ## Posterior 
-Uptil now we haven't used a GP. So lets do that. To keep things simple, lets try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per</sub> = K<sub>lin</sub> + K<sub>per</sub>. The posterior is just a conditioal guassian distribution, and the conditional of a gaussian is another gaussian. So we just need to find the new parameters. This is how they are calculated. 
+Uptil now we haven't used a GP. So lets do that. To keep things simple, lets try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per</sub> = K<sub>lin</sub> + K<sub>per</sub>. The posterior is just a conditioal guassian distribution, and the conditional of a gaussian is another gaussian. So we just need to find the new parameters. This is how they are calculated ([Wikipedia](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)).
       
 <img src="/GP/conditionalEq.png" alt="drawing" width="500"/>
 
