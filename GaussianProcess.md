@@ -13,7 +13,8 @@ GP defines a gaussian distribution that models the whole function. So say you ha
 
 We just looked at a small chararacteristic of our GD. Recall that a GD requires 2 parameters, the mean vector and the covaraince matrix. Often the mean vector is just 0. But the covariance matrix is where things get really interesting. You might ask "isn't the covariacne matrix fixed in size". That is correct we can't just hardcode it because imagine we want to look at a greator resoultion within an area or look at a greater ranger overall, it requires more dimensions to be able to do that. This is why kernels are used. A kernel is a function that is able to produce a covariance matrix. This is an example of a covairance matrix. 
 
-```array([[ 2.56,  1.96,  1.36,  0.76,  0.16, -0.44, -1.04],
+```
+array([[ 2.56,  1.96,  1.36,  0.76,  0.16, -0.44, -1.04],
        [ 1.96,  1.56,  1.16,  0.76,  0.36, -0.04, -0.44],
        [ 1.36,  1.16,  0.96,  0.76,  0.56,  0.36,  0.16],
        [ 0.76,  0.76,  0.76,  0.76,  0.76,  0.76,  0.76],
@@ -225,5 +226,5 @@ We now get the following scatterplot.\
 And after we run the same calculations, we can take a look at K.\ 
 <img src="/GP/covfor20.png" alt="drawing" width="300"/>\
 We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Lets actually see this in the newly generated scatterplot.
-<img src="/GP/20fit.png" alt="drawing" width="400"/>\
+<img src="/GP/20fit.png" alt="drawing" width="400"/>
 Now we can actually see the seperate point markers, and in the regions where the posterior covarince matrix was dark on the variance diagonal, the μ ± σ markers are most seperated which makes sense, since there is less points to contrain the rest of the points. 
