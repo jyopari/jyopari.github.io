@@ -23,7 +23,7 @@
   - Monte Carlo Estimation
   - Gibbs Sampling
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
-+ Gaussian Process
++ [Gaussian Process](https://jyopari.github.io/GaussianProcess)
 + Variational Inference
 + Variational Autoencoders
 
