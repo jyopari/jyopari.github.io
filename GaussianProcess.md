@@ -2,11 +2,8 @@
 
 ## Introduction
 
-I ran across Gaussian Processes, and was very intrigued by the whole concept. Uptil now I have only been familar with more well known regression techniqes like multinomial and using neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great respone (CITE) to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions. 
-
-
-## Gaussian Process Overview
-
+I ran across Gaussian Processes, and was very intrigued by the whole concept. Uptil now I have only been familar with more well known regression techniqes like multinomial and using neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great respone (CITE) to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions.
+#   
 GP defines a gaussian distribution that models the whole function. So say you have a function f(x) where x ranges from 0 to 100. And we slice our domain into discrete values, so x can only be an integer. The gaussian distribution has a dimension for every possible x value. So in this case the gaussian distribution would have 100 dimensions and for each dimension, its axis represents the values that the function can take. For example if we were to marginalize the whole distribution such that we are looking at a 1D distribution of P(f(x) | x = 44), we would see a distribution pertaining to the values of f(x) on the slice of the graph where x = 44. 
 
 ## The Gaussian Distribution (GD)
@@ -115,10 +112,14 @@ However if σ<sub>b</sub> ≠ 0, then then sampling the first two points will pr
 <img src="/GP/linCovwdev.png" alt="drawing" width="400"/>
 
 ## Affine Transformation
-We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be repersented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z.\ 
-<img src="/GP/Amatrix.png" alt="drawing" width="100"/>.
-This should make sense because we are collapsing the y dimension out, so its basis vector would just be the 0 vector. The μ<sub>y</sub> = 0, and the new covariance matrix would be the following.\ 
+We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be repersented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z. 
+#   
+<img src="/GP/Amatrix.png" alt="drawing" width="150"/>.
+#   
+This should make sense because we are collapsing the y dimension out, so its basis vector would just be the 0 vector. The μ<sub>y</sub> = 0, and the new covariance matrix would be the following.
+#   
 <img src="/GP/affineTrans.png" alt="drawing" width="400"/>
+#   
 I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectly just have the following covariance matrix. 
 
 ## Combining Kernels
@@ -222,9 +223,11 @@ The scatterplot contains dots for for both μ (orange) and 1 σ above (green) an
 
 Now lets run the whole thing again, but this time feed it less observed points. Instead of only including 50% of the whoel range in our observed points list, lets only use 20%. 
 We now get the following scatterplot.\
-<img src="/GP/20pts.png" alt="drawing" width="400"/>\
-And after we run the same calculations, we can take a look at K.\ 
-<img src="/GP/covfor20.png" alt="drawing" width="300"/>\
+<img src="/GP/20pts.png" alt="drawing" width="400"/>
+And after we run the same calculations, we can take a look at K. 
+#   
+<img src="/GP/covfor20.png" alt="drawing" width="300"/>
 We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Lets actually see this in the newly generated scatterplot.
+#   
 <img src="/GP/20fit.png" alt="drawing" width="400"/>
 Now we can actually see the seperate point markers, and in the regions where the posterior covarince matrix was dark on the variance diagonal, the μ ± σ markers are most seperated which makes sense, since there is less points to contrain the rest of the points. 
