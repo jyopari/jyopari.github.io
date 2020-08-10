@@ -3,7 +3,7 @@
 ## Introduction
 
 I ran across Gaussian Processes, and was very intrigued by the whole concept. Uptil now I have only been familar with more well known regression techniqes like multinomial and using neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great [respone](https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model) by Shankar Sankararaman to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions.
-#   
+  
 GP defines a gaussian distribution that models the whole function. So say you have a function f(x) where x ranges from 0 to 100. And we slice our domain into discrete values, so x can only be an integer. The gaussian distribution has a dimension for every possible x value. So in this case the gaussian distribution would have 100 dimensions and for each dimension, its axis represents the values that the function can take. For example if we were to marginalize the whole distribution such that we are looking at a 1D distribution of P(f(x) | x = 44), we would see a distribution pertaining to the values of f(x) on the slice of the graph where x = 44. 
 
 ## The Gaussian Distribution (GD)
@@ -74,7 +74,7 @@ with sns.axes_style("white"):
     ax = sns.heatmap(K, square=True,  cmap=sns.cubehelix_palette(10,rot=-.35))
     plt.show()
 ```
-<img src="/GP/perKernel.png" alt="drawing" width="250"/>
+<img src="/GP/perKernel.png" alt="drawing" width="250"/>  
 This yeilds us the following covariance matrix for x = 0 to x = 24. This is perodic and if we look at at the upper 7x7 matrix. We notice that it looks similar to the RBF kernel. But the second we try to sample the 7th value, we get something very interesting. The covaraince between the 7th value and the 1st value is 1, and since their variances are all 1, this is imporant. To understand why, take a look at this code followed by the result. 
 
 ``` python
@@ -83,7 +83,7 @@ samples = np.random.multivariate_normal([0,0], [[1,1],
 plt.scatter(samples[:,0],samples[:,1])
 ```
 
-<img src="/GP/cov1111.png" alt="drawing" width="400"/>
+<img src="/GP/cov1111.png" alt="drawing" width="400"/>  
 This is a straight line, with absolutly no deviation! This is why the kernel is able to model a perodic function. If f(x<sub>1</sub>) = 1, f(x<sub>7</sub>) _has_ to equal 1, and this is true for pair of x<sub>i</sub> and x<sub>j</sub>. Meaning that if |i-j| = 7, then f(x<sub>i</sub>) = f(x<sub>j</sub>).
 
 ### Linear Kernel
@@ -108,7 +108,7 @@ with sns.axes_style("white"):
 <img src="/GP/linKernel.png" alt="drawing" width="250"/>   
 As you can see linear kernel has three parameters, the first is c, which controls the x intercept, where x=c is 0. The σ<sub>v</sub> controlls how much variance there is at f(c). This is imporant because if you know your x intercept, and also know around how constrained you want to be, you can model that. The final parameter, σ<sub>b</sub> controlls how steep the slope is, which is done by changing the variance of the starting point x<sub>0</sub>. If σ<sub>b</sub> = 0 then sampling the first two points will produce a perfectly straight line, since the second point has to be positioned so that the whole line crosses the x axis at x = c.  
 <img src="/GP/linCov.png" alt="drawing" width="400"/>  
-However if σ<sub>b</sub> ≠ 0, then then sampling the first two points will produce more variation, since the 2nd point can have multiple values. 
+However if σ<sub>b</sub> ≠ 0, then then sampling the first two points will produce more variation, since the 2nd point can have multiple values.   
 <img src="/GP/linCovwdev.png" alt="drawing" width="400"/>
 
 ## Affine Transformation
@@ -119,7 +119,7 @@ This should make sense because we are collapsing the y dimension out, so its bas
 I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectly just have the following covariance matrix. 
 
 ## Combining Kernels
-If you know that your function can be writing as as the sum of two functions or a product of two functions, whose kernels are known, then you can combine their kernels to model the original function (there are other ways to decompose down a function but that is beyond the scope of this article). For example, imagine you know that your function is perdic and increasing, then you can add the perodic and liner kernels together. Why does this work? The intuition behind this is: you are producing a new kernel / covariance matrix that combines the characteristics of the individual kernels, because each point is going to be coorealted to their perodic component as well as its linear component. Take a look at the kernel below to understand this. 
+If you know that your function can be writing as as the sum of two functions or a product of two functions, whose kernels are known, then you can combine their kernels to model the original function (there are other ways to decompose down a function but that is beyond the scope of this article). For example, imagine you know that your function is perdic and increasing, then you can add the perodic and liner kernels together. Why does this work? The intuition behind this is: you are producing a new kernel / covariance matrix that combines the characteristics of the individual kernels, because each point is going to be coorealted to their perodic component as well as its linear component. Take a look at the kernel below to understand this.   
 <img src="/GP/linper.png" alt="drawing" width="300"/>
 
 ## Posterior 
@@ -209,7 +209,7 @@ with sns.axes_style("white"):
     ax = sns.heatmap(K, square=True,  cmap=sns.cubehelix_palette(10,rot=-.2))
     plt.show()
 ```
-<img src="/GP/covfor50.png" alt="drawing" width="300"/>
+<img src="/GP/covfor50.png" alt="drawing" width="300"/>  
 The darker areas on the variance diagonal, tell us that in those regions there can be more variance in the y values comparitvly to other areas, but its still insignificant since the max value is 0.016. So there is going to be very little variance. 
 
 Now lets actually plot μ ± σ.  
@@ -219,9 +219,9 @@ The scatterplot contains dots for for both μ (orange) and 1 σ above (green) an
 
 Now lets run the whole thing again, but this time feed it less observed points. Instead of only including 50% of the whoel range in our observed points list, lets only use 20%. 
 We now get the following scatterplot.  
-<img src="/GP/20pts.png" alt="drawing" width="400"/>
+<img src="/GP/20pts.png" alt="drawing" width="400"/>  
 And after we run the same calculations, we can take a look at K.  
-<img src="/GP/covfor20.png" alt="drawing" width="300"/>
+<img src="/GP/covfor20.png" alt="drawing" width="300"/>  
 We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Lets actually see this in the newly generated scatterplot.     
-<img src="/GP/20fit.png" alt="drawing" width="400"/>
+<img src="/GP/20fit.png" alt="drawing" width="400"/>  
 Now we can actually see the seperate point markers, and in the regions where the posterior covarince matrix was dark on the variance diagonal, the μ ± σ markers are most seperated which makes sense, since there is less points to contrain the rest of the points. 
