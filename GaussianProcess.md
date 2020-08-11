@@ -58,7 +58,7 @@ This give us the scatter plot above, where the "x" axis repersents f(-10) and th
 
 ### Periodic Kernel
 Here is the Periodic Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
-<img src="/GP/per.png" alt="drawing" width="200"/>  
+<img src="/GP/per.png" alt="drawing" width="220"/>  
 This is a very interesitng kernel, as it models peroidic functions. I set the parametrs as this: `σ = 1, l = 1, p = 2π`. I produced the kernel using the following code:
 
 ``` python
@@ -89,7 +89,7 @@ This is a straight line, with absolutly no deviation! This is why the kernel is 
 
 ### Linear Kernel
 Here is the Linear Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
-<img src="/GP/lin.png" alt="drawing" width="200"/>  
+<img src="/GP/lin.png" alt="drawing" width="220"/>  
 The linear kernel took me a while to understand, and I will try to do a decent job of submmarizeing it. Here is a code to produce a covariance matrix using the linear kernel. 
 
 ``` python
