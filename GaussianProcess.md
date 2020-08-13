@@ -2,7 +2,7 @@
 
 ## Introduction
 
-I ran across Gaussian Processes and was very intrigued by the whole concept. Until now I have only been familiar with more well-known regression techniques like multinomial and neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great [respone](https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model) by Shankar Sankararaman to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions.
+I ran across Gaussian Processes and was very intrigued by the whole concept. GPs look at regressions from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great [respone](https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model) by Shankar Sankararaman to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions. Furthermore, GPs are useful when we know the nature of the function, making it even easier to model. 
 
 ### What is a GP?
 GP defines a gaussian distribution that models the whole function. So say you have a function f(x) where x ranges from 0 to 100. And we slice our domain into discrete values, so x can only be an integer. The Gaussian distribution has a dimension for every possible x value. So, in this case, the Gaussian distribution would have 100 dimensions and for each dimension, its axis represents the values that the function can take. For example, if we were to marginalize the whole distribution such that we are looking at a 1D distribution of P(f(x) | x = 44), we would see a distribution of the values of f(x) on the slice of the graph where x = 44. 
@@ -26,8 +26,7 @@ The diagonal from top left to bottom right repersents the variance for random va
 ### Radial Basis Function Kernel
 Here is the equation for the RBF Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).\
 <img src="/GP/rbf.png" alt="drawing" width="200"/>\
-Different Kernels model different functions with specific characteristics. To play with the kernels visually take a look at this article (CITE), it does a great job of explaining the Gaussian process. 
-Let's take a look at an important kernel. This is called the RBF kernel (Radial basis function kernel) take a look at the Wikipedia page for its equation(CITE). Below is a simple code that produce a covariance matrix using this kernel from x = 0 to x = 24, and σ = 1, l = 1. 
+Different Kernels model different functions with specific characteristics. Let's take a look at an important kernel called the RBF kernel (Radial basis function kernel). Below is a simple code that produce a covariance matrix using this kernel from x = 0 to x = 24, and `σ = 1, l = 1`. 
 
 ``` python
 #RBF Kernel
@@ -46,7 +45,7 @@ with sns.axes_style("white"):
 This yeilds us:\
 <img src="/GP/rbfKernel.png" alt="drawing" width="250"/>
 
-So let's decompose this covariance matrix and get an intuition of the function it models. We can see that all the variances are 1, and as aforementioned the mean vector is 0. So this function is going to fluctuate around y = 0. If we sample the first point, whose x value is 0, we are sampling from a normal 1D gaussian with mean 0, and variance 1. So lets say we get f(0) = 2. Then we would need to sample f(-9) given that f(-10) = 2. So we would look at the conditional distribution now. This we can still visualize, let's take a look at samples of the first two dimensions, f(0) and f(0). I wrote this snippet to sample from the first two dimensions. 
+So let's decompose this covariance matrix and get an intuition of the function it models. We can see that all the variances are 1, and as aforementioned the mean vector is 0. So this function is going to fluctuate around y = 0. If we sample the first point, whose x value is 0, we are sampling from a normal 1D gaussian with mean 0, and variance 1. So lets say we get f(0) = 2. Then we would need to sample f(1) given that f(0) = 2. So we would look at the conditional distribution now. This we can still visualize, let's take a look at samples of the first two dimensions, f(0) and f(1). I wrote this snippet to sample from the first two dimensions. 
 
 ``` python
 samples = np.random.multivariate_normal([0,0], [[1,.6],
@@ -54,12 +53,12 @@ samples = np.random.multivariate_normal([0,0], [[1,.6],
 plt.scatter(samples[:,0],samples[:,1])
 ```
 <img src="/GP/Screen Shot 2020-08-10 at 4.19.46 PM.png" alt="drawing" width="400"/>  
-This gives us the scatter plot above, where the "x" axis represents f(-10) and the "y" axis represents f(-9). Therefore, we can see that the P(f(-9)|f(-10) = 2) is a normal distribution whose mean is around 1.5. This should make sense given their covariance is .6. Now if we sample from that distribution, and get f(-9) = 1. Then we can move on to sampling f(-8). To sample from f(-8) we would have to sample P(f(-8) | f(-9) = 1, f(-10) = 2). If we look at the covariance matrix, the covariance between f(-8) and f(-9) is .6, and the covariance between f(-8) and f(-10) is .1. This is important because a covariance closer to 0 means the two variables aren't as correlated, and they are closer to becoming independent. So sampling f(-8) would approximately equal to sampling from P(f(-8) | f(-9) = 2). However, we don't do that in practice, because it's not exact, this is just to give you an idea of how the covariances affect the function, and how to tell the nature of the function based on the covariance matrix. Sampling from the RBF kernel produces random but smooth functions because each new value of f(x) is most affected by f(x-1) and a bit less affected by f(x-2) and so forth. And this kernel has the parameter σ, which controls how elongated the smoothness is. Take a pause and look at the kernel equation here (CITE) to understand why that is. 
+This gives us the scatter plot above, where the "x" axis represents f(0) and the "y" axis represents f(1). Therefore, we can see that the P(f(0)|f(1) = 2) is a normal distribution whose mean is around 1.5. This should make sense given their covariance is .6. Now if we sample from that distribution, and get f(1) = 1. Then we can move on to sampling f(2). To sample from f(2) we would have to sample P(f(2) | f(1) = 1, f(0) = 2). If we look at the covariance matrix, the covariance between f(2) and f(1) is .6, and the covariance between f(2) and f(0) is .1. This is important because a covariance closer to 0 means the two variables aren't as correlated, and they are closer to becoming independent. So sampling f(2) would approximately equal to sampling from P(f(2) | f(1) = 2). However, we don't do that in practice, because it's not exact, this is just to give you an idea of how the covariances affect the function, and how to tell the nature of the function based on the covariance matrix. Sampling from the RBF kernel produces random but smooth functions because each new value of f(x) is most correlated with f(x-1) and a bit less correlated by f(x-2) and so forth. And this kernel has the parameter σ and l, which controls how elongated the smoothness is and how large the values of f can be respectively. Take a pause and look at the kernel equation to understand what that is. 
 
 ### Periodic Kernel
 Here is the Periodic Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
 <img src="/GP/per.png" alt="drawing" width="250"/>  
-This is a very interesitng kernel, as it models peroidic functions. I set the parametrs as this: `σ = 1, l = 1, p = 2π`. I produced the kernel using the following code:
+This is a very interesitng kernel, as it models peroidic functions. I set the parameters as this: `σ = 1, l = 1, p = 2π`. I produced the kernel using the following code:
 
 ``` python
 #Periodic Kernel
@@ -90,7 +89,7 @@ This is a straight line, with absolutly no deviation! This is why the kernel is 
 ### Linear Kernel
 Here is the Linear Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
 <img src="/GP/lin.png" alt="drawing" width="250"/>  
-The linear kernel took me a while to understand, and I will try to do a decent job of summarizing it. Here is a code to produce a covariance matrix using the linear kernel. 
+The linear kernel took me a while to understand, and I will try to do a decent job of summarizing it. Here is a code to produce a covariance matrix using the linear kernel. I set `c = 0, σ<sub>v</sub> = .5, σ<sub>b</sub> = 0`
 
 ``` python
 #Linear Kernel
