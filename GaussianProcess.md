@@ -2,14 +2,14 @@
 
 ## Introduction
 
-I ran across Gaussian Processes, and was very intrigued by the whole concept. Uptil now I have only been familar with more well known regression techniqes like multinomial and using neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great [respone](https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model) by Shankar Sankararaman to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions.
+I ran across Gaussian Processes and was very intrigued by the whole concept. Until now I have only been familiar with more well-known regression techniques like multinomial and neural networks. But GPs look at the same problem from a quite different and unique angle. Using GPs for regression allows you to understand how confident a certain prediction is. Furthermore, GPs are non-parametric and you can see a great [respone](https://www.quora.com/What-is-the-difference-between-a-parametric-model-and-a-non-parametric-model) by Shankar Sankararaman to what are the differences between a parametric and non-parametric model. In short, a non-parametric model bases its predictions on all the training data it has, whereas a parametric model learns a set of parameters that best models the data, and uses those parameters to make new predictions.
 
 ### What is a GP?
-GP defines a gaussian distribution that models the whole function. So say you have a function f(x) where x ranges from 0 to 100. And we slice our domain into discrete values, so x can only be an integer. The gaussian distribution has a dimension for every possible x value. So in this case the gaussian distribution would have 100 dimensions and for each dimension, its axis represents the values that the function can take. For example if we were to marginalize the whole distribution such that we are looking at a 1D distribution of P(f(x) | x = 44), we would see a distribution pertaining to the values of f(x) on the slice of the graph where x = 44. 
+GP defines a gaussian distribution that models the whole function. So say you have a function f(x) where x ranges from 0 to 100. And we slice our domain into discrete values, so x can only be an integer. The Gaussian distribution has a dimension for every possible x value. So, in this case, the Gaussian distribution would have 100 dimensions and for each dimension, its axis represents the values that the function can take. For example, if we were to marginalize the whole distribution such that we are looking at a 1D distribution of P(f(x) | x = 44), we would see a distribution of the values of f(x) on the slice of the graph where x = 44. 
 
 ## The Gaussian Distribution (GD)
 
-We just looked at a small chararacteristic of our GD. Recall that a GD requires 2 parameters, the mean vector and the covaraince matrix. Often the mean vector is just 0. But the covariance matrix is where things get really interesting. You might ask "isn't the covariacne matrix fixed in size". That is correct we can't just hardcode it because imagine we want to look at a greator resoultion within an area or look at a greater ranger overall, it requires more dimensions to be able to do that. This is why kernels are used. A kernel is a function that is able to produce a covariance matrix. This is an example of a covairance matrix. 
+We just looked at a small chararacteristic of our GD. Recall that a GD requires 2 parameters, the mean vector and the covariance matrix. Often the mean vector is just 0. But the covariance matrix is where things get really interesting. You might ask "isn't the covariance matrix fixed in size". That is correct we can't just hardcode it because imagine we want to look at a greater resolution within an area or look at a greater ranger overall, it requires more dimensions to be able to do that. This is why kernels are used. A kernel is a function that can produce a covariance matrix. This is an example of a covariance matrix. 
 
 ```
 array([[ 2.56,  1.96,  1.36,  0.76,  0.16, -0.44, -1.04],
@@ -26,8 +26,8 @@ The diagonal from top left to bottom right repersents the variance for random va
 ### Radial Basis Function Kernel
 Here is the equation for the RBF Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).\
 <img src="/GP/rbf.png" alt="drawing" width="200"/>\
-Different Kernels model different fuctions with spefic characteristics. To play with the kernels visually take a look at this article (CITE), it does a great job of explaining gaussian process. 
-Lets take a look at an imporant kernel. This is called the RBF kernel (Radial basis function kernel) take a look at the Wikipedia page for its equation(CITE). Below is a simple code that produce a covariance matrix using this kernel from x = 0 to x = 24, and σ = 1, l = 1. 
+Different Kernels model different functions with specific characteristics. To play with the kernels visually take a look at this article (CITE), it does a great job of explaining the Gaussian process. 
+Let's take a look at an important kernel. This is called the RBF kernel (Radial basis function kernel) take a look at the Wikipedia page for its equation(CITE). Below is a simple code that produce a covariance matrix using this kernel from x = 0 to x = 24, and σ = 1, l = 1. 
 
 ``` python
 #RBF Kernel
@@ -46,7 +46,7 @@ with sns.axes_style("white"):
 This yeilds us:\
 <img src="/GP/rbfKernel.png" alt="drawing" width="250"/>
 
-So lets decompose this covariacne matrix and get an intuition of the function it models. We can see that all the variances are 1, and as aformentioned the mean vector is 0. So this function is going to fluctuate around y = 0. If we sample the first point, whose x value is 0, we are sampling from a normal 1D gaussian with mean 0, and variance 1. So lets say we get f(0) = 2. Then we would need to sample f(-9) given that f(-10) = 2. So we would look at the conditional distribution now. This we can still visualize, lets take a look at samples of the first two dimensions, f(0) and f(0). I wrote this snippit to sample from the first two dimensions. 
+So let's decompose this covariance matrix and get an intuition of the function it models. We can see that all the variances are 1, and as aforementioned the mean vector is 0. So this function is going to fluctuate around y = 0. If we sample the first point, whose x value is 0, we are sampling from a normal 1D gaussian with mean 0, and variance 1. So lets say we get f(0) = 2. Then we would need to sample f(-9) given that f(-10) = 2. So we would look at the conditional distribution now. This we can still visualize, let's take a look at samples of the first two dimensions, f(0) and f(0). I wrote this snippet to sample from the first two dimensions. 
 
 ``` python
 samples = np.random.multivariate_normal([0,0], [[1,.6],
@@ -54,7 +54,7 @@ samples = np.random.multivariate_normal([0,0], [[1,.6],
 plt.scatter(samples[:,0],samples[:,1])
 ```
 <img src="/GP/Screen Shot 2020-08-10 at 4.19.46 PM.png" alt="drawing" width="400"/>  
-This give us the scatter plot above, where the "x" axis repersents f(-10) and the "y" axis repersents f(-9). Therefore, we can see that the P(f(-9)|f(-10) = 2) is a normal distribution whose mean is around 1.5. This should make sense given their covariance is .6. Now if we sample from that distribution, and get f(-9) = 1. Then we can move on to sampling f(-8). To sample from f(-8) we would have to sample P(f(-8) | f(-9) = 1, f(-10) = 2). If we look at the covaraince matrix, the covaraince between f(-8) and f(-9) is .6, and the covariance between f(-8) and f(-10) is .1. This is imporant because a covariance closer to 0 means the two variables aren't as coorelated, and they are closer to becoming independent. So sampling f(-8) would aproimatinly equal to sampling from P(f(-8) | f(-9) = 2). However we don't do that in practice, because its not exact, this is just to give you an idea of how the covariances affect the function, and how to tell the nature of the function based on the covariance matrix. Sampling from the RBF kernel produces random but smooth functions because each new value of f(x) is most affected by f(x-1) and a bit less affected by f(x-2) and so forth. And this kernel has the parameter σ, which controlls how elgonated the smoothness is. Take a pause and look at the kernel equation here (CITE) to understand why that is. 
+This gives us the scatter plot above, where the "x" axis represents f(-10) and the "y" axis represents f(-9). Therefore, we can see that the P(f(-9)|f(-10) = 2) is a normal distribution whose mean is around 1.5. This should make sense given their covariance is .6. Now if we sample from that distribution, and get f(-9) = 1. Then we can move on to sampling f(-8). To sample from f(-8) we would have to sample P(f(-8) | f(-9) = 1, f(-10) = 2). If we look at the covariance matrix, the covariance between f(-8) and f(-9) is .6, and the covariance between f(-8) and f(-10) is .1. This is important because a covariance closer to 0 means the two variables aren't as correlated, and they are closer to becoming independent. So sampling f(-8) would approximately equal to sampling from P(f(-8) | f(-9) = 2). However, we don't do that in practice, because it's not exact, this is just to give you an idea of how the covariances affect the function, and how to tell the nature of the function based on the covariance matrix. Sampling from the RBF kernel produces random but smooth functions because each new value of f(x) is most affected by f(x-1) and a bit less affected by f(x-2) and so forth. And this kernel has the parameter σ, which controls how elongated the smoothness is. Take a pause and look at the kernel equation here (CITE) to understand why that is. 
 
 ### Periodic Kernel
 Here is the Periodic Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
@@ -76,7 +76,7 @@ with sns.axes_style("white"):
     plt.show()
 ```
 <img src="/GP/perKernel.png" alt="drawing" width="250"/>  
-This yeilds us the following covariance matrix for x = 0 to x = 24. This is perodic and if we look at at the upper 7x7 matrix. We notice that it looks similar to the RBF kernel. But the second we try to sample the 7th value, we get something very interesting. The covaraince between the 7th value and the 1st value is 1, and since their variances are all 1, this is imporant. To understand why, take a look at this code followed by the result. 
+This yields us the following covariance matrix for x = 0 to x = 24. This is periodic and if we look at at the upper 7x7 matrix. We notice that it looks similar to the RBF kernel. But the second we try to sample the 7th value, we get something very interesting. The covariance between the 7th value and the 1st value is 1, and since their variances are all 1, this is important. To understand why, take a look at this code followed by the result. 
 
 ``` python
 samples = np.random.multivariate_normal([0,0], [[1,1],
@@ -90,7 +90,7 @@ This is a straight line, with absolutly no deviation! This is why the kernel is 
 ### Linear Kernel
 Here is the Linear Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
 <img src="/GP/lin.png" alt="drawing" width="250"/>  
-The linear kernel took me a while to understand, and I will try to do a decent job of submmarizeing it. Here is a code to produce a covariance matrix using the linear kernel. 
+The linear kernel took me a while to understand, and I will try to do a decent job of summarizing it. Here is a code to produce a covariance matrix using the linear kernel. 
 
 ``` python
 #Linear Kernel
@@ -113,25 +113,30 @@ However if σ<sub>b</sub> ≠ 0, then then sampling the first two points will pr
 <img src="/GP/linCovwdev.png" alt="drawing" width="400"/>
 
 ## Affine Transformation
-We do not define a covariance matrix, instead we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However why can we do that? Technically there are infinte number of inputs, and our kernel can process all of them. But its impossible to process infinte number of inputs. So when we are builing a covariance matrix for the inputs we chose, we are actually marginalizing all the other inputs out. To better understand this lets look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there are an infinate number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you margionalize for all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x, and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be repersented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z.  
+We do not define a covariance matrix, instead, we use a kernel to produce the covariance matrix. Most importantly, we feed in the input (x values for the 2D case) into the kernel. These inputs are located wherever we desire. In the examples I made, I set them to be evenly spaced in a given range. However, why can we do that? Technically there is an infinite number of inputs, and our kernel can process all of them. But it's impossible to process an infinite number of inputs. So when we are building a covariance matrix for the inputs we chose, we are marginalizing all the other inputs out. To better understand this let's look at an example. Say we want to look at 2 input values, which are x = 0 and x = 2. But there is an infinite number of values between 0 and 2. When I am sampling f(2) given f(0) = some constant, the distribution I talk about earlier, is the distribution you would get if you marginalize out all the values between x = 0 and x = 2. But you might notice that we didn't do any marginalizing calculations, we just used the covariance matrix. This is where the affine transformation property for Gaussian Distributions is used. It states that if I have a random variable X, which is normally distributed accord to a certain μ and Σ (covariance matrix symbol), and I do a linear transformation A to x and add a constant vector b. Then my new distribution of `AX+b` is a normal distribution which can be represented as N(Aμ + b, AΣA<sup>T</sup>). Margiaonlizing can be thought of as a linear transformation. Imagine we have a 3 dimensional Gaussian (x,y,z), and we want to marginalize y out, and just get a distribution of x and z.  
 <img src="/GP/Amatrix.png" alt="drawing" width="150"/>.   
 This should make sense because we are collapsing the y dimension out, so its basis vector would just be the 0 vector. The μ<sub>y</sub> = 0, and the new covariance matrix would be the following.  
 <img src="/GP/affineTrans.png" alt="drawing" width="400"/>  
-I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectly just have the following covariance matrix. 
+I just put dummy variables to fill up the covariance matrix. But as you can y has no variance and no covariance between any other variable, so it can be ignored, so you effectively just have the following covariance matrix. 
+```
+[[a,c],
+ [g,i]]
+```
+
 
 ## Combining Kernels
-If you know that your function can be writing as as the sum of two functions or a product of two functions, whose kernels are known, then you can combine their kernels to model the original function (there are other ways to decompose down a function but that is beyond the scope of this article). For example, imagine you know that your function is perdic and increasing, then you can add the perodic and liner kernels together. Why does this work? The intuition behind this is: you are producing a new kernel / covariance matrix that combines the characteristics of the individual kernels, because each point is going to be coorealted to their perodic component as well as its linear component. Take a look at the kernel below to understand this.   
+If you know that your function can be writing as the sum of two functions or a product of two functions, whose kernels are known, then you can combine their kernels to model the original function (there are other ways to decompose down a function but that is beyond the scope of this article). For example, imagine you know that your function is periodic and increasing, then you can add the periodic and liner kernels together. Why does this work? The intuition behind this is: you are producing a new kernel/covariance matrix that combines the characteristics of the individual kernels because each point is going to be correlated to their periodic component as well as its linear component. Take a look at the kernel below to understand this.   
 <img src="/GP/linper.png" alt="drawing" width="300"/>
 
 ## Posterior 
-Uptil now we haven't used a GP. So lets do that. To keep things simple, lets try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per</sub> = K<sub>lin</sub> + K<sub>per</sub>. The posterior is just a conditioal guassian distribution, and the conditional of a gaussian is another gaussian. So we just need to find the new parameters. This is how they are calculated ([Wikipedia](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)).
+Until now we haven't used a GP. So let's do that. To keep things simple, let's try to model an increasing sin wave. So our kernel is going to be K<sub>lin+per</sub> = K<sub>lin</sub> + K<sub>per</sub>. The posterior is just a conditional Gaussian distribution, and the conditional of a gaussian is another gaussian. So we just need to find the new parameters. This is how they are calculated ([Wikipedia](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)).
       
 <img src="/GP/conditionalEq.png" alt="drawing" width="500"/>
 
-What the partioning means, is x1 = all the unobserved x values, and x2 = the observed x values. x2 is the given information, and a is the coressponding y values for x2. I really liked this [explanation](https://stats.stackexchange.com/questions/30588/deriving-the-conditional-distributions-of-a-multivariate-normal-distribution) by [Marco](https://stats.stackexchange.com/users/4856/macro) to understnad this equation. Here is an image of it. 
+What the partitioning means, is x1 = all the unobserved x values, and x2 = the observed x values. x2 is the given information, and a is the corresponding y values for x2. I really liked this [explanation](https://stats.stackexchange.com/questions/30588/deriving-the-conditional-distributions-of-a-multivariate-normal-distribution) by [Marco](https://stats.stackexchange.com/users/4856/macro) to understand this equation. Here is an image of it. 
 <img src="/GP/Screen Shot 2020-08-10 at 4.54.28 PM.png" alt="drawing" width="700"/>   
 I've seen other explanations/proofs, but it clicked when I saw this one. 
-So lets test it out!
+So let's test it out!
 Here is the data I generated, and how I did it. 
 
 ``` python
@@ -211,18 +216,18 @@ with sns.axes_style("white"):
     plt.show()
 ```
 <img src="/GP/covfor50.png" alt="drawing" width="300"/>  
-The darker areas on the variance diagonal, tell us that in those regions there can be more variance in the y values comparitvly to other areas, but its still insignificant since the max value is 0.016. So there is going to be very little variance. 
+The darker areas on the variance diagonal, tell us that in those regions there can be more variance in the y values comparatively to other areas, but it's still insignificant since the max value is 0.016. So there is going to be very little variance. 
 
-Now lets actually plot μ ± σ.  
+Now lets plot μ ± σ.  
 <img src="/GP/50fit.png" alt="drawing" width="400"/>  
 
-The scatterplot contains dots for for both μ (orange) and 1 σ above (green) and below (red), along with the observed points (blue). However, we can't see individual points since they are practically on top of eachother. This is because there is low variance everywhere as we predicted. 
+The scatterplot contains dots for both μ (orange) and 1 σ above (green) and below (red), along with the observed points (blue). However, we can't see individual points since they are practically on top of each other. This is because there is low variance everywhere as we predicted. 
 
-Now lets run the whole thing again, but this time feed it less observed points. Instead of only including 50% of the whoel range in our observed points list, lets only use 20%. 
+Now, let's run the whole thing again, but this time feed it less observed points. Instead of only including 50% of the whole range in our observed points list, lets only use 20%. 
 We now get the following scatterplot.  
 <img src="/GP/20pts.png" alt="drawing" width="400"/>  
 And after we run the same calculations, we can take a look at K.  
 <img src="/GP/covfor20.png" alt="drawing" width="300"/>  
-We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Lets actually see this in the newly generated scatterplot.     
+We can see that the max variance is 1, and in the dark regions on the variance diagonal, those x values have a much larger variance compared to our first regression model. Let's see this in the newly generated scatterplot.     
 <img src="/GP/20fit.png" alt="drawing" width="400"/>  
-Now we can actually see the seperate point markers, and in the regions where the posterior covarince matrix was dark on the variance diagonal, the μ ± σ markers are most seperated which makes sense, since there is less points to contrain the rest of the points. 
+Now we can see the separate point markers, and in the regions where the posterior covariance matrix was dark on the variance diagonal, the μ ± σ markers are most separated which makes sense, since there are not many points close to that section in the period to constrain them. 
