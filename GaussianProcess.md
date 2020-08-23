@@ -89,7 +89,7 @@ This is a straight line, with absolutly no deviation! This is why the kernel is 
 ### Linear Kernel
 Here is the Linear Kernel from the [Kernel Cookbook](https://www.cs.toronto.edu/~duvenaud/cookbook/).  
 <img src="/GP/lin.png" alt="drawing" width="250"/>  
-The linear kernel took me a while to understand, and I will try to do a decent job of summarizing it. Here is a code to produce a covariance matrix using the linear kernel. I set `c = 0, σ<sub>v</sub> = .5, σ<sub>b</sub> = 0`
+The linear kernel took me a while to understand, and I will try to do a decent job of summarizing it. Here is a code to produce a covariance matrix using the linear kernel. I set c = 0, σ<sub>v</sub> = .5, σ<sub>b</sub> = 0
 
 ``` python
 #Linear Kernel
