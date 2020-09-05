@@ -17,6 +17,7 @@
 + Transformers
 + BERT
 + GANs
++ Variational Autoencoders
 
 ## Statistics
 + MCMC
@@ -25,7 +26,6 @@
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
 + [Gaussian Process](https://jyopari.github.io/GaussianProcess)
 + Variational Inference
-+ Variational Autoencoders
 
   
  
