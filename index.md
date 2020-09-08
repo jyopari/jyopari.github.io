@@ -3,7 +3,7 @@
 ![Minion](https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large)
 `A photograph I took of a motionless jumping spider`
 
-## Below, you can find a breif summary of interesting things that I have learned, with my key takeaways
+## Below you can find explanations of interesting topics!
 
 ## Math 
 + Vector Fields
@@ -26,6 +26,9 @@
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
 + [Gaussian Process](https://jyopari.github.io/GaussianProcess)
 + Variational Inference
+
+## Reinforcement Learning
++ Policy Gradients
 
   
  
