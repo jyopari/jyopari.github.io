@@ -5,19 +5,10 @@
 
 ## Below you can find explanations of interesting topics!
 
-## Math 
-+ Vector Fields
-  - Green's Theorem 
-+ Linear Algebra
-  - PCA
-+ Lagrange Multipler
-
-
 ## Machine Learning
 + Transformers
-+ BERT
 + GANs
-+ Variational Autoencoders
++ Variational Autoencoders (VAE)
 
 ## Statistics
 + MCMC
@@ -28,7 +19,10 @@
 + Variational Inference
 
 ## Reinforcement Learning
-+ Policy Gradients
++ Proximal Policy Gradients (PPO)
+
+## Misc
++ Monte Carlo Tree Search
 
   
  
