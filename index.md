@@ -1,5 +1,5 @@
 # Jyo Pari's Website
-## Scroll down to see my posts, or check out [about me](https://jyopari.github.io/aboutMe) or [publications](https://jyopari.github.io).  
+## Scroll down to see my posts, or check out my [about me](https://jyopari.github.io/aboutMe) page or [publications](https://jyopari.github.io).  
 ![Minion](https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large)
 `A photograph I took of a motionless jumping spider`
 
