@@ -24,6 +24,75 @@ I wrote a python program to actually compute the Q values, and given enough epis
 
 <img src="/QLearning/progression.png" alt="drawing" width="1000"/>
 
+### Code
+``` python
+import numpy as np
+import random
 
+def genQTable(graph):
+	QTable = {}
+	for node1 in graph:
+		for node2 in graph[node1]:
+			if(((node1,node2) in QTable) == False):
+				QTable[(node1,node2)] = np.random.rand()
+	return(QTable)
+			
+def maxMove(QTable, current):
+	if(current == 'I'):
+		return(0,0)
+	bestNode = graph[current][0]
+	for node in graph[current]:
+		if(QTable[(current,node)] > QTable[(current,bestNode)]):
+			bestNode = node
+	return(bestNode, QTable[(current,bestNode)])
+
+
+def reward(node):
+	if(node == 'I'):
+		return(1)
+	if(node == 'F'):
+		return(-1)
+	return(0)
+
+graph = {'A':['B','C','D'],
+		 'B':['E'],
+		 'C':['F'],
+		 'D':['G'],
+		 'E':['I'],
+		 'F':['H'],
+		 'H':['I'],
+		 'G':['H']}
+
+QTable = genQTable(graph)
+
+
+startNode = "A"
+endNode = "I"
+episodes = 100
+episodeLength = 10
+epsilon = 1
+epsilonDecay = .99
+gamma = .7
+alpha = .7
+
+for episode in range(episodes):
+	current = startNode
+	if(episode % 20 == 0):
+		print(QTable, "episode: ", episode)
+	for itteration in range(episodeLength):
+		if(np.random.rand() < epsilon):
+			prev = current
+			current = random.choice(graph[current])
+		else:
+			prev = current
+			current = maxMove(QTable, current)[0]
+		QTable[(prev,current)] = QTable[(prev,current)] + alpha*(reward(current) + gamma*maxMove(QTable, current)[1]-QTable[(prev,current)])
+
+		if(current == endNode):
+			break
+	epsilon *= epsilonDecay
+
+print(QTable)
+```
 
 My next post will be of policy gradients, stay tuned for that!
