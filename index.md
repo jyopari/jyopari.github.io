@@ -19,6 +19,7 @@
 + Variational Inference
 
 ## Reinforcement Learning
++ [QLearning](https://jyopari.github.io/QLearning)
 + Proximal Policy Gradients (PPO)
 
 ## Misc
