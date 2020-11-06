@@ -3,8 +3,8 @@
 Q Learning is the first Reinforcement Learning technique I learned, its a fun and fundemental and not too difficult to understand. 
 
 ### Overview
-I will create a small problem, so that you can see Q Learning in action. So below, we have a small "world", where we have a beetle that wants to get to a small blueberry (the blue node). This world can be repersented as a directed graph.:\
-<img src="/QLearning/base.png" alt="drawing" width="200"/>\
+I will create a small problem, so that you can see Q Learning in action. So below, we have a small "world", where we have a beetle that wants to get to a small blueberry (the blue node). This world can be repersented as a directed graph.\
+<img src="/QLearning/base.png" alt="drawing" width="240"/>\
 Node A is the starting node, and node I is blueberry node. There are intermediate nodes, and the at node F, there is a bird, one that can eat the beetle. The beetle's task is to find the most efficient path to the blueberry. We will place a reward of +1 on the blueberry node, and a reward of -1 on the bird node. 
 The goal of Q Learning is to assign a value to each edge, which is equvalent to a state action pair, `Q(s,a)`. The collection of `Q(s,a)` for all states and their actions is called a Q Table. After running the Q Learning algorthim, the Q Table should converge such for a given state, the best action will have the highest Q value. 
 
@@ -21,7 +21,7 @@ Now a imporant part of the algorithm is how should we let the agent move. If loo
 ### Results
 I wrote a python program to actually compute the Q values, and given enough episodes (each itteration), the Q values will converge, which they do. Here is 5 stages of our world and its Q values, for the itterations 0,20,100. I skipped 40,60,80 since they were almost idenitical to 100. As you can see our beetle has learned a good set of Q values to guide it to the berry in the most efficient (shortest) and safest manner. The code that produced this is at the bottom. 
 
-<img src="/QLearning/progression.png" alt="drawing" width="1000"/>
+<img src="/QLearning/progression.png" alt="drawing" width="1500"/>
 
 ### Code
 ``` python
