@@ -6,7 +6,7 @@ Q Learning is the first Reinforcement Learning technique I learned, its a fun an
 I will create a small problem, so that you can see Q Learning in action. So below, we have a small "world", where we have a beetle that wants to get to a small blueberry (the blue node). This world can be repersented as a directed graph.\
 <img src="/QLearning/base.png" alt="drawing" width="240"/>\
 Node A is the starting node, and node I is blueberry node. There are intermediate nodes, and the at node F, there is a bird, one that can eat the beetle. The beetle's task is to find the most efficient path to the blueberry. We will place a reward of +1 on the blueberry node, and a reward of -1 on the bird node. 
-The goal of Q Learning is to assign a value to each edge, which is equvalent to a state action pair, `Q(s,a)`. The collection of `Q(s,a)` for all states and their actions is called a Q Table. After running the Q Learning algorthim, the Q Table should converge such for a given state, the best action will have the highest Q value. 
+The goal of Q Learning is to assign a value to each edge, which is equvalent to a state action pair, `Q(s,a)`. The collection of `Q(s,a)` for all states and their actions is called a Q Table. We initilize the Q Table randomly, after running the Q Learning algorthim, the Q Table should converge such for a given state, the best action will have the highest Q value. 
 
 ### Q Learning algorithm
 In Q Learning we move our agent around the world and keep applying the below equation to update the Q Table. For n episodes, we place the agent on a starting node (A in this case) and let the agent move for t itterations. How we let the agent move is nuanced, we will go into that in the epsilon section.  
