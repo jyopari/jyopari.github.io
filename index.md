@@ -7,14 +7,21 @@
 
 ## Machine Learning
 + Variational Autoencoders (VAE)
++ Transformers
 
 ## Statistics
 + MCMC
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
+  - Gibbs Sampling
 + [Gaussian Process](https://jyopari.github.io/GaussianProcess)
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
++ Policy Gradients
++ Imitation Learning
++ Meta Learning
+
+## Implementations 
 
 ## Misc
 + Monte Carlo Tree Search
