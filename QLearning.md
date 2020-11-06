@@ -4,14 +4,14 @@ Q Learning is the first Reinforcement Learning technique I learned, its a fun an
 
 ### Overview
 I will create a small problem, so that you can see Q Learning in action. So below, we have a small "world", where we have a beetle that wants to get to a small blueberry (the blue node). This world can be repersented as a directed graph.\
-<img src="/QLearning/base.png" alt="drawing" width="240"/>\
+<img src="/QLearning/base.jpeg" alt="drawing" width="240"/>\
 Node A is the starting node, and node I is blueberry node. There are intermediate nodes, and the at node F, there is a bird, one that can eat the beetle. The beetle's task is to find the most efficient path to the blueberry. We will place a reward of +1 on the blueberry node, and a reward of -1 on the bird node. 
 The goal of Q Learning is to assign a value to each edge, which is equvalent to a state action pair, `Q(s,a)`. The collection of `Q(s,a)` for all states and their actions is called a Q Table. We initilize the Q Table randomly, after running the Q Learning algorthim, the Q Table should converge such for a given state, the best action will have the highest Q value. 
 
 ### Q Learning algorithm
 In Q Learning we move our agent around the world and keep applying the below equation to update the Q Table. For n episodes, we place the agent on a starting node (A in this case) and let the agent move for t itterations. How we let the agent move is nuanced, we will go into that in the epsilon section.  
 This yeilds us:\
-<img src="/QLearning/eq.png" alt="drawing" width="600"/>
+<img src="/QLearning/eq.jpeg" alt="drawing" width="600"/>
 
 
 Alpha is the [learning rate](https://en.wikipedia.org/wiki/Q-learning#Learning_Rate), and gamma is the [discount rate](https://en.wikipedia.org/wiki/Q-learning#Discount_factor), we will go into those more spefically later. So why does this work, well imagine the edges that connect to the berry, after enough itterations they will have a high Q value, then the edges the connect to that node will have a high Q value, but a lower one since its equal to gamma(max_Q(s',a). gamma(max_Q(s',a') means that if we are at state s', which is the state the agent moved to from state s then, what is the highest Q value at s'. Gamma, the learning rate controls how much can distant rewards can influence the current Q value, values closer to 1 will produce an agent that is more sensitive for distant rewards and vice versa. Alpha, controls how senstive the agent is to new information. So what is the intution behind this algorith? The edges that connect to the evil bird node, will have a negative Q value, since it has a negative reward, and consequently the edges that those edes that connect to the bird node will also have a negative but of smaller magnitude Q value due to gamma. 
@@ -21,7 +21,7 @@ Now a imporant part of the algorithm is how should we let the agent move. If loo
 ### Results
 I wrote a python program to actually compute the Q values, and given enough episodes (each itteration), the Q values will converge, which they do. Here is 5 stages of our world and its Q values, for the itterations 0,20,100. I skipped 40,60,80 since they were almost idenitical to 100. As you can see our beetle has learned a good set of Q values to guide it to the berry in the most efficient (shortest) and safest manner. The code that produced this is at the bottom. 
 
-<img src="/QLearning/progression.png" alt="drawing" width="1500"/>
+<img src="/QLearning/progression.jpeg" alt="drawing" width="1500"/>
 
 ### Code
 ``` python
