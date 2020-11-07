@@ -25,6 +25,6 @@
 
 ## Misc
 + Monte Carlo Tree Search
-+ [How Similar is _____ to _____?](jyopari.github.io/Similarity)
++ [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
   
  
