@@ -10,7 +10,7 @@ The goal of Q Learning is to assign a value to each edge, which is equvalent to 
 
 ### Q Learning algorithm
 In Q Learning we move our agent around the world and keep applying the below equation to update the Q Table. For n episodes, we place the agent on a starting node (A in this case) and let the agent move for t itterations. How we let the agent move is nuanced, we will go into that in the epsilon section.  
-This yeilds us:\
+The Q Value update equation is:\
 <img src="/QLearning/eq.jpeg" alt="drawing" width="600"/>
 
 
