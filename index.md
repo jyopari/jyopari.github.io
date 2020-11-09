@@ -14,6 +14,7 @@
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
   - Gibbs Sampling
 + [Gaussian Process](https://jyopari.github.io/GaussianProcess)
++ KL Divergence
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
@@ -22,6 +23,7 @@
 + Meta Learning
 
 ## Implementations 
++ Implementing Proximial Policy (PPO) for Fetch...
 
 ## Misc
 + Monte Carlo Tree Search
