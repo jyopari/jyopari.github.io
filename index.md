@@ -7,7 +7,7 @@
 
 ## Machine Learning
 + Variational Autoencoders (VAE)
-+ Transformers
++ Transformers + Their applications (BERT / GPT, Image GPT)
 
 ## Statistics
 + MCMC
@@ -15,6 +15,7 @@
   - Gibbs Sampling
 + [Gaussian Process](https://jyopari.github.io/GaussianProcess)
 + KL Divergence
++ D Seperation In A Bayesian Network 
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
@@ -23,6 +24,7 @@
 
 ## Implementations 
 + Hand 
++ One ML One
 
 ## Misc
 + Monte Carlo Tree Search
