@@ -18,12 +18,11 @@
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
-+ Policy Gradients
-+ Imitation Learning
-+ Meta Learning
++ Deep Deterministic Policy Gradients
++ PPO 
 
 ## Implementations 
-+ Implementing Proximial Policy (PPO) for Fetch...
++ Hand 
 
 ## Misc
 + Monte Carlo Tree Search
