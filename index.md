@@ -19,7 +19,7 @@
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
-+ Deep Deterministic Policy Gradients
++ DQN
 + PPO 
 
 ## Implementations 
