@@ -3,10 +3,9 @@
 <img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="500"/> \
 `A photograph I took of a motionless jumping spider`
 
-## Below you can find explanations of interesting topics!
+## I try to include an implementation for each applicable topic, enjoy!
 
 ## Machine Learning
-+ Variational Autoencoders (VAE)
 + Transformers + Their applications (BERT / GPT, Image GPT)
 
 ## Statistics
@@ -17,14 +16,13 @@
 + KL Divergence
 + D Seperation In A Bayesian Network 
 
+## Both Machine Learning and Statistics
++ Variational Autoencoders (VAE)
+
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning)
 + DQN
 + PPO 
-
-## Implementations 
-+ Hand 
-+ One ML One
 
 ## Misc
 + Monte Carlo Tree Search
