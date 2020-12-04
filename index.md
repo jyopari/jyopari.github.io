@@ -8,6 +8,7 @@
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
 + Variational Autoencoders (Very much connected to statistics) w Implementation
++ Graph Neural Networks and Graph Convolutional Networks 
 
 ## Statistics
 + MCMC
