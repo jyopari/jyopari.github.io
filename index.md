@@ -7,20 +7,17 @@
 
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
-
++ Variational Autoencoders (Very much connected to statistics) w Implementation
 ## Statistics
 + MCMC
-  - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings)
+  - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings) w Implementation
   - Gibbs Sampling
-+ [Gaussian Process](https://jyopari.github.io/GaussianProcess)
-+ KL Divergence
-+ D Seperation In A Bayesian Network 
-
-## Both Machine Learning and Statistics
-+ Variational Autoencoders (VAE)
++ [Gaussian Process](https://jyopari.github.io/GaussianProcess) w Implementation
++ KL Divergence (Brief Post) 
++ D Seperation In A Bayesian Network (Brief Post)
 
 ## Reinforcement Learning
-+ [QLearning](https://jyopari.github.io/QLearning)
++ [QLearning](https://jyopari.github.io/QLearning) w Implementation
 + DQN
 + PPO 
 
