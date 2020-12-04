@@ -19,8 +19,8 @@
 
 ## Reinforcement Learning
 + [QLearning](https://jyopari.github.io/QLearning) w Implementation
-+ DQN
-+ PPO 
++ Policy Gradients
++ Proximal Policy Optimization w Implementation (Robotic Hand Manipulation) 
 
 ## Misc
 + Monte Carlo Tree Search
