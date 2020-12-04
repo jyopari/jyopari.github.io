@@ -8,6 +8,7 @@
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
 + Variational Autoencoders (Very much connected to statistics) w Implementation
+
 ## Statistics
 + MCMC
   - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings) w Implementation
