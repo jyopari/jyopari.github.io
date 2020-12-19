@@ -7,7 +7,7 @@
 
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
-+ [Variational Autoencoders (Merge of Stats and ML) w Implementation] (https://jyopari.github.io/VAE)
++ [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
 + Graph Neural Networks and Graph Convolutional Networks 
 
 ## Statistics
