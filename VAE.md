@@ -1,6 +1,6 @@
 # Variational Autoencoders
 ## Introduction
-Variational autoencoders  merges deep learning and probability in a very intrugring manner. If you have heard of autoencoders, variational autoencoders are similar but are much better for generating data. There are many resources that explain why vanialla autoencoders aren't good generative models, but the gist is the latent space is not compact, and there are lots of dead space that produces jargon. We will explain the theorey behind it, and implement a model in PyTorch to generate the following images of birds. <img src="/VAE/grid.png" alt="drawing" width="230"/>
+Variational autoencoders  merges deep learning and probability in a very intrugring manner. If you have heard of autoencoders, variational autoencoders are similar but are much better for generating data. There are many resources that explain why vanialla autoencoders aren't good generative models, but the gist is the latent space is not compact, and there are lots of dead space that produces jargon. We will explain the theorey behind it, and implement a model in PyTorch to generate the following images of birds. <br /> <img src="/VAE/grid.png" alt="drawing" width="230"/>
 
 ## Variational Inference (ELBO)
 Variational autoencoder takes pillar ideas from variational inference. I will exlain what these pillars are. First there is something called ELBO. Let me plop down an derivation and a graphical model that we are going to work with, it is ubigquitous, so you proabbly would have seen this. 
@@ -178,4 +178,114 @@ print('Finished Training')
 ```
 <br /> 
 This model was trained on Caltech-UCSD Birds 200. Below to the left is a real batch of images from the dataset, and the right image is the ouput of the model. 
-<img src="/VAE/198.png" alt="drawing" width="300"/> <img src="/VAE/198r.png" alt="drawing" width="300"/>
+
+ <div id="banner">
+    <div class="inline-block">
+        <img src="/VAE/198.png" alt="drawing" width="350"/>
+    </div>
+    <div class="inline-block">
+         <img src="/VAE/198r.png" alt="drawing" width="350"/>
+    </div>
+</div>
+
+## Generation
+I said that VAEs are generative models, so it lets generate some birds! All I do is sample many `z` from the unit gaussian `P(Z)`, and volia. <br />
+ <div id="banner">
+    <div class="inline-block">
+        <img src="/VAE/grid1.png" alt="drawing" width="250"/>
+    </div>
+    <div class="inline-block">
+         <img src="/VAE/grid2.png" alt="drawing" width="250"/>
+    </div>
+	<div class="inline-block">
+         <img src="/VAE/grid3.png" alt="drawing" width="250"/>
+    </div>
+</div>
+<br /> 
+here is the code that I wrote to generate the images.
+``` python
+import matplotlib.pyplot as plt
+import matplotlib
+import torch
+from torchvision import datasets, transforms
+import torchvision
+from PIL import Image
+import numpy as np
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+
+def imsave(name,img):
+	npimg = img.numpy()
+	plt.imsave(name,np.transpose(npimg, (1, 2, 0)))
+
+class VAE(nn.Module):
+	def __init__(self):
+		super(VAE, self).__init__()
+		self.eConv1 = nn.Conv2d(3,6,4)
+		self.eConv2 = nn.Conv2d(6,12,5)
+		self.ePool1 = nn.MaxPool2d(2,2)
+		self.eConv3 = nn.Conv2d(12,24,5)
+		self.ePool2 = nn.MaxPool2d(2,2)
+		self.eF1 = nn.Linear(24*4*4,180)
+		self.eMu = nn.Linear(180,180)
+		self.eSigma = nn.Linear(180,180)
+
+		self.dConvT1 = nn.ConvTranspose2d(180,200,4)
+		self.dBatchNorm1 = nn.BatchNorm2d(200)
+		self.dConvT2 = nn.ConvTranspose2d(200,120,6,2)
+		self.dBatchNorm2 = nn.BatchNorm2d(120)
+		self.dConvT3 = nn.ConvTranspose2d(120,60,6,2)
+		self.dBatchNorm3 = nn.BatchNorm2d(60)
+		self.dConvT4 = nn.ConvTranspose2d(60,3,5,1)
+
+	def encode(self,x):
+		x = self.eConv1(x)
+		x = F.relu(x)
+		x = self.eConv2(x)
+		x = F.relu(x)
+		x = self.ePool1(x)
+		x = self.eConv3(x)
+		x = F.relu(x)
+		x = self.ePool2(x)
+		x = x.view(x.size()[0], -1)
+		x = self.eF1(x)
+		mu = self.eMu(x)
+		sigma = self.eSigma(x)
+		return((mu,sigma))
+
+	# From Documentation
+	def reparameterize(self,mu,sigma):
+		std = torch.exp(0.5*sigma)
+		eps = torch.randn_like(std)
+		return (mu + eps*std)
+
+	def decode(self,x):
+		x = torch.reshape(x,(x.shape[0],180,1,1))
+		x = self.dConvT1(x)
+		x = self.dBatchNorm1(x)
+		x = F.relu(x)
+		x = self.dConvT2(x)
+		x = self.dBatchNorm2(x)
+		x = F.relu(x)
+		x = self.dConvT3(x)
+		x = self.dBatchNorm3(x)
+		x = F.relu(x)
+		x = self.dConvT4(x)
+		x = torch.sigmoid(x)
+		return(x)
+		
+	def forward(self,x):
+		mu,sigma = self.encode(x)
+		z = self.reparameterize(mu,sigma)
+		x_gen = self.decode(z)
+		return((x_gen,mu,sigma))
+
+vae = VAE()
+vae.load_state_dict(torch.load("vae_checkpoints/198.pt"))
+vae.eval()
+
+vectors = torch.randn(64, 180, 1, 1)
+images = vae.decode(vectors)
+imsave("grid3.png", torchvision.utils.make_grid(images.detach()))
+```
