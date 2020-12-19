@@ -5,7 +5,8 @@ Variational autoencoders  merges deep learning and probability in a very intrugr
 ##
 Variational Inference
 Variational autoencoder takes pillar ideas from variational inference. I will exlain what these pillars are. First there is something called ELBO. Let me plop down an derivation and a graphical model that we are going to work with, it is ubigquitous, so you proabbly would have seen this. 
-
+<br /> The graphical model: <br />
+<img src="/VAE/diagram.png" alt="drawing" width="60"/>
 
 
 The equations: <br />
@@ -16,4 +17,4 @@ The first key step is how do we go from equation 2 to 3, and that is is done by 
 
 Then we start with the defintion of KL divergence (Kullback Leiber Divergence) at step 4. We want to find how close a distribution `Q(z)` is to the posterier `P(z|x)`. After a series of manipulations, we reach step 5. We can see that the KL divergence between `Q(z)` and `P(z|x)` is equal to `-ELBO + log P(X)`. If we are interested in changing `Q(z)` to be as close as possible as `P(z|x)`, then we want to maximize ELBO since `log P(x)` does not depend on `Q(z)`. <br /> 
 
-Taking a closer look at `Q(z)`, we see that if we want to minimize `KL(Q(z)||P(z|x))`, what we are doing is saying for a given `x` are fitting `Q(z)` to its posterior. 
+Taking a closer look at `Q(z)`, we see that if we want to minimize `KL(Q(z)||P(z|x))`, what we are doing is saying for a given `x` are fitting `Q(z)` to its posterior. In our dataset we are going to many many different `x`, so having one distribution `Q(z)` isn't going to perform well for the posterior. Instead lets make `Q(z)` be a conditional distribution on `x`, so for a given `x` it will be the spefic posteiror for that `x`, thus instead of `Q(z)` we have `Q(z|x)`. Now equation 6 should make sense. 
