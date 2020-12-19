@@ -10,7 +10,7 @@ Variational autoencoder takes pillar ideas from variational inference. I will ex
 
 The equations: <br />
 <img src="/VAE/IMG_0069.PNG" alt="drawing" width="600"/> <br />
-<img src="/VAE/IMG_0068.PNG" alt="drawing" width="600"/>
+<img src="/VAE/Screenshot from 2020-12-19 14-52-31.png" alt="drawing" width="600"/>
 
 The first key step is how do we go from equation 2 to 3, and that is done by Jensen's inequality which recognizes that the logarithmic function is concave. Equation 3 is the lower bound of the `log P(x)`, so maximizing this lower bound is going to push `log P(x)` up. <br /> 
 
