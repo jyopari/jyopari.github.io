@@ -6,6 +6,7 @@ Variational autoencoders  merges deep learning and probability in a very intrugr
 Variational Inference
 Variational autoencoder takes pillar ideas from variational inference. I will exlain what these pillars are. First there is something called ELBO. Let me plop down an derivation, it is ubigquitous, so you proabbly would have seen this. 
 
-The equations:
-<img src="/VAE/IMG_0068.PNG.jpeg" alt="drawing" width="600"/>
-<img src="/VAE/IMG_0069.PNG.jpeg" alt="drawing" width="600"/>
+The equations: <br />
+<img src="/VAE/IMG_0069.PNG" alt="drawing" width="600"/> <br />
+<img src="/VAE/IMG_0068.PNG" alt="drawing" width="600"/>
+
