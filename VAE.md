@@ -10,3 +10,4 @@ The equations: <br />
 <img src="/VAE/IMG_0069.PNG" alt="drawing" width="600"/> <br />
 <img src="/VAE/IMG_0068.PNG" alt="drawing" width="600"/>
 
+I think the key steps are from step 2 to 3, and that is is done by Jensen's inequlity which recognizes that the logramtihic function is concave, 
