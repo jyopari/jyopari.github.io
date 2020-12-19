@@ -1,6 +1,6 @@
 # Variational Autoencoders (VAE)
 ## Introduction
-Variational autoencoders merge deep learning and probability in a very intriguing way. If you have heard of autoencoders, variational autoencoders are similar but are much better for generating data. Many resources explain why vanilla autoencoders aren't good generative models, but the gist is that the latent space is not compact, and there are lots of dead space that produces jargon. We will explain the theory behind VAEs, and implement a model in PyTorch to generate the following images of birds. <br /> <img src="/VAE/grid.png" alt="drawing" width="230"/>
+Variational autoencoders merge deep learning and probability in a very intriguing way. If you have heard of autoencoders, variational autoencoders are similar but are much better for generating data. Many resources explain why vanilla autoencoders aren't good generative models, but the gist is that the latent space is not compact, and there are lots of dead space that produces jargon. We will explain the theory behind VAEs, and implement a model in PyTorch to generate the following images of birds. <br /> <img src="/VAE/grid.png" alt="drawing" width="350"/>
 
 ## Variational Inference (ELBO)
 Variational autoencoder takes pillar ideas from variational inference. I will explain what these pillars are. First, there is something called ELBO. Let me plop down a derivation and a graphical model that we are going to work with, it is ubiquitous, so you probably have seen this. 
@@ -192,13 +192,13 @@ This model was trained on Caltech-UCSD Birds 200. Below to the left is a real ba
 I said that VAEs are generative models, so it lets generate some birds! All I do is sample many `z` from the unit gaussian `P(Z)`, and volia. <br />
  <div id="banner">
     <div class="inline-block">
-        <img src="/VAE/grid1.png" alt="drawing" width="200"/>
+        <img src="/VAE/grid1.png" alt="drawing" width="350"/>
     </div>
     <div class="inline-block">
-         <img src="/VAE/grid2.png" alt="drawing" width="200"/>
+         <img src="/VAE/grid2.png" alt="drawing" width="350"/>
     </div>
 	<div class="inline-block">
-         <img src="/VAE/grid3.png" alt="drawing" width="200"/>
+         <img src="/VAE/grid3.png" alt="drawing" width="350"/>
     </div>
 </div>
 <br /> 
