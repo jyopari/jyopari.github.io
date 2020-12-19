@@ -26,12 +26,12 @@ Variational Autoencoders are based on equation 7. So let's see how we can go fro
 Now let's define our distributions, and how we can model them. For `Q(z|x)` we will use a neural network that produces the parameters for the gaussian for an inputted `x`. Then we will use those parameters to sample a `z` which is the input for another neural network which is our `P(x|z)`, and that network will try to replicate the original `x`. Then we can define our loss to be the reconstruction loss as well as the KL divergence between `Q(z|x)` and the unit gaussian. <br />
 
 This is the model we have now <br />
-<img src="/VAE/bad.png" alt="drawing" width="400"/>
+<img src="/VAE/bad.png" alt="drawing" width="600"/>
 
 
 ## Reparameterization 
 There is an issue with the above model, hence the sad face. If we are going to use gradient descent, our whole model should be differentiable, such that we can find the partial derivative for each parameter. However, if we try to find the partial derivative for the encoder's parameters, we would be unsuccessful due to the sampling. We need to work around the sampling, such that the gradients can "flow". This is where the reparameterization comes in. Observe the updated model below. <br /> 
-<img src="/VAE/good.png" alt="drawing" width="400"/> <br />
+<img src="/VAE/good.png" alt="drawing" width="600"/> <br />
 Here we introduced a new variable, that sampled from a normal gaussian of the same number of dimensions as `Q(z|x)`. We are replicating the same sampling process from the original model, except now we can compute the partial derivative of z with respect to mu or sigma, thus our model is fully differentiable. So we can use gradient descent, hence the happy face. <br />
 
 That's it! Now we keep taking some images from our dataset and training the model. Once the model is trained, it will be able to reproduce the original image (hopefully). 
