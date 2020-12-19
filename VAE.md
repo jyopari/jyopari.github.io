@@ -192,17 +192,18 @@ This model was trained on Caltech-UCSD Birds 200. Below to the left is a real ba
 I said that VAEs are generative models, so it lets generate some birds! All I do is sample many `z` from the unit gaussian `P(Z)`, and volia. <br />
  <div id="banner">
     <div class="inline-block">
-        <img src="/VAE/grid1.png" alt="drawing" width="250"/>
+        <img src="/VAE/grid1.png" alt="drawing" width="200"/>
     </div>
     <div class="inline-block">
-         <img src="/VAE/grid2.png" alt="drawing" width="250"/>
+         <img src="/VAE/grid2.png" alt="drawing" width="200"/>
     </div>
 	<div class="inline-block">
-         <img src="/VAE/grid3.png" alt="drawing" width="250"/>
+         <img src="/VAE/grid3.png" alt="drawing" width="200"/>
     </div>
 </div>
 <br /> 
-here is the code that I wrote to generate the images.
+
+Here is the code that I wrote to generate the images.
 ``` python
 import matplotlib.pyplot as plt
 import matplotlib
