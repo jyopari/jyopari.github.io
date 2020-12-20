@@ -18,7 +18,7 @@
 + D Seperation In A Bayesian Network (Brief Post)
 
 ## Reinforcement Learning
-+ [QLearning](https://jyopari.github.io/QLearning) w Implementation
++ [QLearning w Implementation](https://jyopari.github.io/QLearning) 
 + Policy Gradients
 + Proximal Policy Optimization w Implementation (Robotic Hand Manipulation) 
 
