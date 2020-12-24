@@ -36,7 +36,7 @@ We have arrived at the KL divergene formula for the discrete case, for a contino
 That's all, thanks for reading!
 
 ## References
-https://brilliant.org/wiki/entropy-information-theory/
-https://en.wikipedia.org/wiki/Huffman_coding
-https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+https://brilliant.org/wiki/entropy-information-theory/ <br />
+https://en.wikipedia.org/wiki/Huffman_coding <br />
+https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence <br />
 https://planetcalc.com/2481/
