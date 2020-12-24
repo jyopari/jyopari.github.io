@@ -3,10 +3,10 @@ KL diverges pops up often, for example your loss function in your neural network
 
 ## Information Theory and Shannon Entropy
 I want to first posit this hypothetical senario. You're friend recently is on an uninhabited island, and they want to trasmit the first fish they catch every day. For the sake of this problem, it is given that your friend catches a fish every day. <br /> 
-
+<img src="/KL/island.png" alt="drawing" width="300"/> <br />
 You and your friend know that in the general area there are only four types of fish <br />
-
-Since your friend's antenna is all set up, you to figure out how to trasmit the data efficentilya. More spefically, you want to send the least amount of data while not losing any precision. This is where we start diving into Shannon Entropy. Lets say that after collecting data for 10 days we have the following a distribution over fish. <br />
+<img src="/KL/fish.png" alt="drawing" width="200"/> <br />
+Since your friend's antenna is all set up, you to figure out how to trasmit the data efficentilya. More spefically, you want to send the least amount of data while not losing any precision. This is where we start diving into Shannon Entropy. Lets say that after collecting data for 10 days we have a distribution over fish. <br />
 
 Can we use this distribution to create an effencient data trasnmitting model. Yes, what Claude Shannon figured out is the following set of equations. <br />
 
