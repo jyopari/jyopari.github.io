@@ -34,3 +34,9 @@ The first term repersents the expected legth of information (bits in our case) o
 We have arrived at the KL divergene formula for the discrete case, for a continous distribution, it is the following <br />
 
 That's all, thanks for reading!
+
+## References
+https://brilliant.org/wiki/entropy-information-theory/
+https://en.wikipedia.org/wiki/Huffman_coding
+https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+https://planetcalc.com/2481/
