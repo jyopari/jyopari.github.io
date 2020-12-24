@@ -35,8 +35,7 @@ The first term repersents the expected legth of information (bits in our case) o
 <img src="/KL/deriv.png" alt="drawing" width="400"/> <br />
 
 We have arrived at the KL divergene formula for the discrete case, for a continous distribution, it is the following <br />
-<img src="/KL/kl.png" alt="drawing" width="400"/> <br />
-
+<img src="/KL/kl.png" alt="drawing" width="500"/> <br />
 That's all, thanks for reading!
 
 ## References
