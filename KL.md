@@ -30,12 +30,12 @@ I think the best way to convey KL Divergence, is to provide a modification to ou
 Now based on what we have leared so far, we would need two distributions, on for the organe location and one for the green location. Lets say our following two disteributions are the ones below. <br />
 <img src="/KL/2loc.png" alt="drawing" width="300"/> <br />
 Everyhing seems, fine, we have two seperate distributions, one for each location, and say our friend sends the result of each fishing line at spefic agreed upon time, so there is no ambiguity. To convey KL divergence, let's say our friend made a mistake. They used the Orange location's distribution to transmit the fish at the Green location. Yikes! This is going to cost us in terms of efficency. But how much is this going to cost us? This is what KL Divergence answers. Take a look at the following expression. <br />
-<img src="/KL/deriv1.png" alt="drawing" width="400"/> <br />
+<img src="/KL/deriv1.png" alt="drawing" width="350"/> <br />
 The first term repersents the expected legth of information (bits in our case) of using the the Orange location's distribution at teh Green location. The second term is the normal expected value of the Green location's information. So taking there differnence is equal to the numbner of extra bits being used, which is also knows as the information gain. Lets simplify our expression via the following steps. <br />
 <img src="/KL/deriv.png" alt="drawing" width="400"/> <br />
 
 We have arrived at the KL divergene formula for the discrete case, for a continous distribution, it is the following <br />
-<img src="/KL/kl.png" alt="drawing" width="500"/> <br />
+<img src="/KL/kl.png" alt="drawing" width="350"/> <br />
 That's all, thanks for reading!
 
 ## References
