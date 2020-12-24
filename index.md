@@ -11,10 +11,10 @@
 
 ## Statistics
 + MCMC
-  - [Metropolis Hastings](https://jyopari.github.io/MetropolisHastings) w Implementation
+  - [Metropolis Hastings  w Implementation](https://jyopari.github.io/MetropolisHastings)
   - Gibbs Sampling
-+ [Gaussian Process](https://jyopari.github.io/GaussianProcess) w Implementation
-+ KL Divergence (Brief Post) 
++ [Gaussian Process w Implementation](https://jyopari.github.io/GaussianProcess)
++ [KL Divergence](https://jyopari.github.io/KL)
 + D Seperation In A Bayesian Network (Brief Post)
 
 ## Reinforcement Learning
