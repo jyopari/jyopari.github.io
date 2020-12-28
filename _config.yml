@@ -16,14 +16,13 @@ include:
 #
 # This file contains configuration flags to customize your site
 #
-darkmode: true
+darkmode: false
 hide_first_title: false # Useful if README.md is used on both github and pages
 #logo_url: ./logo.png # Either absolute or relative url
 colors:
     gradient_left: "#182436"
     gradient_right: "#182436"
     header: "#fff"
-    android_theme: "#000" # this default to gradient_color
     link: "#b4c1d4" # this default to gradient_color
     section_title: "#dadee3" # this default to gradient_color
 buttons:
