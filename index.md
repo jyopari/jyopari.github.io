@@ -8,6 +8,7 @@
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
 + [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
++ [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
 
 ## Statistics
 + MCMC
@@ -15,15 +16,13 @@
   - Gibbs Sampling
 + [Gaussian Process w Implementation](https://jyopari.github.io/GaussianProcess)
 + [KL Divergence](https://jyopari.github.io/KL)
-+ D Seperation In A Bayesian Network (Brief Post)
++ D Seperation In A Bayesian Network 
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
 + Policy Gradients 
 + Monte Carlo Tree Search w Implementation
 
-## Misc
-
-+ [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
+## Math
 + Lagrange multiplier
- 
++ Why Is The Gradient The Steepest Direction?
