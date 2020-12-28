@@ -1,9 +1,9 @@
 # Jyo Pari's Website
-## Scroll down to see my posts, or check out my [about me](https://jyopari.github.io/aboutMe) page.
+## Scroll down to see my explanations, or learn more [about me](https://jyopari.github.io/aboutMe).
 <img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="700"/> \
 `A photograph I took of a motionless jumping spider, they are very intelligent creatures`
 
-## I try to include an implementation for each applicable topic, enjoy!
+## I try to include an implementation for each topic, enjoy!
 
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
