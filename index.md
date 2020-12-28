@@ -19,10 +19,11 @@
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
-+ Policy Gradients w Implementation FetchPush-v1
++ Policy Gradients 
++ Monte Carlo Tree Search w Implementation
 
 ## Misc
-+ Monte Carlo Tree Search
+
 + [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
-  
++ Lagrange multiplier
  
