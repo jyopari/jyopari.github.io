@@ -1,3 +1,4 @@
+theme: jekyll-theme-cayman
 plugins:
   - jekyll-relative-links
 relative_links:
@@ -15,27 +16,7 @@ include:
 #
 # This file contains configuration flags to customize your site
 #
-darkmode: false
-hide_first_title: false # Useful if README.md is used on both github and pages
-#logo_url: ./logo.png # Either absolute or relative url
-colors:
-    gradient_left: "#182436"
-    gradient_right: "#182436"
-    header: "#fff"
-    link: "#b4c1d4" # this default to gradient_color
-    section_title: "#dadee3" # this default to gradient_color
-buttons:
-      zip_url: http://example.com/
-      zip_title: Title
-      zip_hide: true
-      tar_url: http://example.com/
-      tar_title: Title
-      tar_hide: true
-      github_hide: true # hides "View on Github"
 # Name of your site (displayed in the header)
 name: Jyo Pari
-
 # Short bio or description (displayed in the header)
 description: Interesting Explanations
-# URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://img.itch.zone/aW1nLzMyMzM2ODgucG5n/original/IYYPby.png
