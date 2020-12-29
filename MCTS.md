@@ -12,8 +12,8 @@ Each node stores two values, one is the number of wins from that node, the other
 The equation above is the UCT formula. `w` is the number of wins for the node, `n` is the number of times that node has been visited, `N` is the number of times the parent node has been visited. c is a hyperparameter, which is usually set to sqrt(2).  So what is the nature of this formula. Since the node with the highest UCT value, we need to figure out what makes the UCT value go up. 
 ## Exploration vs Exploitation 
 Looking at the left term, `w/n`, if the node is good one, then that ratio is going to go up. However, the right term is what drives exploration. If a node is not being visted for a while, and its sibling is that the ratio `N/n` is going to go up. However, MCTS weights this exploration factor not as great as the win to vist ratio since the exploration term is under a square root. Imagine we keep repeating the same aforementioned 4 step process, but our UCT formula did not have the exploration term. Then at every selection process, the node with the highest win ratio would be chosen, and the tree would just grow one long root. The image below describes this. 
-https://stackoverflow.com/questions/42302142/monte-carlo-tree-search-tree-policy-for-two-player-games
-The tree on the right is what could happen if there isn't an exploration term, and the tree on the left is what is more likley to occur. I assumed that the long root in the left image is a very good path, which is why the tree on the right also focuses it, but it also branches out occasionaly in hope of there being other good paths. 
+<img src="/MCTS/2tree.png" alt="drawing" width="500"/> <br />
+The tree on the left is what could happen if there isn't an exploration term, and the tree on the right is what is more likley to occur. I assumed that the long root in the left image is a very good path, which is why the tree on the right also focuses it, but it also branches out occasionaly in hope of there being other good paths. 
 ## Two Player?
 In my implementation I made MCTS learn a 2 player game. How can we adapt our technqiue then? Well it is quite straith forward, as this [answer](https://stackoverflow.com/questions/42302142/monte-carlo-tree-search-tree-policy-for-two-player-games) puts, it we need to treat each layer as player 1 or player 2's move. The image below describes this.  <br /> 
 <img src="/MCTS/2player.png" alt="drawing" width="180"/> <br /> 
@@ -25,9 +25,14 @@ All we have to do is alternate which nodes's win should be incremented. If Playe
 Connect 4 is a fun game, which is why we are going to implement a Connect 3 bot. I shrunk the game, so the board is 5x5 and you need 3 piece in a row or column or diagonal to win. The reason why I shrunk the game is because its faster to run, and implementing the original specs would take a lot more time to run due to exponential branching. <br />
 First I need to create a Board class, this handles all the placement of piece and figuring out if there is a winner/draw and for which player. I then needed a Node class, which stores the `w`,`n`,`children`. Finally, I wrote the main file which performs the selection, expansion, playout, and backpropagation. When actually playing the game once MCTS finished running for 5 million itterations, I chose moves based on which child has the most number of wins. Why didn't I just chose the node with the higest UCT value, well when actually playing I don't want to be exploring, im in the exploitation mindset :) <br />
 ## Games
-Here are couple games where the comptuter (1) made the first move. 
-
-Here are couple games where I (1) made the first move. 
+Here are couple games where the comptuter (1) made the first move. <br />
+<img src="/MCTS/game1.png" alt="drawing" width="150"/>
+<img src="/MCTS/game2.png" alt="drawing" width="150"/>
+Here is a game where I made the first move. <br />
+<img src="/MCTS/game3.png" alt="drawing" width="150"/> <br />
+From the first two games, you can see how it learns to 100% checkmate, so when I played the first move, the computer didn't bother blocking me by placing its piece (2) on the middle column, and instead it placed it on the last column, since regardless, it would always loose from that position.
+## Where To Go From Hhere?
+I only wrote a mini connect 4 game, and I couldn't use soley MCTS to play the full game (Connect 4) without having to run many many more itterations. There is a solution to this. Use MCTS to traverse the tree normally, but have a neural network watching and learning the moves. For example, you could use QLearning. Using neural networks with MCTS is a powerful combination. This is how AlphaGo got so good. Read this [article](https://web.stanford.edu/~surag/posts/alphazero.html) to better understand how to attach a neural network to MCTS. That's all for now, thanks for reading!
 ## Code
 ### Board class
 ``` python
