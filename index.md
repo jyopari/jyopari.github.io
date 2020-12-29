@@ -1,5 +1,5 @@
 ## Scroll down to see my explanations, or learn more [about me](https://jyopari.github.io/aboutMe).
-<img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="700"/> \
+<img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="720"/> \
 `A photograph I took of a motionless jumping spider, they are very intelligent creatures`
 
 ## I try to include an implementation for each topic, enjoy!
