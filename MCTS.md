@@ -180,15 +180,13 @@ from Node import Node
 import math
 import random
 
-def ucb(node,parentNode):
+def uct(node, parentNode):
 	if(node.n == 0):
 		return(float("inf"))
-	if(parentNode == None):
-		return((float(node.w)/node.n) + math.sqrt(2)*math.sqrt((np.log(root.n))/node.n))
 	return((float(node.w)/node.n) + math.sqrt(2)*math.sqrt((np.log(parentNode.n))/node.n))
 
 
-def selection(node, l, parentNode):
+def selection(node, l):
 	l.append(node)
 	if(node.children == [-2 for _ in range(size)] or node.terminal == True):
 		return(node.terminal, node)
@@ -198,18 +196,18 @@ def selection(node, l, parentNode):
 	maxMove = 0
 	for child in range(len(node.children)):
 		if(node.children[child] != -2):
-			ucbVal = ucb(node.children[child]) 
+			uctVal = uct(node.children[child],node) 
 			if(first == False):
-				maxVal = ucbVal
+				maxVal = uctVal
 				maxChild = node.children[child]
 				maxMove = child
 				first = True
-			if(ucbVal > maxVal):
-				maxVal = ucbVal
+			if(uctVal > maxVal):
+				maxVal = uctVal
 				maxChild = node.children[child]
 				maxMove = child
 	board.move(maxMove)
-	return(selection(maxChild,l,node))
+	return(selection(maxChild,l))
 
 def play(node):
 	result = board.move(random.choice(board.availableMoves()))
@@ -242,20 +240,20 @@ def bestMove(node):
 	maxMove = 0
 	for child in range(len(node.children)):
 		if(node.children[child] != -2):
-			ucbVal = ucb(node.children[child]) 
+			val = node.children[child].w
 			if(first == False):
-				maxVal = ucbVal
+				maxVal = val
 				maxChild = node.children[child]
 				maxMove = child
 				first = True
-			if(ucbVal > maxVal):
-				maxVal = ucbVal
+			if(val > maxVal):
+				maxVal = val
 				maxChild = node.children[child]
 				maxMove = child
 	return(maxMove)
 
 
-size = 4
+size = 5
 board = Board(size,3)
 root = Node(size, False, 0)
 expansion(root)
@@ -263,7 +261,7 @@ for i in range(5000000):
 	if(i%100000 == 0):
 		print(i)
 	l = []
-	res = selection(root, l, None)
+	res = selection(root, l)
 	if(res[0] == True):
 		backprop(l, res[1].reward)  
 	else:
