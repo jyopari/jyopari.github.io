@@ -2,8 +2,6 @@
 <img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="720"/> \
 `A photograph I took of a motionless jumping spider, they are very intelligent creatures`
 
-## I try to include an implementation for each topic, enjoy!
-
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
 + [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
