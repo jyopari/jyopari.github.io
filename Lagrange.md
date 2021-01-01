@@ -1,6 +1,6 @@
 # Lagrange Multiplier
  We see maximization or minimization problems often. In most of those problems we need to find any <img src="https://render.githubusercontent.com/render/math?math=(x,y)">
- such that <img src="https://render.githubusercontent.com/render/math?math=f(x,y)"> is maxmized or minimized. However, what if <img src="https://render.githubusercontent.com/render/math?math=(x,y) \notin \mathbb{R}^2">? This is where Lagrange Multipliers come in.
+ such that <img src="https://render.githubusercontent.com/render/math?math=f(x,y)"> is maxmized or minimized. However, what if <img src="https://render.githubusercontent.com/render/math?math=(x,y)"> can't any value from <img src="https://render.githubusercontent.com/render/math?math=dom f(x,y)">? This is where Lagrange Multipliers come in.
 
 ## One Perspective
 Let's start with a problem to illustrate the inner workings of the Lagrange Multiplier. We have the functions <br />
