@@ -1,6 +1,6 @@
 # Lagrange Multiplier
- We see maximization or minimization problems often. In most of those problems we need to find any <img src="https://render.githubusercontent.com/render/math?math=(x,y)">
- such that <img src="https://render.githubusercontent.com/render/math?math=f(x,y)"> is maxmized or minimized. However, what if `(x,y)` can't any value from `dom f(x,y)`? This is where Lagrange Multipliers come in. Note, in this article, I only refer to `f` as being a funtion of two variable, but this idea is applicable for all functions <img src="https://render.githubusercontent.com/render/math?math=f:\mathbb{R}^n \rightarrow \mathbb{R}">
+ We see maximization or minimization problems often. In most of those problems we need to find any `(x,y)`
+ such that `f(x,y)` is maxmized or minimized. However, what if `(x,y)` can't any value from `dom f(x,y)`? This is where Lagrange Multipliers come in. Note, in this article, I only refer to `f` as being a funtion of two variable, but this idea is applicable for all functions <img src="https://render.githubusercontent.com/render/math?math=f:\mathbb{R}^n \rightarrow \mathbb{R}">
 
 ## One Perspective
 Let's start with a problem to illustrate the inner workings of the Lagrange Multiplier. We have the functions <br />
