@@ -22,4 +22,4 @@
 
 ## Math
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
-+ Why Is The Gradient The Steepest Direction?
++ [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
