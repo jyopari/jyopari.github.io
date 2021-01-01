@@ -19,7 +19,7 @@ In this form, its required that our constraint, <img src="https://render.githubu
 
 
 ## The Catch
-There is an edge case when Lagrage Multipler fails, and that is when 
+This method can fail for one edge case, and that's when <img src="https://render.githubusercontent.com/render/math?math=\nabla g = 0">, read this great [article](https://www.maa.org/sites/default/files/nunemacher01010325718.pdf) to get a full explanation. 
 
 ## References
 [https://en.wikipedia.org/wiki/Lagrange_multiplier](https://en.wikipedia.org/wiki/Lagrange_multiplier)
