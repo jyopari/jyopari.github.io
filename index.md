@@ -21,5 +21,5 @@
 + [Monte Carlo Tree Search w Implementation](https://jyopari.github.io/MCTS)
 
 ## Math
-+ Lagrange multiplier
++ [Lagrange multiplier](https://jyopari.github.io/Lagrange)
 + Why Is The Gradient The Steepest Direction?
