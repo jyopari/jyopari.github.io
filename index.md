@@ -8,7 +8,7 @@
 + [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
 
 ## Statistics
-+ MCMC
++ Markov chain Monte Carlo (MCMC)
   - [Metropolis Hastings  w Implementation](https://jyopari.github.io/MetropolisHastings)
   - Gibbs Sampling
 + [Gaussian Process w Implementation](https://jyopari.github.io/GaussianProcess)
