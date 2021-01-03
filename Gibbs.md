@@ -19,4 +19,11 @@ Each sample is just sampling from a 1 dimensional distribution, which can be don
 So why does this work? Observe the following steps for our 3 variable cases. The first line is a repeat of our previous example of `P(A)`, and substituting the conditional probabilities with the Gibbs sampling equations. <br />
 <img src="/Gibbs/p.png" alt="drawing" width="500"/> <br />
 This shows that the steps Gibbs uses do indeed produce the right transition probabilities to make our Markov Chain's steady state distribution equal the actual probability distribution that we are trying to sample from. 
+## Additional Notes
+There is a variation of Gibbs Sampling that I see used in LDA and other topics, called Collapsed Gibbs. As the names suggests it "A collapsed Gibbs sampler integrates out (marginalizes over) one or more variables when sampling for some other variable" ([Wikipedia](https://en.wikipedia.org/wiki/Gibbs_sampling#Collapsed_Gibbs_sampler)).
+
+## References 
+[https://en.wikipedia.org/wiki/Gibbs_sampling#Collapsed_Gibbs_sampler](https://en.wikipedia.org/wiki/Gibbs_sampling#Collapsed_Gibbs_sampler)
+[https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture18.pdf](https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture18.pdf)
+[https://en.wikipedia.org/wiki/Rejection_sampling](https://en.wikipedia.org/wiki/Rejection_sampling)
 
