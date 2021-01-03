@@ -9,8 +9,8 @@
 
 ## Statistics
 + Markov chain Monte Carlo (MCMC)
-  - [Metropolis Hastings  w Implementation](https://jyopari.github.io/MetropolisHastings)
   - [Gibbs Sampling](https://jyopari.github.io/Gibbs)
+  - [Metropolis Hastings  w Implementation](https://jyopari.github.io/MetropolisHastings)
 + [Gaussian Process w Implementation](https://jyopari.github.io/GaussianProcess)
 + [KL Divergence](https://jyopari.github.io/KL)
 + D Seperation In A Bayesian Network 
