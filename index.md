@@ -13,7 +13,7 @@
   - [Metropolis Hastings  w Implementation](https://jyopari.github.io/MetropolisHastings)
 + [Gaussian Process w Implementation](https://jyopari.github.io/GaussianProcess)
 + [KL Divergence](https://jyopari.github.io/KL)
-+ D Seperation In A Bayesian Network 
++ [D Seperation In A Bayesian Network](https://jyopari.github.io/DSeperation)
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
