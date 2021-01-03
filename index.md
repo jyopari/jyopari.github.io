@@ -1,6 +1,6 @@
 ## Hello, I'm Jyo, scroll down to see my posts, or learn more [about me](https://jyopari.github.io/aboutMe).
-<img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="720"/> \
-`A photograph I took of a motionless jumping spider, they are very intelligent creatures`
+<img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="770"/> \
+A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures
 
 ## Machine Learning
 + Transformers + Their applications (BERT / GPT, Image GPT)
