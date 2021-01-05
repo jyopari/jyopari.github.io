@@ -24,4 +24,4 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
 
 ## Misc
-+ [How Similar is _____ to _____?](https://jyopari.github.io/Similarity)
++ [Similarity](https://jyopari.github.io/Similarity)
