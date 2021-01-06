@@ -49,7 +49,9 @@ The output of the multihead is then added to the inputs (ressidual connection), 
  <img src="/Transformer/linear.png" alt="drawing" width="200"> <br /> Furthermore, once added, the updated output is then processed by [Layer Normilization](https://arxiv.org/pdf/1607.06450.pdf) which helps in stablization and training time by evening out the gradient. 
 
 ## Decoder
-The decoder is very similar compared to the encoder, but there are key differences. First, the decoder's inputs are previous outputs. 
+The decoder is very similar compared to the encoder, but there are key differences. First, the decoder's inputs are target ouputs, but since it should not look ahead, masking is introduced. Observe the following diagram. <br />
+<img src="/Transformer/mask1.png" alt="drawing" width="600"> <br />
+Here our task is english to german translation. The final encoder block's keys and values are sent to the decoder, so that it can understand the context and relation of each word with respect to other words. Since the whole target output is fed to the decoder, we need to make anything that can reveal the part the decoder hasn't outputed yet. This is done by setting the softmax of any "future" word to any other word to 0. 
 
 
 ## References 
@@ -57,3 +59,4 @@ The decoder is very similar compared to the encoder, but there are key differenc
 [http://jalammar.github.io/illustrated-transformer/](http://jalammar.github.io/illustrated-transformer/)
 [https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)](https://en.wikipedia.org/wiki/Transformer_(machine_learning_model))
 [https://arxiv.org/pdf/1607.06450.pdf](https://arxiv.org/pdf/1607.06450.pdf)
+[https://www.youtube.com/watch?v=5vcj8kSwBCY&t=832s](https://www.youtube.com/watch?v=5vcj8kSwBCY&t=832s)
