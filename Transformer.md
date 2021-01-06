@@ -50,7 +50,7 @@ The output of the multihead is then added to the inputs (residual connection), a
 
 ## Decoder
 The decoder is very similar compared to the encoder, but there are key differences. First, the decoder's inputs are target outputs, but since it should not look ahead, masking is introduced. Observe the following diagram. <br />
-<img src="/Transformer/mask1.png" alt="drawing" width="600"> <br />
+<img src="/Transformer/mask1.png" alt="drawing" width="700"> <br />
 Here our task is english to german translation. The final encoder block's keys and values are sent to the decoder, so that it can understand the context and relation of each word with respect to other words. Since the whole target output is fed to the decoder, we need to make anything that can reveal the part the decoder hasnt outputed yet. This is done by setting the softmax of any "future" word to any other word to 0. 
 
 
