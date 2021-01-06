@@ -3,7 +3,7 @@
 A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures
 
 ## Machine Learning
-+ Transformers + Their applications (BERT / GPT, Image GPT)
++ [Transformer](https://jyopari.github.io/Transformer)
 + [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
 
 ## Statistics
