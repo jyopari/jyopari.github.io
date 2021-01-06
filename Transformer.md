@@ -23,7 +23,8 @@ For Transformers, residual connections add the input vector to the output which 
   <img src="/Transformer/attention1.png" alt="drawing" width="200">
   <figcaption> Scaled Dot-Product Attention (<a href="https://arxiv.org/pdf/1706.03762.pdf">source</a>)</figcaption>
 </figure> <br /> <br />
-The diagram above is equvialent to the following equation, where `A` is the attention function for the three matricies, 
+
+The diagram above is equvialent to the following equation, `A` is the attention function for the three matricies, 
 `Q`, `V`, `K`. Dot Product attention is core to transformers, its what allows for an efficient method of constructing connections. <br />
 <img src="/Transformer/attentionEq.png" alt="drawing" width="200"> <br />
 If we only had three input words, then `Q`, `V`, `K` would look like the following. <br />
@@ -38,13 +39,20 @@ I randomly draw the connection strength, but you get the idea of how weighed the
   <img src="/Transformer/multihead1.png" alt="drawing" width="200">
   <figcaption> Multiple Heads (<a href="https://arxiv.org/pdf/1706.03762.pdf">source</a>)</figcaption>
 </figure> <br /> <br />
-Since each head only words with one set of `Q`,`K`,`V`, then one head can't go too spefic in how it wants to build connections between words. This is why the transofmer has multiple heads, spefically the orinal paper used 8 
+Since each head only words with one set of `Q`,`K`,`V`, then one head can't go too spefic in how it wants to build connections between words. This is why the transofmer has multiple heads, spefically the original paper used 8 heads, which means that for each head the attention module could see how each word relates to other words in 8 different ways. This allows the model to capture deeper symantic meaning, and it really useful in higher level heads, where instead of just single words as in the first layer heads, the higher level heads look at relationships between collections of words. I made a illustration below to translate the diagram above. <br />
+<img src="/Transformer/multiHead.png" alt="drawing" width="700"> <br />
+The parameters, `WQ_i`,`WK_i`,`WV_i`, `W0` are unquie for each block / layer. 
 
+## The Rest Of Each Block/Stack
+The output of the multihead is then added to the inputs (ressidual connection), and then sent a shallow neural network, which is unique for each block / layer. <br />
+ <img src="/Transformer/linear.png" alt="drawing" width="200"> <br /> Furthermore, once added, the updated output is then processed by [Layer Normilization](https://arxiv.org/pdf/1607.06450.pdf) which helps in stablization and training time by evening out the gradient. 
 
 ## Decoder
-
+The decoder is very similar compared to the encoder, but there are key differences. First, the decoder's inputs are previous outputs. 
 
 
 ## References 
 [https://arxiv.org/pdf/1706.03762.pdf](https://arxiv.org/pdf/1706.03762.pdf) <br />
 [http://jalammar.github.io/illustrated-transformer/](http://jalammar.github.io/illustrated-transformer/)
+[https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)](https://en.wikipedia.org/wiki/Transformer_(machine_learning_model))
+[https://arxiv.org/pdf/1607.06450.pdf](https://arxiv.org/pdf/1607.06450.pdf)
