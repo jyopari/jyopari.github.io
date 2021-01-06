@@ -24,7 +24,7 @@ For Transformers, residual connections add the input vector to the output which 
   <figcaption> Scaled Dot-Product Attention (<a href="https://arxiv.org/pdf/1706.03762.pdf">source</a>)</figcaption>
 </figure> <br /> <br />
 The diagram above is equvialent to the following equation, where `A` is the attention function for the three matricies, 
-`Q`, `V`, 'K'. Dot Product attention is core to transformers, its what allows for an efficient method of constructing connections. <br />
+`Q`, `V`, `K`. Dot Product attention is core to transformers, its what allows for an efficient method of constructing connections. <br />
 <img src="/Transformer/attentionEq.png" alt="drawing" width="200"> <br />
 If we only had three input words, then `Q`, `V`, `K` would look like the following. <br />
 <img src="/Transformer/explan.png" alt="drawing" width="400"> <br />
