@@ -56,9 +56,9 @@ Here our task is english to german translation. The final encoder block's keys a
 
 ## References 
 [https://arxiv.org/pdf/1706.03762.pdf](https://arxiv.org/pdf/1706.03762.pdf) <br />
-[http://jalammar.github.io/illustrated-transformer/](http://jalammar.github.io/illustrated-transformer/)
-[https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)](https://en.wikipedia.org/wiki/Transformer_(machine_learning_model))
-[https://arxiv.org/pdf/1607.06450.pdf](https://arxiv.org/pdf/1607.06450.pdf)
+[http://jalammar.github.io/illustrated-transformer/](http://jalammar.github.io/illustrated-transformer/) <br />
+[https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)](https://en.wikipedia.org/wiki/Transformer_(machine_learning_model))<br />
+[https://arxiv.org/pdf/1607.06450.pdf](https://arxiv.org/pdf/1607.06450.pdf)<br />
 [https://www.youtube.com/watch?v=5vcj8kSwBCY&t=832s](https://www.youtube.com/watch?v=5vcj8kSwBCY&t=832s)
 
 
