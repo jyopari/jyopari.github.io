@@ -46,7 +46,7 @@ The parameters, `WQ_i`,`WK_i`,`WV_i`, `W0` are unique for each block / layer.
 
 ## The Rest Of Each Block/Stack
 The output of the multihead is then added to the inputs (residual connection), and then sent a shallow neural network, which is unique for each block / layer. <br />
- <img src="/Transformer/linear.png" alt="drawing" width="200"> <br /> Furthermore, once added, the updated output is then processed by [Layer Normilization](https://arxiv.org/pdf/1607.06450.pdf) which helps in stabilization and training time by evening out the gradient. 
+ <img src="/Transformer/linear.png" alt="drawing" width="300"> <br /> Furthermore, once added, the updated output is then processed by [Layer Normilization](https://arxiv.org/pdf/1607.06450.pdf) which helps in stabilization and training time by evening out the gradient. 
 
 ## Decoder
 The decoder is very similar compared to the encoder, but there are key differences. First, the decoder's inputs are target outputs, but since it should not look ahead, masking is introduced. Observe the following diagram. <br />
