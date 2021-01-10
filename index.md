@@ -16,7 +16,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
-+ Policy Gradients 
++ [Policy Gradients](https://jyopari.github.io/Policy)
 + [Monte Carlo Tree Search w Implementation](https://jyopari.github.io/MCTS)
 
 ## Math
