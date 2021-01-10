@@ -101,7 +101,7 @@ class VAE(nn.Module):
 		sigma = self.eSigma(x)
 		return((mu,sigma))
 
-	# From Documentation
+	# From https://github.com/pytorch/examples/blob/master/vae/main.py
 	def reparameterize(self,mu,sigma):
 		std = torch.exp(0.5*sigma)
 		eps = torch.randn_like(std)
@@ -127,7 +127,8 @@ class VAE(nn.Module):
 		z = self.reparameterize(mu,sigma)
 		x_gen = self.decode(z)
 		return((x_gen,mu,sigma))
-
+		
+From https://github.com/pytorch/examples/blob/master/vae/main.py
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(x, x_gen, mu, sigma):
 	#print(x.shape)
