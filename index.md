@@ -17,6 +17,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
 + [Policy Gradients](https://jyopari.github.io/Policy)
++ PPO
 + [Monte Carlo Tree Search w Implementation](https://jyopari.github.io/MCTS)
 
 ## Math
@@ -24,4 +25,4 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
 
 ## Misc
-+ [Similarity](https://jyopari.github.io/Similarity)
++ [Similarity (Draft)](https://jyopari.github.io/Similarity)
