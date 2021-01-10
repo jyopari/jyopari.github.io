@@ -42,6 +42,178 @@ I made my network output `μ` and `σ` for the action. Since CartPole-v1 only ta
 The average number of iterations the pole could be balanced was `14.13`. After 2180 episodes, the network hit its peak, which is shown by the following video. <br />
 <img src="/Policy/episode2180.gif" alt="drawing" width="400"/> <br />
 Its average time balanced was `34.41`. Therefore there is a clear improvement, however, an actual good score should be around 100+. But we do see the policy pick up some back and forth skills. I should have made my reward discounted, and maybe played around with some hyperparameters, maybe you could modify the code and send me the results :)
+### Code
+Policy Training
+``` python
+import numpy as np
+import gym
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from time import sleep
+from torch.distributions import MultivariateNormal
+
+class Policy(nn.Module):
+	def __init__(self,stateSize):
+		super(Policy, self).__init__()
+		self.f1 = nn.Linear(stateSize,8)
+		self.f2 = nn.Linear(8,4)
+		self.f3 = nn.Linear(4,2)
+		self.mu = nn.Linear(2,1)
+		self.std = nn.Linear(2,1)
+
+	def genParameters(self,s):
+		x = torch.tanh(self.f1(s))
+		x = torch.tanh(self.f2(x))
+		x = torch.tanh(self.f3(x))
+		mu = torch.tanh(self.mu(x))
+		std = torch.sigmoid(self.std(x)).view(1,-1)
+		return(mu,std)
+
+	def logPrb(self,a,mu,std):
+		dist = MultivariateNormal(mu,std)
+		return(dist.log_prob(a))
+
+	def sampleAction(self,s):
+		mu,std = self.genParameters(s)
+		dist = MultivariateNormal(mu,std)
+		return(dist.sample())
+
+	def forward(self,a,s):
+		mu,std = self.genParameters(s)
+		return(self.logPrb(a,mu,std))
+
+def rollouts(n):
+	rewards = []
+	baseline = 0
+	stateActionPairs = []
+	for itter in range(n):
+		obs = env.reset()
+		currPair = []
+		currReward = 0
+		done = False
+		while not done:
+		
+			action = policy.sampleAction((torch.from_numpy(obs).float().to(device))).item()
+			if(action >.5):
+				action = 1
+			else:
+				action = 0
+			obs, reward, done, info = env.step(action) 
+			currReward += reward
+			currPair.append((obs,action))
+		rewards.append(currReward)
+		baseline += currReward
+		stateActionPairs.append(currPair)
+		done = False
+	return(stateActionPairs, rewards, baseline/float(n))
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+policy = Policy(4)
+policy.to(device)
+env = gym.make("CartPole-v1")
+
+n = 200
+numEpisodes = 3000
+PATH = 'cartPole_checkpoints/'
+optimizer = optim.Adam(policy.parameters(), lr=1e-3)
+
+for episode in range(numEpisodes):
+	stateActionPairs,rewards,baseline = rollouts(n)
+	optimizer.zero_grad()
+	loss = 0
+	for i in range(n):
+		reward = rewards[i]
+		for j in range(len(stateActionPairs[i])):
+			action = torch.tensor(([stateActionPairs[i][j][1]])).float().to(device)
+			state = torch.from_numpy(stateActionPairs[i][j][0]).float().to(device)
+			loss += -1*(reward-baseline)*policy(action,state)
+	loss = loss/float(n)
+	loss.backward()
+	optimizer.step()
+
+	print(episode,baseline)
+
+	if(episode%10 == 0):
+		torch.save(policy.state_dict(), PATH+str(episode)+".pt")
+
+
+print('Finished Training')
+
+```
+Running the policy
+``` python
+import numpy as np
+import gym
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from time import sleep
+from torch.distributions import MultivariateNormal
+
+class Policy(nn.Module):
+	def __init__(self,stateSize):
+		super(Policy, self).__init__()
+		self.f1 = nn.Linear(stateSize,8)
+		self.f2 = nn.Linear(8,4)
+		self.f3 = nn.Linear(4,2)
+		self.mu = nn.Linear(2,1)
+		self.std = nn.Linear(2,1)
+
+	def genParameters(self,s):
+		x = torch.tanh(self.f1(s))
+		x = torch.tanh(self.f2(x))
+		x = torch.tanh(self.f3(x))
+		mu = torch.tanh(self.mu(x))
+		std = torch.sigmoid(self.std(x)).view(1,-1)
+		return(mu,std)
+
+	def logPrb(self,a,mu,std):
+		dist = MultivariateNormal(mu,std)
+		return(dist.log_prob(a))
+
+	def sampleAction(self,s):
+		mu,std = self.genParameters(s)
+		dist = MultivariateNormal(mu,std)
+		return(dist.sample())
+
+	def forward(self,a,s):
+		mu,std = self.genParameters(s)
+		return(self.logPrb(a,mu,std))
+
+policy = Policy(4)
+policy.load_state_dict(torch.load("cartPole_checkpoints/2180.pt"))
+#policy.load_state_dict(torch.load("cartPole_checkpoints/10.pt"))
+policy.eval()
+
+env = gym.make("CartPole-v1")
+obs = env.reset()
+done = False
+average = 0
+n = 100
+for i in range(n):
+	rewards = 0
+	done = False
+	while not done:
+		action = policy.sampleAction((torch.from_numpy(obs).float())).item()
+		if(action >.5):
+			action = 1
+		else:
+			action = 0
+		obs, reward, done, info = env.step(action)
+		rewards += reward
+		env.render()
+		sleep(.03)
+	print(rewards)
+	average += rewards
+	done = False
+	obs = env.reset()
+
+print("average:",average/n)
+```
+
 
 ## References
 [Deep RL Bootcamp Lecture 4A: Policy Gradients](https://www.youtube.com/watch?v=S_gwYj1Q-44&t=0s) <br />
