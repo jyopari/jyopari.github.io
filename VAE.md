@@ -128,7 +128,7 @@ class VAE(nn.Module):
 		x_gen = self.decode(z)
 		return((x_gen,mu,sigma))
 		
-From https://github.com/pytorch/examples/blob/master/vae/main.py
+# From https://github.com/pytorch/examples/blob/master/vae/main.py
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(x, x_gen, mu, sigma):
 	#print(x.shape)
