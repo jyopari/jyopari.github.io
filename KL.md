@@ -22,7 +22,7 @@ So let's take the one on the left distribution, it is saying that each fish is e
 
 ## Huffman Coding
 <img src="/KL/huffman.png" alt="drawing" width="700"/> <br />
-Huffman Coding creates a graph based on a distribution, where the expected value of the path is minimized. In this case, since we are working with bits, we will have a binary tree, and using LINK, we can generate the Huffman Coding for each distribution. Notice that for the uniform distribution, the one on the left, the tree is full at each level, this should make sense since we needed 2 bits for each event. However, for the distribution on the right, the purple fish is very likley, so you would want to minimize the number of edges needed, which is the number of bits. Thus we at the top of the tree, with one branch. 
+Huffman Coding creates a graph based on a distribution, where the expected value of the path is minimized. In this case, since we are working with bits, we will have a binary tree, and using an online [Huffman Coding calculator](https://planetcalc.com/2481/), we can generate the Huffman Coding for each distribution. Notice that for the uniform distribution, the one on the left, the tree is full at each level, this should make sense since we needed 2 bits for each event. However, for the distribution on the right, the purple fish is very likley, so you would want to minimize the number of edges needed, which is the number of bits. Thus we at the top of the tree, with one branch. 
 
 ## KL Divergence
 I think the best way to convey KL Divergence, is to provide a modification to our original scenario. Shown in the image below, our friend now has two fishing locations, one on each end of the island, and each is cast to a different depth in the ocean. <br />
