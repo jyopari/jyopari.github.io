@@ -22,4 +22,4 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 ## Math
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
-+ [Napoleon Triangle]()
++ [Napoleon's Theorem](https://jyopari.github.io/NapoleonTriangle)
