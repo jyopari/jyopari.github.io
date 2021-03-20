@@ -35,6 +35,10 @@ That's it! To get an intuitive sense how what `f` means, take a look at the foll
 <img src="/circPrb/final.png" alt="drawing" width="270"/> 
 <br />
  `f` pushes the uniform samples up so that they match the desired distribution. 
+ Using this method we obtain the following samples.
+<br /> 
+<img src="/circPrb/good.png" alt="drawing" width="350"/> 
+<br />
 ## Code
 ```python
 import matplotlib.pyplot as plt
