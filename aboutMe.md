@@ -1,5 +1,5 @@
 ## Hello!
-I am Jyo Pari, an undergraduate student studying Math + CS at NYU. In my free time I like catching (and releasing) insects, folding origami, and racing (virtually).
+I am Jyo Pari, an undergraduate student studying Math + CS at NYU. In my free time I like catching (and releasing) insects, folding origami, and racing (virtually). Currently advised by [Dr.Pinto](https://lerrelpinto.com)
 
 
 ## Publications 
