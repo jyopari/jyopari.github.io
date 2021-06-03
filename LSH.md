@@ -23,7 +23,7 @@ However, there still is an issue with this. If we create many boundary lines, th
 <br />
 <img src="/LSH/Screen Shot 2021-06-03 at 12.58.23 AM.png" alt="drawing" width="250"/>
 <br />
-Clearly we aren't discretizes the space in an accurate manner. Logically we need to make these boundary lines more "random", where they don't have to cross the origin. To achieve this, we need to shift the boundary line after the transformation. Thus we obtain the following equation. 
+Clearly we aren't discretizing the space in an accurate manner. Logically we need to make these boundary lines more "random", where they don't have to cross the origin. To achieve this, we need to shift the boundary line after the transformation. Thus we obtain the following equation. 
 <br />
 <img src="/LSH/divShift.png" alt="drawing" width="250"/>
 <br />
