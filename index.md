@@ -24,3 +24,6 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
 + [Napoleon's Theorem](https://jyopari.github.io/NapoleonTriangle)
+
+## Misc
++ [Locality Sensitive Hashing](https://jyopari.github.io/LSH)
