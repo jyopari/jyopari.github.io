@@ -26,4 +26,4 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Napoleon's Theorem](https://jyopari.github.io/NapoleonTriangle)
 
 ## Misc
-+ [Locality Sensitive Hashing](https://jyopari.github.io/LSH)
++ [Locality Sensitive Hashing w Implementation](https://jyopari.github.io/LSH)
