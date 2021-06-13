@@ -29,15 +29,16 @@ It does this by assigning every set a vertex (0 simplex). If `n` sets have a non
 #### Utlizing the Čech complex
 If we have an open [cover](https://en.wikipedia.org/wiki/Cover_(topology)) of a set `S` we have open sets such that their union contains `S`. We conflate open covers with Čech complex, and produce a simplicial complex that resembles the original `S`. For example imagine `S` is the letter 'J'. I have drawn two covers, and their corresponding Čech complex. Hopefully you can tell which one is a better representation (it's the one on the right).
 <br />
- <img src="/umap/opencover.png" alt="drawing" width="450">
+ <img src="/umap/opencover.png" alt="drawing" width="400">
 <br />
 It appears that having uniform sets covering `S` produces a better representation of `S`. We will discuss more about this soon.  
 #### Nerve Theorem
 [Nerve Theorem](https://en.wikipedia.org/wiki/Nerve_of_a_covering) formally describes the afrementioned idea. In simple terms, if our covering of `S` is good, we can get a simplicial complex that is homotopy-equivalent to `S`. That should be pretty intuitive, other than the homotopy-equvilent, which means by "bending, shrinking and expanding" you can go from `S` to the simplicial complex and vice versa - [Wikipedia](https://en.wikipedia.org/wiki/Homotopy#Homotopy_equivalence).
 <br />
- <img src="/umap/equal.png" alt="drawing" width="450">
+ <img src="/umap/equal.png" alt="drawing" width="400">
 <br />
 ## The Core of UMAP 
+### Local Metrics
 Before I mentioned that having uniform points makes it easier to produce a good simplicial complex. However, real world data is not uniform. UMAP solves this problem by utilizing ideas from [Riemannian manifolds](https://en.wikipedia.org/wiki/Riemannian_manifold). Reinnman manifolds can be squished, stretched, and contorted in varying places from a perspective outside of the manifold. For example in some part of a manifold 2D `M` say the local metric is defined such that moving 1 unit north locally will actually take you 2 units from a global perspective, and in another part moving 1 unit north could take you to .5 units north east globally, it all depends on how the manifold is locally defined. Similary, a local metric is how distance is defined. To have a visual, look at two possible covers for the topological space. 
 <br />
  <img src="/umap/radius.png" alt="drawing" width="450">
@@ -48,10 +49,19 @@ As with the 'J' example the on right is clearly better. But imagine we only have
 <br />
 Furthermore, the authors view edge weights as a probabilty. Below are the equations needed to define the local metric and consequtnyl the edge weight. Note that the edges are direted (from x<sub>i</sub> to x<sub>j</sub>). 
 <br />
- <img src="/umap/eq1.png" alt="drawing" width="450">
+ <img src="/umap/eq1.png" alt="drawing" width="670">
 <br />
-
-## Graph Embedding
+p<sub>i</sub> is the distance to the cloeset point and σ<sub>i</sub> is a normalizing factor. Hopefully through these equations you can see how based on the neighboring distances, we define a local metric and conceptually, shrink/expand space. The local metric is defined by p<sub>i</sub>, and σ<sub>i</sub>. 
+### Local Metric Incompatibility 
+While we can define w<sub>ij</sub>, it doesn't mean that w<sub>ij</sub> = w<sub>ji</sub>. This is becase we didn't not define how to transistion between two local metrics. Therefore, based on A's local metric, the distance from A to B will be different than the distance from B to A using B's local metric. Because the directed edge weights are can be viewed as probabilities, the authors combine w<sub>ij</sub> and w<sub>ij</sub> by the following formulas. In short they take the union of w<sub>ij</sub> and w<sub>ij</sub>. 
+<br />
+ <img src="/umap/mismatch.png" alt="drawing" width="500">
+<br />
+### Graph Embedding
+Our final problem is embedding this graph into a low dimensional space such that as much of the topology is preserved. To measure how much of the structure is caputred the authors utilze cross entropy as a loss function to measure the distance between both the high dimensional and low dimensional graph. 
+<br />
+ <img src="/umap/loss.png" alt="drawing" width="500">
+<br />
  
 ## ## Why a Simple K Nearest Neighbor Graph isn't Used
 Distribution
