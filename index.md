@@ -5,6 +5,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 ## Machine Learning
 + [Transformer](https://jyopari.github.io/Transformer)
 + [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
++ [UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction](https://jyopari.github.io/umap)
 
 ## Statistics
 + Markov chain Monte Carlo (MCMC)
