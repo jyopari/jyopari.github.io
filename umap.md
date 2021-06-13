@@ -28,3 +28,8 @@ The Čech complex takes in sets, and produces a simplicial complex based on the 
  
   
 ## References
+https://arxiv.org/pdf/1802.03426.pdf <br />
+https://www.youtube.com/watch?v=nq6iPZVUxZU&t=0s <br />
+https://umap-learn.readthedocs.io/en/latest/how_umap_works.html <br />
+https://www.youtube.com/watch?v=VPq4Ktf2zJ4 <br />
+
