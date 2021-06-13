@@ -7,12 +7,19 @@ I had a lot of fun learning about UMAP because it is a very geometric algorithm.
 Dimension reduction is a imporant technique. Being able to map your points into 2D or 3D space allows you to analyze your data and obtain benefical insights. Prior to UMAP, tsne or pca were the go to algoriths. UMAP's ability to efficently capture local structure and global structures makes it a strong if not superior contender. 
 
 ## Simplicies
-The definition of a simplex is "a k-simplex is a k-dimensional polytope which is the convex hull of its k + 1 vertices" (Wikipedia). If that is intimidating, it just means given you have `k` independent points, each vertex shares an edge with all other verticies. Then create faces, which will be of dimension `k-1`. Here is a picture containing few simplicies.   
-   
+
+The definition of a simplex is "a k-simplex is a k-dimensional polytope which is the convex hull of its k + 1 vertices" (Wikipedia). If that is intimidating, it just means given you have `k` independent points, each vertex shares an edge with all other verticies. Then create faces, which will be of dimension `k-1`. Here is a picture containing 0-simpex to 3-simplex. 
+<br />
+ <img src="/umap/simplex.png" alt="drawing" width="450">
+<br />
+
 ## Simplicial Complex
 
 The definition of a simplicial complex is: a set of simplicies, `K`, such that all faces are in the set `K`, and if there is a non empty insection between two simplicies from `K`, it must be a face which is in `K` - Wikipedia. The first part of the definition is the more defining aspect, the second part ensures you don't any weird "interactions" between simplicies (the only "interaction" they can have is sharing a face). As usual, I drew an example of a simplicial complex for you to have a mental represenation. 
-  
+<br />
+ <img src="/umap/simpComplex.png" alt="drawing" width="450">
+<br />
+
 ### Čech complex
 The Čech complex takes in sets, and produces a simplicial complex based on the intersection between sets. 
   
