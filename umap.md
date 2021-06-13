@@ -62,8 +62,12 @@ Our final problem is embedding this graph into a low dimensional space such that
 <br />
  <img src="/umap/loss.png" alt="drawing" width="500">
 <br />
- 
-## ## Why a Simple K Nearest Neighbor Graph isn't Used
+W<sub>L</sub> is a distance metric which I will explain shortly. The authors say that cross entopy loss acts like a force directed graph layout algorith, where pushing and pulling different points via their edges will manipulate the low dimensional graph into one that preserves as much of the topological structure of the high dimensional graph. To see why this works, I illustrated the following example. 
+<br />
+ <img src="/umap/embedding.png" alt="drawing" width="510">
+<br />
+I didn't draw all the edges for simplicity. Nevertheless, if you can see why e<sub>6</sub>'s vertices will be closer than e<sub>3</sub>'s, then you can apply the same logic to all points. e<sub>6</sub> will be greater than e<sub>3</sub> due to how edge weights are defined (equation 4). Therefore, looking at the green section, we know that <img src="https://render.githubusercontent.com/render/math?math=log(\frac{W_h(e_6)}{W_L(e_6)})"> will be weighted more than the blue section's <img src="https://render.githubusercontent.com/render/math?math=log(\frac{1-W_h(e_6)}{1-W_L(e_6)})">. Going to green's log, it will be minimized when W<sub>L</sub>(e<sub>6</sub>) is as large as possible, and by equation 6, that occures when the euclidian distance is small. Therefore this is the atractive force. For points with higher weights in the high dimensional graph, this attractive force is stronger than the repulsive force due to W<sub>h</sub>(e) > (1-W<sub>h</sub>(e)). The repulsive force is defined by <img src="https://render.githubusercontent.com/render/math?math=log(\frac{1-W_h(e)}{1-W_L(e)})">. So to summarive, weaker edges have a stronger rep
+## Why a Simple K Nearest Neighbor Graph isn't Used
 Distribution
 
 ## References
