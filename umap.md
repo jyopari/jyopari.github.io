@@ -68,11 +68,16 @@ W<sub>L</sub> is a distance metric which I will explain shortly. The authors say
 <br />
 I didn't draw all the edges for simplicity. Nevertheless, if you can see why e<sub>6</sub>'s vertices will be closer than e<sub>3</sub>'s, then you can apply the same logic to all points. e<sub>6</sub> will be greater than e<sub>3</sub> due to how edge weights are defined (equation 4). Therefore, looking at the green section, we know that <img src="https://render.githubusercontent.com/render/math?math=log(\frac{W_h(e_6)}{W_L(e_6)})"> will be weighted more than the blue section's <img src="https://render.githubusercontent.com/render/math?math=log(\frac{1-W_h(e_6)}{1-W_L(e_6)})">. Going to green's log, it will be minimized when W<sub>L</sub>(e<sub>6</sub>) is as large as possible, and by equation 6, that occures when the euclidian distance is small. Therefore this is the atractive force. For points with higher weights in the high dimensional graph, this attractive force is stronger than the repulsive force due to W<sub>h</sub>(e) > (1-W<sub>h</sub>(e)). The repulsive force is defined by <img src="https://render.githubusercontent.com/render/math?math=log(\frac{1-W_h(e)}{1-W_L(e)})">. So to summarive, stronger edges have a attractive force, and weaker edges have a stronger repulsive force. By gradient descent we can find the right lower dimensional graph that optimzes for this pulling and pushing act. 
 ## Why a Simple K Nearest Neighbor Graph isn't Used
-It is the (curse of dimensionality)[https://en.wikipedia.org/wiki/Curse_of_dimensionality] that makes the k nearest neighbor distances in high dimensions very similar. The following image shows how as you increase the dimensions, the distance distribution gets large and its variance decreases. There is math to show that the UMAP process streches the distribution out which is very useful.
+It is the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that makes the k nearest neighbor distances in high dimensions very similar. The following image shows how as you increase the dimensions, the distance distribution gets large and its variance decreases. 
+<br />
+ <img src="/umap/dist.png" alt="drawing" width="400">
+<br />
+There is math to show that the UMAP process streches the distribution out which is very useful.
 
 ## References
 https://arxiv.org/pdf/1802.03426.pdf <br />
 https://www.youtube.com/watch?v=nq6iPZVUxZU&t=0s <br />
 https://umap-learn.readthedocs.io/en/latest/how_umap_works.html <br />
 https://www.youtube.com/watch?v=VPq4Ktf2zJ4 <br />
+https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote02_kNN.html <br />
 
