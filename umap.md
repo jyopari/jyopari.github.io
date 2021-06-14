@@ -76,9 +76,9 @@ It is the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimen
 There is math to show that the UMAP process stretches the distribution out, which is very useful.
 
 ## References
-https://arxiv.org/pdf/1802.03426.pdf <br />
-https://www.youtube.com/watch?v=nq6iPZVUxZU&t=0s <br />
-https://umap-learn.readthedocs.io/en/latest/how_umap_works.html <br />
-https://www.youtube.com/watch?v=VPq4Ktf2zJ4 <br />
-https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote02_kNN.html <br />
+[https://arxiv.org/pdf/1802.03426.pdf](https://arxiv.org/pdf/1802.03426.pdf) <br />
+[https://www.youtube.com/watch?v=nq6iPZVUxZU&t=0s](https://www.youtube.com/watch?v=nq6iPZVUxZU&t=0s) <br />
+[https://umap-learn.readthedocs.io/en/latest/how_umap_works.html](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) <br />
+[https://www.youtube.com/watch?v=VPq4Ktf2zJ4](https://www.youtube.com/watch?v=VPq4Ktf2zJ4) <br />
+[https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote02_kNN.html](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote02_kNN.html)
 
