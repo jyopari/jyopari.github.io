@@ -54,7 +54,7 @@ We utilize the nearest neighbors and construct a graph. Furthermore, the authors
 <br />
 p<sub>i</sub> is the distance to the closest point and σ<sub>i</sub> is a normalizing factor. Hopefully through these equations you can see how based on the neighboring distances, we define a local metric and discretely shrink/expand space, and the same region can shirnk/expand in multiple ways if it is part of multiple local metrics. The local metric is defined by p<sub>i</sub>, and σ<sub>i</sub>. 
 ### Local Metric Incompatibility 
-While we can define w<sub>ij</sub>, it doesn't mean that w<sub>ij</sub> = w<sub>ji</sub>. This is because we didn't not define how to transition between two local metrics. Therefore, based on A's local metric, the distance from A to B will be different from the distance from B to A using B's local metric. Because the directed edge weights can be viewed as probabilities, the authors combine w<sub>ij</sub> and w<sub>ij</sub> by the following formulas. In short they take the union of w<sub>ij</sub> and w<sub>ij</sub>. 
+While we can define w<sub>ij</sub>, it doesn't mean that w<sub>ij</sub> = w<sub>ji</sub>. This is because we didn't not define how to transition between two local metrics. Therefore, based on A's local metric, the distance from A to B will be different from the distance from B to A using B's local metric. Because the directed edge weights can be viewed as probabilities, the authors combine w<sub>ij</sub> and w<sub>ji</sub> by the following formulas. In short they take the union of w<sub>ij</sub> and w<sub>ji</sub>. 
 <br />
  <img src="/umap/mismatch.png" alt="drawing" width="500">
 <br />
