@@ -44,7 +44,7 @@ Before I mentioned that having uniform points makes it easier to produce a good 
 <br />
  <img src="/umap/radius.png" alt="drawing" width="450">
 <br />
-As with the 'J' example the on right is clearly better. But imagine we only have the data from the left. How UMAP creates a local metric based on the nearest neighbors for each point. Just by observing the nearest neighbors in the image below we can get an idea on how to define the local metric such that a constant radius from every point will produce a good cover. 
+As with the 'J' example the on left is clearly better. But imagine we only have the data from the left. How UMAP creates a local metric based on the nearest neighbors for each point. Just by observing the nearest neighbors in the image below we can get an idea on how to define the local metric such that a constant radius from every point will produce a good cover. 
 <br />
  <img src="/umap/fuzzy.png" alt="drawing" width="450">
 <br />
