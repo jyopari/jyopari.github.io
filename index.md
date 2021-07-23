@@ -16,6 +16,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [D Seperation In A Bayesian Network](https://jyopari.github.io/DSeperation)
 + [Generate Uniform Points In A Circle](https://jyopari.github.io/randomCirc)
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
++ [Gamma distribution](https://jyopari.github.io/Gamma)
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
