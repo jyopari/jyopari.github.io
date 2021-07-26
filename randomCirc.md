@@ -7,7 +7,7 @@ then `y ~ U(-sqrt(R^2-x^2),sqrt(R^2-x^2))`. The other method was sample `θ ~ U(
 While I was dumbfounded by my mistake, I learned some very elegant math as a consequence. Let's take a look at how to actually generate uniform samples. 
 
 # Explanation
-I will go down the polar route because that is the most elegant, but if you are up to the challenge, try fixing the cartesian method and shoot me an email with your solution!  
+I will go down the polar route because that is the most elegant method. 
 First, we need to ask the question, what does it mean to generate uniform points in a circle? You should agree that given a portion of a circle, there will be a constant ratio between the probability of generating a point in that portion and the area of the portion. Now that we have a key part of our problem defined, we need to figure out why the original method is wrong. From the picture and logically, there is nothing incorrect with how we sample `θ`. However, the way we sample the radius is producing an skewed distribution. To be certain, take a look at the following image. 
 <br /> 
 <img src="/circPrb/viz.png" alt="drawing" width="200"/> 
