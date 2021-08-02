@@ -2,7 +2,7 @@
 <br />
 <img src="IMG_0391.png" alt="drawing" width="150"/> 
 <br />
-I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like playing with my two parakeets, catching (and releasing) insects, folding origami, and racing (virtually). Currently advised by [Dr.Pinto](https://lerrelpinto.com), working on a research project to improve imitation learning. 
+I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like playing with my two parakeets, catching (and releasing) insects, folding origami, and racing (virtually). Currently advised by [Dr. Pinto](https://lerrelpinto.com), working on a research project to improve imitation learning. 
 
 ## Publications 
 + [Playful Interactions for Representation Learning](https://arxiv.org/pdf/2107.09046.pdf)  *S Young, J Pari, P Abbeel, L Pinto, <br /> arXiv preprint arXiv:2107.09046*
