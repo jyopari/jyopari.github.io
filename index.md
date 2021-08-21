@@ -17,6 +17,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Generate Uniform Points In A Circle](https://jyopari.github.io/randomCirc)
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
 + [Gamma distribution](https://jyopari.github.io/Gamma)
++ [Intro to Optimal Transport]()
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
@@ -24,6 +25,7 @@ A photograph I took of a motionless jumping spider, they are very [intelligent](
 + [Monte Carlo Tree Search w Implementation](https://jyopari.github.io/MCTS)
 
 ## Math
++ [Johnson–Lindenstrauss lemma]()
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
 + [Napoleon's Theorem](https://jyopari.github.io/NapoleonTriangle)
