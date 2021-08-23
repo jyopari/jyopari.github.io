@@ -1,4 +1,6 @@
-## Hello, I'm Jyo! Scroll down, or learn more [about me](https://jyopari.github.io/aboutMe).
+## Hello, I'm Jyo! 
+### [about](https://jyopari.github.io/aboutMe)
+<br></br>
 <img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="650"/> \
 A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures
 
