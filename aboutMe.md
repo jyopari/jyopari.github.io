@@ -7,7 +7,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
 ## Publications 
 + Playful Interactions for Representation Learning \
   Sarah Young, **Jyothish Pari**, Pieter Abbeel, Lerrel Pinto \
-  Physical Reasoning Workshop Neurips (**ORAL**) \
+  [Physical Reasoning Workshop](https://physical-reasoning.github.io/) Neurips (**ORAL**) \
   [[Arxiv]](https://arxiv.org/abs/2107.09046) [[Website]](https://sarahisyoung.github.io/play.html)
   </br>
 + A Semi-Automated Computational Approach for Infrared Dark Cloud Localization \
