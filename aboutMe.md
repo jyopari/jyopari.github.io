@@ -9,7 +9,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
   Sarah Young, **Jyothish Pari**, Pieter Abbeel, Lerrel Pinto \
   [Physical Reasoning Workshop](https://physical-reasoning.github.io/) Neurips (**ORAL**) \
   [[Arxiv]](https://arxiv.org/abs/2107.09046) [[Website]](https://sarahisyoung.github.io/play.html)
-  </br>
+\
 + A Semi-Automated Computational Approach for Infrared Dark Cloud Localization \
   **Jyothish Pari**, Joseph L. Hora \
   *Publications of the Astronomical Society of the Pacific 132 (1011), 054301* \
