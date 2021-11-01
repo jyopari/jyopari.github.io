@@ -1,7 +1,7 @@
 ## Hello, I'm Jyo! 
 ### [about](https://jyopari.github.io/aboutMe)
 <img src="https://pbs.twimg.com/media/EbXgy3nX0AASpL2?format=jpg&name=large" alt="drawing" width="650"/> \
-A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures
+(Left) A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures. (Right) My two parakeets. 
 
 ## Machine Learning
 + [Transformer](https://jyopari.github.io/Transformer)
