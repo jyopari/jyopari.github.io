@@ -19,6 +19,7 @@
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
 + [Gamma distribution](https://jyopari.github.io/Gamma)
 + [Intro to Optimal Transport]()
++ [Langevin Dynamics]()
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
