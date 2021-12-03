@@ -6,7 +6,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
 
 ## Publications 
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
-  **Jyothish Pari**, Nur Muhammad (Mahi) Shafiullah, Sridhar Pandian Arunachalam, Lerrel Pinto \ 
+  **Jyothish Pari**, Nur Muhammad (Mahi) Shafiullah, Sridhar Pandian Arunachalam, Lerrel Pinto \
     Preprint \
     [[Arxiv]](https://arxiv.org/abs/2112.01511) [[Website]](https://jyopari.github.io/VINN/) [[Code]](https://github.com/jyopari/VINN/tree/main)
 + Playful Interactions for Representation Learning \
