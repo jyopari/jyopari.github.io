@@ -18,6 +18,7 @@
 + [Generate Uniform Points In A Circle](https://jyopari.github.io/randomCirc)
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
 + [Gamma distribution](https://jyopari.github.io/Gamma)
++ [Reservoir Sampling](https://jyopari.github.io/reservoir)
 + [Intro to Optimal Transport]()
 + [Langevin Dynamics]()
 
