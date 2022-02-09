@@ -19,8 +19,8 @@
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
 + [Gamma distribution](https://jyopari.github.io/Gamma)
 + [Reservoir Sampling](https://jyopari.github.io/reservoir)
-+ [Intro to Optimal Transport]()
-+ [Langevin Dynamics]()
++ [Intro to Optimal Transport TODO ]()
++ [Langevin Dynamics TODO]()
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
@@ -28,7 +28,7 @@
 + [Monte Carlo Tree Search w Implementation](https://jyopari.github.io/MCTS)
 
 ## Math
-+ [Johnson–Lindenstrauss lemma]()
++ [Johnson–Lindenstrauss lemma TODO]()
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
 + [Napoleon's Theorem](https://jyopari.github.io/NapoleonTriangle)
