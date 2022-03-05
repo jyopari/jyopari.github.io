@@ -2,7 +2,7 @@
 <br />
 <img src="profile.png" alt="drawing" width="250"/> 
 <br />
-I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like playing with my two parakeets, catching (and releasing) insects, folding origami, and racing (virtually). Currently a research assistant at [CILVR NYU](https://wp.nyu.edu/cilvr/) advised by [Dr. Pinto](https://lerrelpinto.com). 
+I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like playing with my two parakeets, catching (and releasing) insects, folding origami, and racing (virtually). Currently a research assistant working on reinforcement learning at [CILVR NYU](https://wp.nyu.edu/cilvr/) advised by [Prof. Pinto](https://lerrelpinto.com) and [Denis Yarats](https://cs.nyu.edu/~dy1042/). 
 
 ## Publications 
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
