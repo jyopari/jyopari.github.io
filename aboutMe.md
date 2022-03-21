@@ -4,7 +4,7 @@
 <br />
 I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like playing with my two parakeets, catching (and releasing) insects, folding origami, and racing (virtually). Currently a research assistant working on reinforcement learning at [CILVR NYU](https://wp.nyu.edu/cilvr/) advised by [Prof. Pinto](https://lerrelpinto.com) and [Denis Yarats](https://cs.nyu.edu/~dy1042/). 
 
-## Publications 
+## Publications [Google](https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en) / [Semantic](https://www.semanticscholar.org/author/1518270974) Scholar
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
   **Jyothish Pari***, Nur Muhammad (Mahi) Shafiullah*, Sridhar Pandian Arunachalam, Lerrel Pinto \
     Preprint \
