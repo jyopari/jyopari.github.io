@@ -7,7 +7,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
 ## Publications [Google](https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en) / [Semantic](https://www.semanticscholar.org/author/1518270974) Scholar
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
   **Jyothish Pari***, Nur Muhammad (Mahi) Shafiullah*, Sridhar Pandian Arunachalam, Lerrel Pinto \
-    RSS 2020, RLDM 2022 \
+    RSS 2022, RLDM 2022 \
     [[Arxiv]](https://arxiv.org/abs/2112.01511) [[Website]](https://jyopari.github.io/VINN/) [[Code]](https://github.com/jyopari/VINN/tree/main)
 + Playful Interactions for Representation Learning \
   Sarah Young, **Jyothish Pari**, Pieter Abbeel, Lerrel Pinto \
