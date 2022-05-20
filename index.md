@@ -21,6 +21,7 @@
 + [Reservoir Sampling](https://jyopari.github.io/reservoir)
 + [Intro to Optimal Transport TODO ]()
 + [Langevin Dynamics TODO]()
++ [Thompson's Sampling](https://jyopari.github.io/thompson.html)
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
