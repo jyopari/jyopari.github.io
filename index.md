@@ -1,4 +1,5 @@
 ## Hello, I'm Jyo! 
+Explaining Interesting Ideas
 ### [about me](https://jyopari.github.io/aboutMe)
 <img src="imgonline-com-ua-twotoone-McqeirtoVx.jpg" alt="drawing" width="850"/> \
 (Left) A photograph I took of a motionless jumping spider, they are very [intelligent](https://www.nationalgeographic.com/news/2016/01/160121-jumping-spiders-animals-science/) creatures. (Right) My two parakeets. 
