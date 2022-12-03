@@ -11,7 +11,7 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 + [(RL) How can you guide exploration](https://jyopari.github.io/guided_exploration)
 
 ## Machine Learning
-+ [Diffusion](https://jyopari.github.io/Diffusion.md)
++ [Diffusion](https://jyopari.github.io/Diffusion)
 + [Transformer](https://jyopari.github.io/Transformer)
 + [Variational Autoencoders w Implementation](https://jyopari.github.io/VAE)
 + [UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction](https://jyopari.github.io/umap)
