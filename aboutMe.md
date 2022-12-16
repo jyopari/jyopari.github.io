@@ -19,7 +19,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
   G. Zhou*, V. Dean*, M. Srirama, A. Rajeswaran, **J. Pari**, K. Hatch, A. Jain, T. Yu, P. Abbeel, L. Pinto, C. Finn,
 A. Gupta \
   In submission to ICRA 2023\
-  Workshops: NeurIPS 2022 DeepRL, CoRL 2022 PRL (**Spotlight**), NeurIPS 2022 WBRC (**Oral**), NeurIPS 2022 Offline RL  \
+  Workshops: NeurIPS 2022 DeepRL, CoRL 2022 PRL (**Spotlight**), NeurIPS 2022 WBRC (**Best Paper Award**), NeurIPS 2022 Offline RL  \
   [[PDF]](https://openreview.net/pdf?id=VMspd1RnI_0) [[Website]](https://vdean.github.io/toto-benchmark.html) [[Code]](https://github.com/AGI-Labs/toto_benchmark/tree/release)
 + A Semi-Automated Computational Approach for Infrared Dark Cloud Localization \
   **Jyothish Pari**, Joseph L. Hora \
