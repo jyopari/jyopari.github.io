@@ -1,7 +1,6 @@
-## Hello!
-                                                    [[Back to GitHub Page]](https://jyopari.github.io/index)
+## [Hello!](https://jyopari.github.io/index)
 <br />
-<img src="jyoProfile4.jpg" alt="drawing" width="250"/> 
+<img src="jyoProfile4.jpg" alt="drawing" width="250"/>
 <br />
 I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math at NYU. In my free time I like biking, learning math, catching (and releasing) insects, folding origami, and racing (virtually). Currently a research assistant working on the intersection of representation learning, reinforcement learning, and imitation learning at [CILVR NYU](https://wp.nyu.edu/cilvr/) advised by [Prof. Pinto](https://lerrelpinto.com). 
 
