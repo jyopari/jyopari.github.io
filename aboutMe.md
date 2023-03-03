@@ -7,6 +7,10 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
 ## [Google](https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en) / [Semantic](https://www.semanticscholar.org/author/1518270974) Scholar. 
 
 ## Publications / Preprints 
++ Teach a Robot to FISH: Versatile Imitation from One Minute of Demonstrations \
+ **Siddhant Haldar**, **Jyothish Pari**, Anant Rai, Lerrel Pinto \
+   Preprint \
+   [[Arxiv]](https://arxiv.org/abs/2303.01497) [[Website]](https://fast-imitation.github.io/) [[Code]](https://github.com/siddhanthaldar/FISH) 
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
   **Jyothish Pari***, Nur Muhammad (Mahi) Shafiullah*, Sridhar Pandian Arunachalam, Lerrel Pinto \
     RSS 2022\
