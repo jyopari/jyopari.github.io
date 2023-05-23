@@ -31,7 +31,7 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 + [Intro to Optimal Transport TODO ]()
 + [Langevin Dynamics TODO]()
 + [Thompson's Sampling](https://jyopari.github.io/thompson.html)
-+ [Importance Sampling](https://jyopari.github.io//Importance Sampling 2ddd14505c7348d88c7bb8e2a0f0a367.html)
++ [Importance Sampling](https://jyopari.github.io//ImportanceSampling.html)
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
