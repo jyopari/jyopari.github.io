@@ -28,10 +28,10 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 + [Exponential distribution](https://jyopari.github.io/exponentialDist)
 + [Gamma distribution](https://jyopari.github.io/Gamma)
 + [Reservoir Sampling](https://jyopari.github.io/reservoir)
-+ [Intro to Optimal Transport TODO ]()
++ [Discrete Optimal Transport](https://jyopari.github.io/DiscreteOT.html)
 + [Langevin Dynamics TODO]()
 + [Thompson's Sampling](https://jyopari.github.io/thompson.html)
-+ [Importance Sampling](https://jyopari.github.io//ImportanceSampling.html)
++ [Importance Sampling](https://jyopari.github.io/ImportanceSampling.html)
 
 ## Reinforcement Learning
 + [QLearning w Implementation](https://jyopari.github.io/QLearning) 
