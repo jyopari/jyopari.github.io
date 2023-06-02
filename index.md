@@ -29,6 +29,7 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 + [Gamma distribution](https://jyopari.github.io/Gamma)
 + [Reservoir Sampling](https://jyopari.github.io/reservoir)
 + [Discrete Optimal Transport](https://jyopari.github.io/DiscreteOT.html)
++ [Wasserstein Distances](https://jyopari.github.io/Wasserstein.html)
 + [Langevin Dynamics TODO]()
 + [Thompson's Sampling](https://jyopari.github.io/thompson.html)
 + [Importance Sampling](https://jyopari.github.io/ImportanceSampling.html)
