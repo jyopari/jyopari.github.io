@@ -8,11 +8,11 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
 
 ## Publications / Preprints 
 + Teach a Robot to FISH: Versatile Imitation from One Minute of Demonstrations \
- **Siddhant Haldar**, **Jyothish Pari**, Anant Rai, Lerrel Pinto \
+ Siddhant Haldar\*, **Jyothish Pari** \*, Anant Rai, Lerrel Pinto \
    Preprint \
    [[Arxiv]](https://arxiv.org/abs/2303.01497) [[Website]](https://fast-imitation.github.io/) [[Code]](https://github.com/siddhanthaldar/FISH) 
 + The Surprising Effectiveness of Representation Learning for Visual Imitation \
-  **Jyothish Pari***, Nur Muhammad (Mahi) Shafiullah*, Sridhar Pandian Arunachalam, Lerrel Pinto \
+  **Jyothish Pari** \*, Nur Muhammad (Mahi) Shafiullah \*, Sridhar Pandian Arunachalam, Lerrel Pinto \
     RSS 2022\
     [[Arxiv]](https://arxiv.org/abs/2112.01511) [[Website]](https://jyopari.github.io/VINN/) [[Code]](https://github.com/jyopari/VINN/tree/main)
 + Playful Interactions for Representation Learning \
@@ -20,7 +20,7 @@ I am Jyothish Pari, Jyo for short, an undergraduate student studying CS and Math
   IROS 2022\
   [[Arxiv]](https://arxiv.org/abs/2107.09046) [[Website]](https://sarahisyoung.github.io/play.html) 
 + Train Offline, Test Online: A Real Robot Learning Benchmark \
-  G. Zhou*, V. Dean*, M. Srirama, A. Rajeswaran, **J. Pari**, K. Hatch, A. Jain, T. Yu, P. Abbeel, L. Pinto, C. Finn,
+  G. Zhou \*, V. Dean \*, M. Srirama, A. Rajeswaran, **J. Pari**, K. Hatch, A. Jain, T. Yu, P. Abbeel, L. Pinto, C. Finn,
 A. Gupta \
   ICRA 2023\
   Workshops: NeurIPS 2022 DeepRL, CoRL 2022 PRL (**Spotlight**), NeurIPS 2022 WBRC (**Best Paper Award**), NeurIPS 2022 Offline RL  \
