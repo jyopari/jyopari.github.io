@@ -11,6 +11,7 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 + [(RL) How can you guide exploration](https://jyopari.github.io/guided_exploration)
 
 ## Machine Learning
++ [Model Merging](https://jyopari.github.io/Merging.html)
 + [Sequence Modeling / Memory](https://jyopari.github.io/seqmodeling)
 + [Gumbel Softmax](https://jyopari.github.io/gumbel.html)
 + [Diffusion](https://jyopari.github.io/Diffusion)
