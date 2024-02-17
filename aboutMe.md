@@ -2,7 +2,7 @@
 <br />
 <img src="jyoProfile4.jpg" alt="drawing" width="250"/>
 <br />
-I am Jyothish Pari, Jyo for short, an first year PhD student at MIT EECS. In my free time I like biking, learning math, catching (and releasing) insects, folding origami, and racing (virtually). Currently I am working on the Deep Learning architecture research and optimization with my advisor [Pulkit Agrawal](https://people.csail.mit.edu/pulkitag/). Previsouly at NYU, I worked with [Lerrel Pinto](https://www.lerrelpinto.com/) on robot learning. 
+I am Jyothish Pari, Jyo for short, an first year PhD student at MIT EECS. In my free time I like biking, learning math, catching (and releasing) insects, folding origami, and racing (virtually). Currently I am working on the Deep Learning architecture research and optimization with my advisor [Pulkit Agrawal](https://people.csail.mit.edu/pulkitag/). Previously at NYU, I worked with [Lerrel Pinto](https://www.lerrelpinto.com/) on robot learning. 
 
 ## [Google Scholar](https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en) 
 
