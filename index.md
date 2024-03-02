@@ -6,6 +6,7 @@ Explaining Interesting Ideas
 ## Paper TLDRs
 + [Discovering faster matrix multiplication
 algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Matmul%20algo.pdf)
++ [Fractal Patterns May Unravel the Intelligence in Next-Token Prediction](https://jyopari.github.io/FractalLLMs.html)
 
 ## Projects 
 + [(RL) How can you guide exploration](https://jyopari.github.io/guided_exploration)
