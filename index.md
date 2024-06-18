@@ -45,6 +45,7 @@ algorithms with reinforcement learning](https://jyopari.github.io/paper_tldf/Mat
 
 ## Math
 + [Johnson–Lindenstrauss lemma TODO]()
++ [Grassman Metric]((https://jyopari.github.io/grassman))
 + [Lagrange Multiplier](https://jyopari.github.io/Lagrange)
 + [Lagrange Multiplier with Mutilple Constraints](https://jyopari.github.io/Lagrange2.html)
 + [Why Is The Gradient The Steepest Direction? (using Lagrange Multiplier)](https://jyopari.github.io/Gradient)
