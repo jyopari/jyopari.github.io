@@ -1,0 +1,692 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Self-Adapting Language Models </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="20de3cb2-6055-80d2-91a8-d7d8ca7f1604" class="page sans"><header><h1 class="page-title">Self-Adapting Language Models </h1><p class="page-description"></p></header><div class="page-body"><p id="20de3cb2-6055-80a5-9dfb-db53c587276b" class=""><a href="https://adamzweiger.github.io/">Adam Zweiger</a><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mo>∗</mo></msup></mrow><annotation encoding="application/x-tex">^*</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6887em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>,  <a href="https://jyopari.github.io/">Jyothish Pari</a><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mo>∗</mo></msup></mrow><annotation encoding="application/x-tex">^*</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6887em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>, <a href="https://han-guo.info/">Han Guo</a>,  <a href="https://ekinakyurek.github.io/">Ekin Akyürek</a>, <a href="https://people.csail.mit.edu/yoonkim/">Yoon Kim</a>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a></p><p id="20de3cb2-6055-80b0-b2cc-d78cc3b140a0" class="">MIT</p><p id="20de3cb2-6055-808f-89ac-f45a7ea217d4" class=""><strong>Code: </strong><a href="https://github.com/Continual-Intelligence">https://github.com/Continual-Intelligence</a></p><p id="20de3cb2-6055-80fa-b619-f6b417d4e563" class=""><strong>Paper: </strong></p><p id="20de3cb2-6055-80f8-9bb5-cef0ea530442" class="">
+</p><h3 id="20de3cb2-6055-80a7-afd0-c0723677b0be" class=""><strong>Abstract </strong></h3><div id="20de3cb2-6055-8010-907d-f34f815d6919" class="column-list"><div id="20de3cb2-6055-8059-b4cb-fe5cf3caad5d" style="width:62.5%" class="column"><p id="20de3cb2-6055-8015-9bda-db9cdf4eaf50" class="">Large language models (LLMs) are powerful but static; they lack mechanisms to adapt their weights in response to new tasks, knowledge, or examples. We introduce <strong>Se</strong>lf-<strong>A</strong>dapting <strong>L</strong>LMs (SEAL) 🦭, a framework that enables LLMs to self-adapt by generating their own finetuning data and update directives. Given a new input, the model produces a <em>self-edit — </em>a generation that may restructure the information in different ways, specify optimization hyperparameters, or invoke tools for data augmentation and gradient-based updates. Through supervised finetuning (SFT), these self-edits result in persistent weight updates, enabling lasting adaptation. To train the model to produce effective self-edits, we use a reinforcement learning loop, using the downstream performance of the updated model as the reward signal. Unlike prior approaches that rely on separate adaptation modules or auxiliary networks, SEAL directly uses the model&#x27;s autoregressive generation to parameterize and control its own adaptation process. Experiments on knowledge incorporation and few-shot generalization show that SEAL is a promising step toward language models capable of self-directed adaptation in response to new data.</p><p id="20de3cb2-6055-8048-ab1c-e92282a299a9" class="">
+</p></div><div id="20de3cb2-6055-80d7-891d-c36f3d0c71c7" style="width:37.5%" class="column"><figure id="20de3cb2-6055-8051-a915-cbdaf37ae11a" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Group_35.png"><img style="width:1024px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Group_35.png"/></a></figure><p id="20de3cb2-6055-8054-bdda-d1793e70ab35" class="">
+</p></div></div><h3 id="20de3cb2-6055-8098-a6e7-f99438de434f" class=""><strong>Method </strong></h3><figure id="20de3cb2-6055-8033-8f5a-f33285f34f20" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_1.28.39_PM.png"><img style="width:3392px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_1.28.39_PM.png"/></a><figcaption>Overview of SEAL. In each RL outer loop iteration, the model generates candidate self-edits (SE) — directives on how to update the weights, applies corresponding updates, evaluates performance on a downstream task, and uses the resulting rewards to improve the self-edit generation policy.</figcaption></figure><p id="20de3cb2-6055-80a6-9126-d75575c1b62d" class="">
+</p><div id="20de3cb2-6055-8041-9168-c6ee140fdf61" class="column-list"><div id="20de3cb2-6055-803f-b1e1-e96f16e80383" style="width:62.5%" class="column"><p id="20de3cb2-6055-8025-abef-dfb800de7ebb" class=""><strong>SEAL</strong> is a framework that enables language models to generate their own finetuning data and optimization instructions—called <em>self-edits</em>—in response to new tasks or information. SEAL learns to generate these self-edits via reinforcement learning (RL), using downstream task performance after a model update as the reward. Each training iteration involves the model generating a self-edit based on a task context, applying the self-edit via supervised finetuning, evaluating the updated model, and reinforcing edits that improve performance. This process is implemented with a lightweight algorithm called<a href="https://arxiv.org/abs/2312.06585"> ReST</a><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mtext mathvariant="italic">EM</mtext></msup></mrow><annotation encoding="application/x-tex">^{\text{\textit{EM}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord text mtight"><span class="mord textit mtight">EM</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span><a href="https://arxiv.org/abs/2312.06585">,</a> which selects high-reward samples using rejection sampling and reinforces them via SFT. We demonstrate SEAL in two domains: (1) <strong>Knowledge Incorporation</strong>, where the model integrates new factual information by generating logical implications as synthetic data, and (2) <strong>Few-Shot Learning</strong>, where the model autonomously selects data augmentations and training hyperparameters to adapt to new reasoning tasks.</p><p id="20de3cb2-6055-804b-8455-ea286cc5db57" class="">
+</p></div><div id="20de3cb2-6055-8079-9d9d-ec63914c2d70" style="width:37.5%" class="column"><figure id="20de3cb2-6055-803c-960e-ea970cde44b8" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.04.38_PM.png"><img style="width:432px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.04.38_PM.png"/></a><figcaption>The specific’s of the Self Edits (SE) are defined per task domain which we explain in the experiments section. </figcaption></figure></div></div><h3 id="20de3cb2-6055-8002-8eba-ccfcac38f253" class=""><strong>Experiments </strong></h3><p id="20de3cb2-6055-809a-b056-c6b134a37955" class="">We test <strong>SEAL</strong> on two domains: </p><p id="20de3cb2-6055-8075-b9af-c1a1303d1eed" class=""><strong>Knowledge incorporation</strong>, where the task is to finetune the model to internalize new factual information from a given passage such that it can answer related questions without access to the original context. </p><figure id="20de3cb2-6055-804b-b265-e67cbb516674" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.15.54_PM.png"><img style="width:3346px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.15.54_PM.png"/></a></figure><p id="20de3cb2-6055-80b1-9def-f96ee60c1921" class=""><strong>Few-shot learning</strong> on <a href="https://arcprize.org/">ARC</a>, where the model must generalize from a small number of demonstrations by generating its own data augmentations and training configurations to solve abstract reasoning tasks. Here are visuals of both setups. </p><figure id="20de3cb2-6055-8077-bbe2-f59a03622014" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.16.16_PM.png"><img style="width:3280px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.16.16_PM.png"/></a></figure><p id="20de3cb2-6055-803f-85a5-fd942da45e81" class="">
+</p><h3 id="20de3cb2-6055-8028-b4e9-e66aa6d203e1" class=""><strong>Results</strong></h3><p id="20de3cb2-6055-8064-9acd-c07376f0ad49" class=""><strong>Knowledge Incorporation: </strong>We evaluate SEAL on the task of assimilating factual knowledge from textual passages. In the single-passage setting, SEAL improves QA accuracy from 32.7% (no adaptation) to <strong>47.0%</strong>, outperforming models finetuned on raw passages or synthetic data generated by GPT-4.1. In the continued pretraining setting with 200 passages, SEAL again achieves the highest performance at <strong>43.8%</strong>, indicating that its learned editing policy generalizes beyond the single-shot RL setup. Only two iterations of RL training are sufficient for SEAL to surpass GPT-4.1, suggesting that the model quickly learns how to distill content into effective, learnable self-edits. These results highlight SEAL&#x27;s ability to convert unstructured text into finetuning data that yields lasting and efficient knowledge integration.</p><div id="20de3cb2-6055-80aa-939e-d63324f01670" class="column-list"><div id="20de3cb2-6055-80c4-8303-eb5057bd9ada" style="width:68.75%" class="column"><figure id="20de3cb2-6055-806a-b9f1-fbd8358e8fec" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.19.01_PM.png"><img style="width:709.982666015625px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.19.01_PM.png"/></a></figure></div><div id="20de3cb2-6055-8065-8452-ca8e71ab4b77" style="width:31.250000000000007%" class="column"><figure id="20de3cb2-6055-8071-b2f0-f8b98a896866" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.19.21_PM.png"><img style="width:1348px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.19.21_PM.png"/></a></figure></div></div><p id="20de3cb2-6055-80b5-8be7-e2bc3e565379" class=""><strong>Few-Shot Learning:</strong> On a simplified subset of the ARC benchmark, SEAL achieves a <strong>72.5% success rate</strong>, significantly outperforming both in-context learning (0%) and test-time training with untrained self-edits (20%). This demonstrates SEAL&#x27;s ability to learn how to configure augmentations and training strategies autonomously, enabling robust generalization from limited demonstrations.</p><figure id="20de3cb2-6055-8085-848a-c624b9df7af2" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.20.16_PM.png"><img style="width:709.982666015625px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.20.16_PM.png"/></a></figure><p id="20de3cb2-6055-807a-844d-c1f10cfdc453" class="">
+</p><h3 id="20de3cb2-6055-80d8-9a46-d9f0aea1a131" class=""><strong>Limitations and Future Work </strong></h3><div id="20de3cb2-6055-800c-8a0e-ec5483dce14d" class="column-list"><div id="20de3cb2-6055-8002-8110-d494c54970c9" style="width:62.5%" class="column"><p id="20de3cb2-6055-80e4-9436-ecc48c89286a" class="">While SEAL enables lasting adaptation through self-generated weight updates, our continual learning experiment reveals that repeated self-edits can lead to <strong>catastrophic forgetting</strong>—performance on earlier tasks degrades as new updates are applied. This suggests that without explicit mechanisms for knowledge retention, self-modification may overwrite valuable prior information. Addressing this remains an open challenge, with potential solutions including replay, constrained updates, or representational superposition. </p><p id="20de3cb2-6055-80cc-ae3d-daaa055789ea" class="">Looking ahead, we envision models that <strong>not only adapt</strong> but also <strong>reason about when and how to adapt</strong>, deciding mid-inference whether a self-edit is warranted. Such systems could iteratively <strong>distill chain-of-thought traces into weights</strong>, transforming ephemeral reasoning into permanent capabilities, and offering a foundation for agentic models that improve continuously through interaction and reflection.</p></div><div id="20de3cb2-6055-8089-91d6-d13681942a6f" style="width:37.5%" class="column"><figure id="20de3cb2-6055-8057-b9fd-efa9c56828ab" class="image"><a href="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.24.14_PM.png"><img style="width:1058px" src="Self-Adapting%20Language%20Models%2020de3cb2605580d291a8d7d8ca7f1604/Screenshot_2025-06-09_at_2.24.14_PM.png"/></a></figure><p id="20de3cb2-6055-80e5-b5f1-cd6462523747" class="">
+</p></div></div><h3 id="20de3cb2-6055-805d-aa75-c24b06226fe3" class="">Bibtex</h3><p id="20de3cb2-6055-8004-a3cd-fa299927d9a1" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
