@@ -1,311 +1,117 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
-
+<html lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.134.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
-<title></title>
-
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jyo Pari</title>
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="preload" as="image" href="assets/lilypad_1.png">
+  <link rel="preload" as="image" href="assets/lilypad_2.png">
+  <link rel="preload" as="image" href="assets/lilypad_3.png">
+  <link rel="preload" as="image" href="assets/fish_spirtes.png">
+  <link rel="stylesheet" href="./style.css">
 </head>
+<body>
+  <div id="app">
+    <header class="site-header">
+      <h1>Jyo Pari</h1>
+      <p>
+        I’m a PhD student at MIT, creating <b> continually learning </b> models. Feel free to reach out if you are interested in collaborating / chatting. Also, check out <a href="https://scale-ml.org/" target="_blank" rel="noreferrer noopener">Scale-ML!</a>
+      </p>
+      
+      <div class="social-links">
+        <a href="mailto:jyop@mit.edu" target="_blank" rel="noreferrer noopener">Email</a> |
+        <a href="https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en" target="_blank" rel="noreferrer noopener">Scholar</a> |
+        <a href="https://x.com/jyo_pari" target="_blank" rel="noreferrer noopener">Twitter</a>
+      </div>
 
-<body class="list" id="top">
+      <nav class="links">
+        <h3>Recent Work</h3>
+        <a href="https://jyopari.github.io/posts/path">
+          <span class="link-content">&gt; <strong>[Paper Notes]</strong> Understanding PaTH Attention</span>
+          <span class="link-date">Sept 16, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/rl_razor">
+          <span class="link-content">&gt; <strong>[Paper]</strong> RL's Razor: Why Online Reinforcement Learning Forgets Less</span>
+          <span class="link-date">Sept 4, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/peculiarities_moe">
+          <span class="link-content">&gt; <strong>[Research]</strong> Peculiarities of Mixture-of-Expert Optimization</span>
+          <span class="link-date">July 13, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/seal">
+          <span class="link-content">&gt; <strong>[Paper]</strong> Self-Adapting Language Models</span>
+          <span class="link-date">Jun 23, 2025</span>
+        </a>
+        
+        <h3>Literature Review</h3>
+        <a href="https://jyopari.github.io/posts/householder">
+          <span class="link-content">&gt; <strong>[Paper Notes]</strong> Improving Recurrent Models with Group Theory</span>
+          <span class="link-date">Mar 22, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/reuse">
+          <span class="link-content">&gt; <strong>[Research]</strong> Reuse Can Be Useful</span>
+          <span class="link-date">Mar 1, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/recurrent_ttt">
+          <span class="link-content">&gt; <strong>[Paper Notes]</strong> Recurrent Networks and Test Time Training (TTT)</span>
+          <span class="link-date">Feb 1, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/self-edit-part1">
+          <span class="link-content">&gt; <strong>[Research]</strong> Towards Self-Editing Models: Part 1</span>
+          <span class="link-date">Jan 19, 2025</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/Merging">
+          <span class="link-content">&gt; <strong>[Paper Notes]</strong> Model Merging</span>
+          <span class="link-date">2024</span>
+        </a>
+        <a href="https://jyopari.github.io/posts/moe">
+          <span class="link-content">&gt; <strong>[Paper Notes]</strong> Mixture of Experts (MoE)</span>
+          <span class="link-date">Fall 2023</span>
+        </a>
+        
+        <h3>Technical Notes</h3>
+        <a href="https://jyopari.github.io/posts/grassman">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Distances Between Subspaces</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/Symmetries">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Symmetries in Neural Networks</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/DiscreteOT">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Discrete Optimal Transport</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/EulerLagrange">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Euler-Lagrange Equation</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/gumbel">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Gumbel Softmax</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/Langevin">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Langevin Sampling</span>
+          <span class="link-date"></span>
+        </a>
+        <a href="https://jyopari.github.io/posts/CKA">
+          <span class="link-content">&gt; <strong>[Notes]</strong> Centered Kernel Alignment</span>
+          <span class="link-date"></span>
+        </a>
+      </nav>
+    </header>
 
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main"> 
-<article class="first-entry home-info">
-	<header class="entry-header">
-	  <!-- Remove or keep the <h1> if needed; you can also nest it differently -->
-	  <h1 style="line-height: 1.0; display: inline-block;"></h1>
-	  
-	  <img 
-	    src="mountains.png" 
-	    alt="Mountain Banner"
-	    style="
-	      display: block;      /* Using block so it spans its own line */
-	      width: 100%;         /* Make it responsive to fit the page width */
-	      height: auto;        /* Maintain aspect ratio */
-	      margin: 0 auto;      /* Optional: center the banner if there's space */
-	    "
-	  >
-	</header>
-    <div class="entry-content">
-        I&rsquo;m Jyo Pari, a PhD student at MIT, studying how <b>models can continually learn</b> through advances in architecture and optimization. <br>▸ Alongside writing educational posts, I’ll also share more refined brainstorming articles as part of an open-science effort to encourage collaboration. If any idea resonates with you and you’d like to explore it further, feel free to reach out!
-	    <br>▸ Also, check out <a href="https://scale-ml.org/">Scale-ML</a> a student led MIT organization focused on scaling in deep learning
-    <footer class="entry-footer">
-        <div class="social-icons" >
-    <a href="mailto:jyop@mit.edu" target="_blank" rel="noopener noreferrer me"
-        title="Email">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" fill="none" stroke="currentColor" stroke-width="2"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-    <polyline points="22,6 12,13 2,6"></polyline>
-</svg>
-    </a>
-    <a href="https://scholar.google.com/citations?user=WyIW46YAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer me"
-        title="Googlescholar">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" fill="none" stroke="currentColor" stroke-width="2"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path
-        d="M5.242 13.769L0.5 9.5 12 1l11.5 9-5.242 3.769C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" />
-</svg>
-    </a>
-    <a href="https://x.com/jyo_pari" target="_blank" rel="noopener noreferrer me"
-        title="Twitter">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path
-        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
-    </path>
-</svg>
-    </a>
-</div>
-
-    </footer>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Understanding PaTH Attention 
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Notes a new positional encoding method that increases the capabilities of transformers</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-03-022 11:30:03 +0000 UTC'>Sept 16, 2025</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbspN/A</footer>
-  <a class="entry-link" aria-label="post link to [Paper Notes] Understanding PaTH Attention" href="https://jyopari.github.io/posts/path"></a>
-</article>
-	
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper] RL's Razor : Why Online Reinforcement Learning Forgets Less
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>We find RL forgets less than SFT and also why</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-06-023 11:30:03 +0000 UTC'>Sept 4, 2025</span>&nbsp;
-Author: &nbspIdan Shenfeld, Jyothish Pari, Pulkit Agrawal
-
-&nbsp</footer>
-  <a class="entry-link" aria-label="post link to [Paper] RL's Razor : Why Online Reinforcement Learning Forgets Less" href="https://jyopari.github.io/posts/rl_razor"></a>
-</article>
-	
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Peculiarities of Mixture-of-Expert Optimization
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Some interesting findings of MoE router optimization... but they didn't scale</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-07-013 11:30:03 +0000 UTC'>July 13, 2025</span>&nbsp;
-Author: &nbspJyothish Pari, Minyoung Huh (Jacob), Pulkit Agrawal
-
-&nbsp</footer>
-  <a class="entry-link" aria-label="post link to Peculiarities of Mixture-of-Expert Optimization" href="https://jyopari.github.io/posts/peculiarities_moe"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper] Self-Adapting Language Models
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Our work builds on and concretizes the ideas introduced in the earlier post, “Towards Self-Editing Models: Part 1.”</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-06-023 11:30:03 +0000 UTC'>Jun 23, 2025</span>&nbsp;
-Author: &nbspAdam Zweiger, Jyothish Pari, Han Guo, Ekin Akyürek, Yoon Kim, Pulkit Agrawal
-
-&nbsp</footer>
-  <a class="entry-link" aria-label="post link to [Paper] Self-Adapting Language Models" href="https://jyopari.github.io/posts/seal"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Improving Recurrent Models with Group Theory
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Notes on some papers that use householder transformations to enable state-tracking</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-03-022 11:30:03 +0000 UTC'>Mar 22, 2025</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbspN/A</footer>
-  <a class="entry-link" aria-label="post link to [Paper Notes] Improving Recurrent Models with Group Theory" href="https://jyopari.github.io/posts/householder"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Reuse Can Be Useful
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Thoughts and mini experiments on layer reuse in Transformers</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-02-01 11:30:03 +0000 UTC'>Mar 1, 2025</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbspN/A</footer>
-  <a class="entry-link" aria-label="post link to Reuse Can Be Useful" href="https://jyopari.github.io/posts/reuse"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Recurrent Networks and Test Time Training (TTT)
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Notes on some papers that study how recurrent models are doing a form of TTT....</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-02-01 11:30:03 +0000 UTC'>Feb 1, 2025</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbspN/A</footer>
-  <a class="entry-link" aria-label="post link to Recurrent Networks and Test Time Training" href="https://jyopari.github.io/posts/recurrent_ttt"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Towards Self-Editing Models: Part 1
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Models that self-update, refine, and grow in complexity over time introduce unique possibilities and challenges....</p>
-  </section>
-  <footer class="entry-footer"><span title='2025-01-19 11:30:03 +0000 UTC'>Jan 19, 2025</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbspN/A</footer>
-  <a class="entry-link" aria-label="post link to Towards Self-Editing Models: Part 1" href="https://jyopari.github.io/posts/self-edit-part1"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Model Merging</h2>
-  </header>
-  <section class="entry-content">
-    <p>Techniques and challenges in merging multiple machine learning models into a cohesive system...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Model Merging" href="https://jyopari.github.io/posts/Merging"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Mixture of Experts (MoE)
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Notes on some papers that study MoEs...</p>
-  </section>
-  <footer class="entry-footer"><span title='2023-02-01 11:30:03 +0000 UTC'>Fall, 2023</span>&nbsp;
-Author: &nbspJyo Pari
-&nbsp | &nbsp Editor: &nbsp Minyoung (Jacob) Huh</footer>
-  <a class="entry-link" aria-label="post link to MoE" href="https://jyopari.github.io/posts/moe"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Distances Between Subspaces</h2>
-  </header>
-  <section class="entry-content">
-    <p>Grassman Metric</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Distances Between Subspaces" href="https://jyopari.github.io/posts/grassman"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Symmetries in Neural Networks</h2>
-  </header>
-  <section class="entry-content">
-    <p>Understanding how symmetry in networks can improve optimization...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Symmetries in Neural Networks" href="https://jyopari.github.io/posts/Symmetries"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Discrete Optimal Transport</h2>
-  </header>
-  <section class="entry-content">
-    <p>An exploration of discrete optimal transport methods and their applications in machine learning...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Discrete Optimal Transport" href="https://jyopari.github.io/posts/DiscreteOT"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Euler-Lagrange Equation</h2>
-  </header>
-  <section class="entry-content">
-    <p>Euler-Lagrange equation and its significance in calculus of variations...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Euler-Lagrange Equation" href="https://jyopari.github.io/posts/EulerLagrange"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>[Paper Notes] Gumbel Softmax</h2>
-  </header>
-  <section class="entry-content">
-    <p>An overview of the Gumbel-Softmax distribution and its utility in differentiable sampling...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Gumbel Softmax" href="https://jyopari.github.io/posts/gumbel"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Langevin Sampling</h2>
-  </header>
-  <section class="entry-content">
-    <p>Exploring Langevin dynamics as a method for sampling from complex distributions...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Langevin Sampling" href="https://jyopari.github.io/posts/Langevin"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Centered Kernel Alignment</h2>
-  </header>
-  <section class="entry-content">
-    <p>How can we compare representations between networks...</p>
-  </section>
-  <a class="entry-link" aria-label="post link to Thompson Sampling" href="https://jyopari.github.io/posts/CKA"></a>
-</article>
-	
-    </main>
-    </body>
-
+    <!-- Floating scene layers: water (background), fish (mid), pads (top under text) -->
+    <div id="scene">
+      <canvas id="water" aria-hidden="true"></canvas>
+      <canvas id="fish" aria-hidden="true"></canvas>
+      <div id="pads" aria-hidden="true"></div>
+    </div>
+  </div>
+  <script src="./script.js" defer></script>
+</body>
+  
 </html>
+
+
