@@ -18,9 +18,10 @@
   }
   .site-header h1 {
     margin: 0 0 12px 0;
-    font-family: "Bodoni Moda", "Didot", Georgia, serif;
+    font-family: "Lora", serif;
     font-size: 42px;
     letter-spacing: 0.5px;
+    font-weight: 300;
   }
   .site-header p { 
     line-height: 1.4; 
