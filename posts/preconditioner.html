@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Preconditioners in Optimization</title>
+
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body);"></script>
+
+<style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html, body {
+    background: rgb(239, 241, 245); /* your background color */
+}
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.45;      /* Notion-like */
+    font-size: 16px;
+    color: rgb(79, 80, 104);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 1.8rem;
+	font-weight: 100;
+	font-family: "Times New Roman", Times, serif;
+	margin-top: 0;
+	margin-bottom: 0.5em; /* Increased from 0.2em for breathing room */
+	text-align: center;
+}
+
+.page-author {
+	font-size: 1.1rem;
+	font-family: "Times New Roman", Times, serif;
+	color: rgb(55, 53, 47);
+	margin-top: 0;
+	margin-bottom: 0.5em; /* Added margin to separate from date */
+	text-align: center;
+}
+
+.page-date {
+	font-size: 0.9rem;
+	font-family: "Times New Roman", Times, serif;
+	color: rgba(55, 53, 47, 0.6);
+	margin-top: 0; /* CHANGED from -1.9em to 0. This was the main culprit! */
+	margin-bottom: 1em;
+	text-align: center;
+}
+
+/* Make LaTeX math smaller to match text size */
+.katex {
+	font-size: 1.05em !important;
+}
+
+.notion-text-equation-token {
+	font-size: 0.9em !important;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ul {
+	margin: 0.6em 0;
+	padding-inline-start: 1.7em;
+}
+
+ol {
+	margin: 0.6em 0;
+	padding-inline-start: 1.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+	padding-left: 0.1em;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+</style>
+</head>
+
+<body>
+<article class="page sans">
+<header>
+	<br>
+	<br>
+	<br>
+    <h1 class="page-title">Preconditioners in Optimization</h1>
+    <p class="page-author">Jyo Pari, Shivam Duggal</p>
+    <p class="page-date">Nov 23, 2025</p>
+    <br>
+    <br>
+    <p class="page-description"></p>
+</header>
+
+<div class="page-body">
+
+<p>After talking to Alex Damian, we wanted to understand optimizers from the lens of preconditions and Hessians. This blog post is our notes compiled from reading papers and ChatGPT and we will posit some questions that we are planning on investigating. If there are any issues / missing citations let us know.</p>
+
+<p><strong>Preconditioning</strong> - a way we can reshape the geometry of optimization, ideally pointing in better directions.</p>
+
+<p>$$\theta_{t+1} = \theta_t - \eta P \nabla_\theta L(\theta_t)$$</p>
+
+<p><strong>Newtons Method</strong> - \(P = H ^{-1}\) where \(H\) is the Hessian of \(L\) w.r.t \(\theta\).</p>
+
+<p><strong>Natural Gradient Descent</strong> - \(P = F^{-1}\) where \(F\) is the <a href="https://awni.github.io/intro-fisher-information/">Fisher Matrix</a> defined as:</p>
+
+<p>$$F(\theta) = \mathbb{E}_{x \sim p(\cdot \mid \theta)} \left[(\frac{\partial}{\partial \theta} \log p(x\mid\theta))^2 \right]$$</p>
+
+<p>Here is the multivariate version:</p>
+
+<p>$$F(\theta) = \mathbb{E}_{x \sim p(\cdot \mid \theta)}[\nabla_\theta \log p(x\mid\theta) \nabla_\theta \log p(x\mid\theta)^\top]$$</p>
+
+<p>This measures how sensitive is our model's outputs \(p(x \mid \theta)\) to perturbations to \(\theta\). The Fisher matrix arises when we are doing <a href="https://jaketae.github.io/study/natural-gradient/">steepest descent</a> under a KL penalty metric. There is a <a href="https://mark.reid.name/blog/fisher-information-and-log-likelihood.html">connection</a> between \(F\) and \(H\). Throughout this proof we will use: \(\nabla_\theta p = p\,\nabla_\theta \log p\)</p>
+
+<p>$$\begin{align}
+
+F(\theta)
+
+&= 
+
+\mathbb{E}_{x \sim p(\cdot \mid \theta)}
+
+\!\left[
+
+    \nabla_\theta \log p(x\mid\theta)\,
+
+    \nabla_\theta \log p(x\mid\theta)^\top
+
+\right] \\[6pt]
+
+&= 
+
+\mathbb{E}_{x \sim p(\cdot \mid \theta)}
+
+\!\left[
+
+    \frac{\nabla_\theta p(x\mid\theta)}{p(x\mid\theta)}
+
+    \;
+
+    \frac{\nabla_\theta p(x\mid\theta)^\top}{p(x\mid\theta)}
+
+\right] \\[6pt]
+
+&=
+
+\int 
+
+\frac{\nabla_\theta p(x\mid\theta)\,
+
+      \nabla_\theta p(x\mid\theta)^\top}
+
+     {p(x\mid\theta)}
+
+\, dx \\[6pt]
+
+&=
+
+\int 
+
+\nabla_\theta \log p(x\mid\theta)\;
+
+\nabla_\theta p(x\mid\theta)^\top
+
+\, dx 
+
+\qquad\text{(multiply numerator and denominator)} \\[6pt]
+
+&=
+
+\int 
+
+\nabla_\theta 
+
+    \big(
+
+        p(x\mid\theta)\,\nabla_\theta \log p(x\mid\theta)^\top
+
+    \big)
+
+\, dx 
+
+    \;-\;
+
+    \int 
+
+        p(x\mid\theta)\,
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \, dx \\[6pt]
+
+&\quad\text{(product rule: }
+
+\nabla (p \nabla \log p^\top)
+
+= \nabla p \nabla \log p^\top + 
+
+  p \nabla^2 \log p ) \\[6pt]
+
+&=
+
+\nabla_\theta 
+
+\int 
+
+    p(x\mid\theta)
+
+    \,\nabla_\theta \log p(x\mid\theta)^\top
+
+\, dx
+
+\;-\;
+
+\mathbb{E}_{x \sim p(\cdot\mid\theta)}
+
+    \big[
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \big] \\[6pt]
+
+&\quad\text{(move derivative outside the integral)} \\[6pt]
+
+&=
+
+\nabla_\theta 
+
+\int 
+
+    \nabla_\theta p(x\mid\theta)^\top
+
+\, dx
+
+\;-\;
+
+\mathbb{E}_{x \sim p(\cdot\mid\theta)}
+
+    \big[
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \big] \\[6pt]
+
+&=
+
+\nabla_\theta^2
+
+\int 
+
+    p(x\mid\theta)
+
+\, dx
+
+\;-\;
+
+\mathbb{E}_{x \sim p(\cdot\mid\theta)}
+
+    \big[
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \big] \\[6pt]
+
+&=
+
+\nabla_\theta^2 (1)
+
+\;-\;
+
+\mathbb{E}_{x \sim p(\cdot\mid\theta)}
+
+    \big[
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \big] \\[6pt]
+
+&=
+
+-\;
+
+\mathbb{E}_{x \sim p(\cdot\mid\theta)}
+
+    \big[
+
+        \nabla_\theta^2 \log p(x\mid\theta)
+
+    \big].
+
+\end{align}
+
+$$</p>
+
+<p>Thus, fisher \(F(\theta)\) equals negative expected hessian \(H(\theta)\), when the loss is negative log-likelihood. Fisher and Gauss-newton are similar approximations to Hessian (with some minor differences).</p>
+
+<p>This proof also concludes fisher, which is the expected uncentered second moment of the score function, \(\mathrm{\nabla_\theta log p(x|\theta)}\), is also the expected hessian.</p>
+
+<p><strong>One important caveat here</strong>: this Fisher = (− expected Hessian) identity only holds when the expectation is taken under the <em>model's own distribution</em> \(x \sim p_\theta\). In deep learning we train on data from the empirical distribution instead, <strong>so the Fisher is no longer exactly the Hessian—it is a curvature surrogate that captures only the positive–semidefinite part of the Hessian</strong> (the \(\,\mathbb{E}[\nabla \log p \, \nabla \log p^\top]\) term) and ignores the indefinite second-derivative term that introduces negative curvature in neural networks.</p>
+
+<p>Summarizing what we mentioned so far - we started with a preconditioned gradient update for the weights. This differentiates from SGD or SGD with momentum approaches by incorporating second-order moments as mentioned above. So, now let's directly jump onto the first (?) optimizer which leverages the second-order moment (or its approximation). The best preconditioner is always the full hessian, but intractable in practice.</p>
+
+<hr/>
+
+<h2>Adagrad</h2>
+
+<p>Let the gradient at step \(t\) be</p>
+
+<p>$$
+
+g_t = \nabla_\theta L(\theta_t).
+
+$$</p>
+
+<p>Adagrad constructs its preconditioner by accumulating <strong>squared gradients</strong> over time:</p>
+
+<p>$$
+
+\hat{H}_t = \sum_{\tau=1}^t g_\tau^2,
+
+$$</p>
+
+<p>where the square is <strong>elementwise</strong>.</p>
+
+<p>This is the same as accumulating <strong>only the diagonal</strong> of the outer products \(g_\tau g_\tau^\top\), but <strong>without ever forming the matrix</strong> \(g_\tau g_\tau^\top\) in practice.</p>
+
+<p>The update rule is:</p>
+
+<p>$$
+
+\theta_{t+1} = \theta_t - \eta \, \hat{H}_t^{-1/2} \, g_t.
+
+$$</p>
+
+<h3>Connection to \(g g^\top\)</h3>
+
+<p>Conceptually, Adagrad's preconditioner is related to</p>
+
+<p>$$
+
+\left(\sum_{\tau=1}^t g_\tau g_\tau^\top\right)^{-1/2},
+
+$$</p>
+
+<p>but <strong>only its diagonal is actually used</strong>, because the full matrix would be prohibitively large.</p>
+
+<p>In practice, Adagrad <strong>never</strong> computes \(g g^\top\).</p>
+
+<p>It only keeps track of accumulated squared gradients \(g_t^2\), which correspond to the diagonal entries of \(g g^\top\).</p>
+
+<p>This diagonal accumulation acts as a curvature estimate that grows over time, causing the effective learning rate for each parameter to decrease monotonically.</p>
+
+<hr/>
+
+<h2>Adam</h2>
+
+<p>Adam can be understood as a smoothed, bounded version of Adagrad.</p>
+
+<p>Instead of accumulating all past squared gradients, it keeps an <strong>exponential moving average</strong> of them.</p>
+
+<p><strong>First moment (momentum)</strong></p>
+
+<p>$$
+
+m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t.
+
+$$</p>
+
+<p><strong>Second moment (EMA of squared gradients)</strong></p>
+
+<p>$$
+
+v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2,
+
+$$</p>
+
+<p>where again \(g_t^2\) is <strong>elementwise</strong> and corresponds to the diagonal of \(g_t g_t^\top\) — but we <strong>never</strong> form that matrix.</p>
+
+<p>Bias-corrected estimates are:</p>
+
+<p>$$
+
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \qquad
+
+\hat{v}_t = \frac{v_t}{1 - \beta_2^t}.
+
+$$</p>
+
+<p>The update rule is:</p>
+
+<p>$$
+
+\theta_{t+1} = \theta_t - \eta \, \hat{v}_t^{-1/2} \, \hat{m}_t.
+
+$$</p>
+
+<h3>Connection to \(g g^\top\)</h3>
+
+<p>Adam's second-moment accumulator \(v_t\) is an <strong>EMA</strong> of the diagonal entries of the outer product \(g_t g_t^\top\):</p>
+
+<p>$$
+
+v_t \approx \text{EMA of } \operatorname{diag}(g_t g_t^\top).
+
+$$</p>
+
+<p>As with Adagrad, Adam <strong>does not</strong> compute \(g g^\top\) explicitly.</p>
+
+<p>The connection is conceptual: Adam uses a <em>smoothed diagonal curvature estimate</em> derived from squared gradients.</p>
+
+<p>This makes Adam a <strong>forgetful</strong> version of Adagrad, preventing the effective learning rate from decaying indefinitely and providing smoother curvature tracking during optimization.</p>
+
+<hr/>
+
+<p>Before we dive deep into simplying the preconditioner, let's get a good understanding of <a href="https://en.wikipedia.org/wiki/Kronecker_product">Kronecker product</a>. The kronecker product between two matrices A and B is defined as:</p>
+
+<p>$$\mathbf{A} \otimes \mathbf{B}
+
+= \begin{bmatrix}
+
+a_{11}\mathbf{B} & \cdots & a_{1n}\mathbf{B} \\
+
+\vdots & \ddots & \vdots \\
+
+a_{m1}\mathbf{B} & \cdots & a_{mn}\mathbf{B}
+
+\end{bmatrix}$$</p>
+
+<p><strong>But why study the Kronecker product?</strong></p>
+
+<blockquote>
+The Kronecker product is the natural way to represent linear maps on tensors / matrices as ordinary matrices.
+</blockquote>
+
+<p>Consider a bilinear transformation</p>
+
+<p>$$Y = A X B. \quad A\in \mathbb{R}^{m \times m}, B \in \mathbb{R}^{n\times n}, X \in \mathbb{R}^{m \times n}$$</p>
+
+<p>Here \(X\) is transformed linearly on the left by \(A\) and on the right by \(B\).</p>
+
+<p>Leveraging the Kronecker product, we can rewrite this as</p>
+
+<p>$$\operatorname{vec}(A X B) = (A \otimes B^
+
+\top)\, \operatorname{vec}(X),$$</p>
+
+<p>where we use <strong>row-stacking</strong> for \(\operatorname{vec}\), e.g.</p>
+
+<p>$$
+
+X =
+
+\begin{bmatrix}
+
+x_{11} & x_{12} & \cdots \\
+
+x_{21} & x_{22} & \cdots \\
+
+\vdots & \vdots & \ddots
+
+\end{bmatrix},
+
+\qquad
+
+\operatorname{vec}(X) =
+
+\begin{bmatrix}
+
+x_{11} & x_{12} & \cdots \;|\; x_{21} & x_{22} & \cdots \;|\; \cdots
+
+\end{bmatrix}^T .
+
+$$</p>
+
+<hr/>
+
+<h3>Why is this property useful?</h3>
+
+<p>The Fisher matrix for a weight matrix \(\theta \in \mathbb{R}^{m\times n}\) has dimension</p>
+
+<p>$$F \in \mathbb{R}^{mn \times mn}.$$</p>
+
+<p>Let \(g \in \mathbb{R}^{mn}\) be the <strong>row-vectorized</strong> gradient, i.e.</p>
+
+<p>$$g = \operatorname{vec}(G)$$</p>
+
+<p>with \(\operatorname{vec}\) stacking rows of \(G \in \mathbb{R}^{m\times n}\).</p>
+
+<p>Computing the preconditioned gradient \(F^{-1} g\) directly requires</p>
+
+<p>$$\text{flops} \sim O(m^2 n^2).$$</p>
+
+<p>Now assume \(F\) admits a Kronecker factorization</p>
+
+<p>$$F = A \otimes B, \qquad A \in \mathbb{R}^{m\times m},\; B \in \mathbb{R}^{n\times n}.$$</p>
+
+<p>Using the <strong>row-stacking identity</strong></p>
+
+<p>$$
+
+\operatorname{vec}(A X B) = (A \otimes B^
+
+\top)\, \operatorname{vec}(X),
+
+$$</p>
+
+<p>we have</p>
+
+<p>$$
+
+\begin{aligned}
+
+F^{-1} g
+
+ &= (A \otimes B)^{-1} \operatorname{vec}(G) \\
+
+ &= (A^{-1} \otimes B^{-1})\, \operatorname{vec}(G) \\
+
+ &= \operatorname{vec}(A^{-1} G B^{-T}).
+
+\end{aligned}
+
+$$</p>
+
+<p>The cost of computing \(A^{-1} G B^{-T}\) is</p>
+
+<p>$$\text{flops} \sim O(m^2 n + m n^2),$$</p>
+
+<p>a dramatic reduction.</p>
+
+<p>Thus, a Kronecker factorization reduces gradient preconditioning from</p>
+
+<p>$$O(d^4) \quad\text{to}\quad O(d^3) \qquad (m=n=d).$$</p>
+
+<h2>Finding the Kronecker Factorization for Preconditoning Gradients</h2>
+
+<p>In the following, we will use the following kronecker factorization of the preconditioner \(gg^\top\):</p>
+
+<p>$$gg^\top \approx (GG^\top)^{1/2} \otimes (G^\top G)^{1/2}$$</p>
+
+<p>If we ignore the exponent \({1/2}\) then we saying \(Cov(G_{ij}​,G_{pq}​)≈(GG^\top)_{ip}​(G^\top G)_{jq}\) which is saying that the covariance between two elements in \(G\) is approximated by the product of their rows' covariance and their columns' covariance. This may or may not be a good approximation but we can have some guarantees. In the original <a href="https://arxiv.org/pdf/1802.09568">Shampoo</a> paper Lemma 8 states:</p>
+
+<blockquote>
+<p><strong>Lemma 8.</strong> Assume that \(G_1,\ldots,G_T \in \mathbb{R}^{m \times n}\) are matrices of rank at most \(r\). Let \(g_t = vec(G_t)\) denote the vectorization of \(G_t\) for all \(t\). Then, for any \(\epsilon \ge 0\)</p>
+
+<p>$$\epsilon I_{mn}
+
+\;+\;
+
+\frac{1}{r} \sum_{t=1}^T g_t g_t^\top
+
+\;\;\preceq\;\;
+
+\left( \epsilon I_m + \sum_{t=1}^T G_t G_t^\top \right)^{1/2}
+
+\;\otimes\;
+
+\left( \epsilon I_n + \sum_{t=1}^T G_t^\top G_t \right)^{1/2}.$$</p>
+</blockquote>
+
+<p>The \(\preceq\) is a <a href="https://www.akshayagrawal.com/lecture-notes/html/loewner-order.html">Loewner order</a> meaning that the right hand side minus the left hand side is still a PSD matrix. Here \(A \preceq B\) means \(B - A\) is positive semidefinite, or equivalently \(x^\top A x \le x^\top B x\) for all \(x\) a shown by the picture below.</p>
+
+<p><img src="loewner.jpeg" width="300" style="border-radius: 12px;"></p>
+
+<p>This provides some notion of how the geometry of the preconditioner is preserved with the Kronecker factorization. We will now go through this proof. It uses Lemma 9 from the paper which states:</p>
+
+<blockquote>
+<p>Let \(G\) be an \(m \times n\) matrix of rank at most \(r\) and denote \(g = vec(G)\). Then</p>
+
+<p>$$\frac{1}{r} gg^\top \;\preceq\; I_m \otimes (G^\top G)
+
+\qquad\text{and}\qquad
+
+\frac{1}{r} gg^\top \;\preceq\; (G G^\top) \otimes I_n .$$</p>
+</blockquote>
+
+<h3>proof from the paper</h3>
+
+<p>Write the singular value decomposition</p>
+
+<p>$$
+
+G = \sum_{i=1}^r \sigma_i\, u_i v_i^\top ,
+
+$$</p>
+
+<p>where \(u_1,\ldots,u_r \in \mathbb{R}^m\) and \(v_1,\ldots,v_r \in \mathbb{R}^n\) are orthonormal.</p>
+
+<p>Then</p>
+
+<p>$$
+
+g = \sum_{i=1}^r \sigma_i (u_i \otimes v_i),
+
+\qquad 
+
+gg^\top
+
+=
+
+\Big( \sum_{i=1}^r \sigma_i (u_i \otimes v_i) \Big)
+
+\Big( \sum_{i=1}^r \sigma_i (u_i \otimes v_i) \Big)^{\!\top}.
+
+$$</p>
+
+<p>For any vectors \(w_1,\ldots,w_r\),</p>
+
+<p>$$
+
+\Big( \sum_{i=1}^r w_i \Big)\Big( \sum_{i=1}^r w_i \Big)^{\!\top}
+
+\;\le\;
+
+r \sum_{i=1}^r w_i w_i^\top ,
+
+$$</p>
+
+<p>since for any vector \(x\) we may write \(\alpha_i = x^\top w_i\) and because of Jensen's Inequality of convex functions</p>
+
+<p>$$
+
+x^\top\Big( \sum_i w_i \Big)\Big( \sum_i w_i \Big)^{\!\top}x
+
+= \Big( \sum_i \alpha_i \Big)^2
+
+\le r \sum_i \alpha_i^2
+
+= r\, x^\top \Big( \sum_i w_i w_i^\top \Big)x .
+
+$$</p>
+
+<p>Applying this with \(w_i = \sigma_i (u_i\otimes v_i)\) gives</p>
+
+<p>$$
+
+gg^\top
+
+\le
+
+r \sum_{i=1}^r \sigma_i^2 (u_i\otimes v_i)(u_i\otimes v_i)^\top
+
+=
+
+r \sum_{i=1}^r \sigma_i^2 (u_i u_i^\top) \otimes (v_i v_i^\top) .
+
+$$</p>
+
+<p>Since \(GG^\top = \sum_{i=1}^r \sigma_i^2 u_i u_i^\top\) and \(v_i v_i^\top \le I_n\) for all \(i\),</p>
+
+<p>$$
+
+\frac{1}{r} gg^\top
+
+\le
+
+\sum_{i=1}^r \sigma_i^2 u_i u_i^\top \otimes I_n
+
+=
+
+(GG^\top)\otimes I_n .
+
+$$</p>
+
+<p>Similarly, because \(G^\top G = \sum_{i=1}^r \sigma_i^2 v_i v_i^\top\) and \(u_i u_i^\top \le I_m\),</p>
+
+<p>$$
+
+\frac{1}{r} gg^\top
+
+\le
+
+I_m \otimes (G^\top G) .
+
+$$</p>
+
+<p>What is interesting about this Lemma is that if we think about the the local region around the current parameter \(\theta\) and we sample gradients \(G\) for one linear layer \(W\), we can bound the uncentered covariance \(gg^\top\) by the covariance of rows or columns in \(G\).</p>
+
+<p>Finally we can <strong>prove Lemma 8</strong>, here is a shorter version of paper's proof</p>
+
+<p>Introduce the matrices</p>
+
+<p>$$
+
+A_m \;\coloneqq\; \epsilon I_m + \sum_{t=1}^T G_t G_t^\top,
+
+\qquad
+
+B_n \;\coloneqq\; \epsilon I_n + \sum_{t=1}^T G_t^\top G_t .
+
+$$</p>
+
+<p>From Lemma 9 we have</p>
+
+<p>$$
+
+\epsilon I_{mn} + \frac{1}{r} \sum_{t=1}^T g_t g_t^\top \;\le\; I_m \otimes B_n,
+
+\qquad
+
+\epsilon I_{mn} + \frac{1}{r} \sum_{t=1}^T g_t g_t^\top \;\le\; A_m \otimes I_n .
+
+$$</p>
+
+<p>Observe that \(I_m \otimes B_n\) and \(A_m \otimes I_n\) commute with each other.</p>
+
+<p>Applying Lemma 5 from the paper which is (<a href="https://www.sciencedirect.com/science/article/pii/S0024379503008693">operator monotonicity of geometric mean by Ando et al</a>) followed by Lemma 3(iii) and Lemma 3(i) gives</p>
+
+<p>$$
+
+\epsilon I_{mn} + \frac{1}{r} \sum_{t=1}^T g_t g_t^\top
+
+\;\le\;
+
+\big( I_m \otimes B_n \big)^{1/2}
+
+\big( A_m \otimes I_n \big)^{1/2}.
+
+$$</p>
+
+<p>Using Lemma 3(iii) again,</p>
+
+<p>$$
+
+\big( I_m \otimes B_n \big)^{1/2}
+
+=
+
+I_m \otimes B_n^{1/2},
+
+\qquad
+
+\big( A_m \otimes I_n \big)^{1/2}
+
+=
+
+A_m^{1/2} \otimes I_n,
+
+$$</p>
+
+<p>and then Lemma 3(i) yields</p>
+
+<p>$$
+
+\big( I_m \otimes B_n^{1/2} \big)
+
+\big( A_m^{1/2} \otimes I_n \big)
+
+=
+
+A_m^{1/2} \otimes B_n^{1/2}.
+
+$$</p>
+
+<p>Thus,</p>
+
+<p>$$
+
+\epsilon I_{mn} + \frac{1}{r} \sum_{t=1}^T g_t g_t^\top
+
+\;\preceq\;
+
+A_m^{1/2} \otimes B_n^{1/2},
+
+$$</p>
+
+<p>which proves the lemma.</p>
+
+<p>For the actual update, we maintain left and right Shampoo accumulators at step \(t\):</p>
+
+<p>$$
+
+L_t \;\coloneqq\; \epsilon I_m + \sum_{s=1}^t G_s G_s^\top,
+
+\qquad
+
+R_t \;\coloneqq\; \epsilon I_n + \sum_{s=1}^t G_s^\top G_s .
+
+$$</p>
+
+<p>From Lemma 8, the full-matrix AdaGrad preconditioner satisfies
+
+\(\tilde H_t^2 \;\preceq\; L_t^{1/2} \otimes R_t^{1/2}\), so we choose the Shampoo preconditioner</p>
+
+<p>$$
+
+H_t^2 \;=\; L_t^{1/2} \otimes R_t^{1/2}
+
+\quad\Longrightarrow\quad
+
+H_t \;=\; L_t^{1/4} \otimes R_t^{1/4}.
+
+$$</p>
+
+<p>The preconditioned step in vector form is</p>
+
+<p>$$
+
+w_{t+1} = w_t - \eta H_t^{-1} g_t
+
+= w_t - \eta\,(L_t^{-1/4}\otimes R_t^{-1/4})\,g_t.
+
+$$</p>
+
+<p>Using \(\,(A\otimes B)\,\mathrm{vec}(G)=\mathrm{vec}(A G B)\) (here \(A,B\) are symmetric), we obtain the matrix update</p>
+
+<p>$$
+
+W_{t+1}
+
+= W_t \;-\; \eta\,L_t^{-1/4} G_t R_t^{-1/4}.
+
+$$</p>
+
+<h2>Muon</h2>
+
+<p>We can take the Shampoo update, remove the running sums and see what happens if we substitute with the SVD of \(G_t\). Following Story II of Jeremy and Laker's <a href="https://arxiv.org/pdf/2409.20325">paper</a></p>
+
+<p>$$W_{t+1}
+
+= W_t - \eta \,(U_t \Sigma_t^{-1/2} U_t^\top)\,
+
+      (U_t \Sigma_t V_t^\top)\,
+
+      (V_t \Sigma_t^{-1/2} V_t^\top)
+
+$$</p>
+
+<p>$$
+
+= W_t - \eta\,U_t\,\Sigma_t^{1 - 1/2 - 1/2}\,V_t^\top
+
+= W_t - \eta\,U_t V_t^\top .
+
+$$</p>
+
+<p>$$
+
+W_{t+1} = W_t - \eta\,U_t V_t^\top
+
+$$</p>
+
+<p>So this is the Gradient with the singular values all clipped to 1 - which is equivalent to the steepest descent under the spectral norm.</p>
+
+<p>When discussing with Alex, he recommended one way to compare these optimizers is to train them and then take their respective preconditioners and then run local updates. We are still working on this.</p>
+
+<h2>References</h2>
+
+<p><a href="https://kvfrans.com/matrix-whitening/">https://kvfrans.com/matrix-whitening/</a></p>
+
+<p><a href="https://arxiv.org/abs/1802.09568">https://arxiv.org/abs/1802.09568</a></p>
+
+<p><a href="https://arxiv.org/abs/2406.17748">https://arxiv.org/abs/2406.17748</a></p>
+
+<p><a href="https://kellerjordan.github.io/posts/muon/">https://kellerjordan.github.io/posts/muon/</a></p>
+
+<p><a href="https://arxiv.org/abs/2409.20325">https://arxiv.org/abs/2409.20325</a></p>
+
+<p><a href="https://arxiv.org/abs/1503.05671">https://arxiv.org/abs/1503.05671</a></p>
+
+</div>
+</article>
+</body>
+</html>
