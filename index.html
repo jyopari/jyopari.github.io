@@ -4,135 +4,142 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jyo Pari</title>
+  <meta name="description" content="Jyo Pari — PhD student at MIT working on continually learning models.">
+  <meta name="theme-color" content="#f8f5ec">
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-  <link rel="preload" as="image" href="assets/lilypad_1.png">
-  <link rel="preload" as="image" href="assets/lilypad_2.png">
-  <link rel="preload" as="image" href="assets/lilypad_3.png">
-  <link rel="preload" as="image" href="assets/fish_spirtes.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-  <div id="app">
+  <!-- Pond: rice paper (back), fish + ripples, lotus leaves, damselflies in the air (front, beneath text) -->
+  <div id="scene" aria-hidden="true">
+    <canvas id="paper"></canvas>
+    <canvas id="pond"></canvas>
+    <div id="leaves"></div>
+    <canvas id="sky"></canvas>
+  </div>
+
+  <main id="app">
     <header class="site-header">
-      <h1>Jyo Pari</h1>
-      <p>
-        I’m a PhD student at MIT, creating <b> continually learning </b> models. Feel free to reach out if you are interested in collaborating / chatting. Also, check out <a href="https://scale-ml.org/" target="_blank" rel="noreferrer noopener">Scale-ML!</a>
+      <div class="title-row">
+        <h1 class="reveal">Jyo Pari</h1>
+      </div>
+
+      <p class="bio reveal">
+        I’m a PhD student at MIT, creating <b>continually learning</b> models. Feel free to reach out if you are interested in collaborating / chatting. Also, check out <a href="https://scale-ml.org/" target="_blank" rel="noreferrer noopener">Scale-ML!</a>
       </p>
-      
-      <div class="social-links">
-        <a href="mailto:jyop@mit.edu" target="_blank" rel="noreferrer noopener">Email</a> |
-        <a href="https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en" target="_blank" rel="noreferrer noopener">Scholar</a> |
+
+      <div class="social-links reveal">
+        <a href="mailto:jyop@mit.edu" target="_blank" rel="noreferrer noopener">Email</a>
+        <span class="dot" aria-hidden="true"></span>
+        <a href="https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en" target="_blank" rel="noreferrer noopener">Scholar</a>
+        <span class="dot" aria-hidden="true"></span>
         <a href="https://x.com/jyo_pari" target="_blank" rel="noreferrer noopener">Twitter</a>
       </div>
 
       <nav class="links">
-        <h3>Papers + Mini Research + Ideas</h3>
-        <a href="https://jyopari.github.io/posts/curriculum">
-          <span class="link-content">&gt; <strong>[Mini Research]</strong> Optimizing the Optimization Trajectory</span>
+        <h3 class="reveal">Papers + Mini Research + Ideas</h3>
+        <a class="reveal" href="https://jyopari.github.io/posts/curriculum">
+          <span class="link-content"><span class="tag">Mini Research</span> Optimizing the Optimization Trajectory</span>
           <span class="link-date">Sept 28, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/rl_razor">
-          <span class="link-content">&gt; <strong>[Paper]</strong> RL's Razor: Why Online Reinforcement Learning Forgets Less</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/rl_razor">
+          <span class="link-content"><span class="tag">Paper</span> RL's Razor: Why Online Reinforcement Learning Forgets Less</span>
           <span class="link-date">Sept 4, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/peculiarities_moe">
-          <span class="link-content">&gt; <strong>[Mini Research]</strong> Peculiarities of Mixture-of-Expert Optimization</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/peculiarities_moe">
+          <span class="link-content"><span class="tag">Mini Research</span> Peculiarities of Mixture-of-Expert Optimization</span>
           <span class="link-date">July 13, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/seal">
-          <span class="link-content">&gt; <strong>[Paper]</strong> Self-Adapting Language Models</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/seal">
+          <span class="link-content"><span class="tag">Paper</span> Self-Adapting Language Models</span>
           <span class="link-date">Jun 23, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/reuse">
-          <span class="link-content">&gt; <strong>[Mini Research]</strong> Reuse Can Be Useful</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/reuse">
+          <span class="link-content"><span class="tag">Mini Research</span> Reuse Can Be Useful</span>
           <span class="link-date">Mar 1, 2025</span>
         </a>
-        <a href="https://arxiv.org/abs/2502.19402">
-          <span class="link-content">&gt; <strong>[Paper]</strong> General Intelligence Requires Reward-based Pretraining</span>
+        <a class="reveal" href="https://arxiv.org/abs/2502.19402">
+          <span class="link-content"><span class="tag">Paper</span> General Intelligence Requires Reward-based Pretraining</span>
           <span class="link-date">Feb 26, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/self-edit-part1">
-          <span class="link-content">&gt; <strong>[Idea]</strong> Towards Self-Editing Models: Part 1</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/self-edit-part1">
+          <span class="link-content"><span class="tag">Idea</span> Towards Self-Editing Models: Part 1</span>
           <span class="link-date">Jan 19, 2025</span>
         </a>
-        <a href="https://arxiv.org/abs/2411.02207">
-          <span class="link-content">&gt; <strong>[Paper]</strong> Collective Model Intelligence Requires Compatible Specialization
-          </span>
+        <a class="reveal" href="https://arxiv.org/abs/2411.02207">
+          <span class="link-content"><span class="tag">Paper</span> Collective Model Intelligence Requires Compatible Specialization</span>
           <span class="link-date">Nov 4, 2024</span>
         </a>
-        
-        <h3>Literature Review</h3>
-        <a href="https://jyopari.github.io/posts/preconditioner">
-          <span class="link-content">&gt;  Preconditioners in Optimization</span>
+
+        <h3 class="reveal">Literature Review</h3>
+        <a class="reveal" href="https://jyopari.github.io/posts/preconditioner">
+          <span class="link-content">Preconditioners in Optimization</span>
           <span class="link-date">Nov 23, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/path">
-          <span class="link-content">&gt;  Understanding PaTH Attention</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/path">
+          <span class="link-content">Understanding PaTH Attention</span>
           <span class="link-date">Sept 16, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/householder">
-          <span class="link-content">&gt;  Improving Recurrent Models with Group Theory</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/householder">
+          <span class="link-content">Improving Recurrent Models with Group Theory</span>
           <span class="link-date">Mar 22, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/recurrent_ttt">
-          <span class="link-content">&gt;  Recurrent Networks and Test Time Training (TTT)</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/recurrent_ttt">
+          <span class="link-content">Recurrent Networks and Test Time Training (TTT)</span>
           <span class="link-date">Feb 1, 2025</span>
         </a>
-        <a href="https://jyopari.github.io/posts/Merging">
-          <span class="link-content">&gt;  Model Merging</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/Merging">
+          <span class="link-content">Model Merging</span>
           <span class="link-date">2024</span>
         </a>
-        <a href="https://jyopari.github.io/posts/moe">
-          <span class="link-content">&gt;  Mixture of Experts (MoE)</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/moe">
+          <span class="link-content">Mixture of Experts (MoE)</span>
           <span class="link-date">Fall 2023</span>
         </a>
-        
-        <h3>Misc</h3>
-        <a href="https://jyopari.github.io/posts/quintic">
-          <span class="link-content">&gt;  Mystery of the Quintics</span>
+
+        <h3 class="reveal">Misc</h3>
+        <a class="reveal" href="https://jyopari.github.io/posts/quintic">
+          <span class="link-content">Mystery of the Quintics</span>
           <span class="link-date">Jan 5, 2026</span>
         </a>
-        <a href="https://jyopari.github.io/posts/grassman">
-          <span class="link-content">&gt;  Distances Between Subspaces</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/grassman">
+          <span class="link-content">Distances Between Subspaces</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/Symmetries">
-          <span class="link-content">&gt;  Symmetries in Neural Networks</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/Symmetries">
+          <span class="link-content">Symmetries in Neural Networks</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/DiscreteOT">
-          <span class="link-content">&gt;  Discrete Optimal Transport</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/DiscreteOT">
+          <span class="link-content">Discrete Optimal Transport</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/EulerLagrange">
-          <span class="link-content">&gt;  Euler-Lagrange Equation</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/EulerLagrange">
+          <span class="link-content">Euler-Lagrange Equation</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/gumbel">
-          <span class="link-content">&gt;  Gumbel Softmax</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/gumbel">
+          <span class="link-content">Gumbel Softmax</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/Langevin">
-          <span class="link-content">&gt;  Langevin Sampling</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/Langevin">
+          <span class="link-content">Langevin Sampling</span>
           <span class="link-date"></span>
         </a>
-        <a href="https://jyopari.github.io/posts/CKA">
-          <span class="link-content">&gt;  Centered Kernel Alignment</span>
+        <a class="reveal" href="https://jyopari.github.io/posts/CKA">
+          <span class="link-content">Centered Kernel Alignment</span>
           <span class="link-date"></span>
         </a>
       </nav>
-    </header>
 
-    <!-- Floating scene layers: water (background), fish (mid), pads (top under text) -->
-    <div id="scene">
-      <canvas id="water" aria-hidden="true"></canvas>
-      <canvas id="fish" aria-hidden="true"></canvas>
-      <div id="pads" aria-hidden="true"></div>
-    </div>
-  </div>
+      <p class="hint reveal">Click the water to sprinkle food — or drag to scatter a trail.</p>
+    </header>
+  </main>
+
   <script src="./script.js" defer></script>
 </body>
-  
 </html>
-
-
