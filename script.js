@@ -1,14 +1,16 @@
 /* ==================================================================
-   Ink-wash pond
-   Rice paper, lotus leaves and vermilion fish, painted procedurally
-   in the spirit of Qi Baishi. Everything here is generated at load:
-   no image assets.
+   Dithered pond
+   Lily pads, koi, shrimp, tadpoles and damselflies, rendered as 1-bit
+   stipple on white. Everything is generated at load: no image assets.
+
+   Each frame the whole scene is drawn in greyscale into a low-res
+   "tone" canvas (one cell per PX css px), then thresholded against a
+   fixed noise map into pure black-and-white pixels.
 
    Layers (back → front):
-     #paper   tiling xuan-paper texture + vignette (static)
-     #pond    tadpoles, koi, floating food, ripples (animated)
-     #leaves  lotus leaves, one canvas each (bloom in, then drift)
-     #app     text
+     #dither   the 1-bit scene (pixelated, scaled up)
+     #overlay  crisp tracking hulls, ID tags, click reticles, HUD
+     #app      text
    ================================================================== */
 (() => {
 'use strict';
@@ -55,83 +57,16 @@ function makeCanvas(w, h) {
   return c;
 }
 
-const DPR = Math.min(2, window.devicePixelRatio || 1);
+const DPR = 1; // offscreen art is painted at css-pixel resolution, then dithered
+const SCREEN_DPR = Math.min(2, window.devicePixelRatio || 1); // for the crisp overlay
+const PX = 2; // size of one dither cell, in css px
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- palette ---------- */
 
 const INK = [34, 35, 31];
-const PAPER = [248, 245, 236];
-const VERMILION = { main: [224, 28, 22], deep: [172, 12, 10], light: [240, 84, 66] };
-
-/* ==================================================================
-   Paper
-   ================================================================== */
-
-// A seamlessly tiling sheet: layered periodic value noise for the
-// cloudy pulp, plus scattered fibres and specks.
-function makePaperTile(sizeCss) {
-  const S = Math.round(sizeCss * DPR);
-  const c = makeCanvas(S, S);
-  const g = c.getContext('2d');
-  const rng = mulberry32(1337);
-
-  const octaves = [
-    { cells: 3, amp: 6.5 }, { cells: 7, amp: 4 }, { cells: 18, amp: 2.4 }, { cells: 53, amp: 1.5 },
-  ].map(o => ({ ...o, grid: Float32Array.from({ length: o.cells * o.cells }, () => rng() * 2 - 1) }));
-
-  const img = g.createImageData(S, S);
-  const d = img.data;
-  for (let y = 0; y < S; y++) {
-    for (let x = 0; x < S; x++) {
-      let v = 0;
-      for (const o of octaves) {
-        const n = o.cells, gx = x / S * n, gy = y / S * n;
-        const ix = gx | 0, iy = gy | 0;
-        let fx = gx - ix, fy = gy - iy;
-        fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
-        const i0 = ix % n, i1 = (ix + 1) % n, j0 = iy % n, j1 = (iy + 1) % n, G = o.grid;
-        v += o.amp * lerp(lerp(G[j0 * n + i0], G[j0 * n + i1], fx), lerp(G[j1 * n + i0], G[j1 * n + i1], fx), fy);
-      }
-      v += (rng() - 0.5) * 4.5;
-      const p = (y * S + x) * 4;
-      d[p] = PAPER[0] + v;
-      d[p + 1] = PAPER[1] + v * 0.97;
-      d[p + 2] = PAPER[2] + v * 0.92;
-      d[p + 3] = 255;
-    }
-  }
-  g.putImageData(img, 0, 0);
-
-  // fibres (drawn with wrap-around so the tile stays seamless)
-  g.lineCap = 'round';
-  const wrapDraw = (x, y, reach, fn) => {
-    for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
-      if (x + ox < -reach || x + ox > S + reach || y + oy < -reach || y + oy > S + reach) continue;
-      g.save(); g.translate(ox, oy); fn(); g.restore();
-    }
-  };
-  for (let i = 0; i < 700; i++) {
-    const x = rng() * S, y = rng() * S;
-    const len = (5 + rng() * rng() * 46) * DPR;
-    const a = rng() * TAU, bend = gauss(rng) * 0.35 * len;
-    const dark = rng() < 0.5;
-    const style = dark ? `rgba(140,120,90,${0.03 + rng() * 0.045})` : `rgba(255,253,246,${0.16 + rng() * 0.3})`;
-    const lw = (0.3 + rng() * 0.75) * DPR;
-    const ex = x + Math.cos(a) * len, ey = y + Math.sin(a) * len;
-    const cx = (x + ex) / 2 - Math.sin(a) * bend, cy = (y + ey) / 2 + Math.cos(a) * bend;
-    wrapDraw(x, y, len + Math.abs(bend), () => {
-      g.strokeStyle = style; g.lineWidth = lw;
-      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(cx, cy, ex, ey); g.stroke();
-    });
-  }
-  for (let i = 0; i < 90; i++) {
-    const x = rng() * S, y = rng() * S, r = (0.3 + rng() * 0.9) * DPR;
-    g.fillStyle = `rgba(92,72,46,${0.06 + rng() * 0.16})`;
-    g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill();
-  }
-  return c;
-}
+// only luminance survives the dither, so creature palettes are greys tuned for dot density
+const VERMILION = { main: [44, 44, 44], deep: [8, 8, 8], light: [120, 120, 120] };
 
 // Fine grain used to granulate the watercolour washes
 function makeGrainTile(size) {
@@ -245,8 +180,9 @@ const jitTable = (n = 96) => Float32Array.from({ length: n }, () => clamp(gauss(
    ================================================================== */
 
 const LEAF_PAD = 1.2; // canvas size relative to leaf diameter (room for bleeding rim)
+const LEAF_TONE = 0.72; // pads sit a little lighter than the creatures
 
-function paintLeaf(R, seed, paperTile, grainTile) {
+function paintLeaf(R, seed, grainTile) {
   const rng = mulberry32(seed);
   const sizeCss = Math.ceil(R * 2 * LEAF_PAD);
   const canvas = makeCanvas(sizeCss * DPR, sizeCss * DPR);
@@ -281,11 +217,9 @@ function paintLeaf(R, seed, paperTile, grainTile) {
 
   const scaled = (pts, s) => pts.map(p => ({ x: C + (p.x - C) * s, y: C + (p.y - C) * s, v: p.v }));
 
-  // 1. paper underlayer: makes the leaf (mostly) opaque so fish pass beneath it
-  const pat = ctx.createPattern(paperTile, 'repeat');
-  pat.setTransform(new DOMMatrix().translateSelf(rng() * 300, rng() * 300).scaleSelf(1 / DPR));
-  ctx.fillStyle = pat;
-  ctx.globalAlpha = 0.9;
+  // 1. white underlayer: makes the pad (mostly) opaque so fish pass beneath it
+  ctx.fillStyle = '#fff';
+  ctx.globalAlpha = 0.92;
   polyPath(ctx, deform(scaled(outline, 0.955), 2, rng)); ctx.fill();
   ctx.globalAlpha = 1;
 
@@ -401,7 +335,21 @@ function paintLeaf(R, seed, paperTile, grainTile) {
     veins.push(v);
   }
 
+  posterizeForDither(canvas);
   return { canvas, sizeCss, C, R, vc, veins, notch };
+}
+
+// Squeeze a painted pad's tones for 1-bit: pale washes drop out to clean paper,
+// mid-tones thin to a light stipple, and dark pools and rim go dense.
+function posterizeForDither(canvas) {
+  const g = canvas.getContext('2d');
+  const img = g.getImageData(0, 0, canvas.width, canvas.height), d = img.data;
+  const curve = Uint8Array.from({ length: 256 }, (_, L) => 255 - Math.round(smoothstep(0.26, 0.9, 1 - L / 255) * 0.92 * 255));
+  for (let i = 0; i < d.length; i += 4) {
+    const v = curve[(d[i] * 77 + d[i + 1] * 150 + d[i + 2] * 29) >> 8];
+    d[i] = d[i + 1] = d[i + 2] = v;
+  }
+  g.putImageData(img, 0, 0);
 }
 
 function veinPoint(v, vc, t) {
@@ -466,9 +414,7 @@ class Leaf {
     this.spec = spec;
     this.p = painted;
     this.el = makeCanvas(painted.canvas.width, painted.canvas.height);
-    this.el.className = 'leaf';
-    this.el.style.width = this.el.style.height = painted.sizeCss + 'px';
-    this.el.style.opacity = spec.alpha ?? 1;
+    this.alpha = spec.alpha ?? 1;
     this.ctx = this.el.getContext('2d');
     this.ax = spec.x; this.ay = spec.y;
     this.baseRot = spec.rot;
@@ -555,8 +501,17 @@ class Leaf {
     this.x = this.ax + bx + this.ox;
     this.y = this.ay + by + this.oy;
     this.angle = this.baseRot + br + this.rot;
+  }
+
+  draw(ctx) {
+    if (!this.done && !(this.start <= world.T)) return;
     const half = this.p.sizeCss / 2;
-    this.el.style.transform = `translate3d(${(this.x - half).toFixed(2)}px, ${(this.y - half).toFixed(2)}px, 0) rotate(${this.angle.toFixed(4)}rad)`;
+    ctx.save();
+    ctx.globalAlpha = this.alpha * LEAF_TONE;
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.drawImage(this.el, -half, -half, this.p.sizeCss, this.p.sizeCss);
+    ctx.restore();
   }
 }
 
@@ -590,7 +545,7 @@ class Ripple {
       if (rp <= 0) continue;
       const r = this.radius(T, i);
       const alpha = this.strength * 0.5 * Math.pow(1 - p, 1.5) * (1 - i * 0.25);
-      ctx.lineWidth = 1.7 * (1 - p) + 0.45;
+      ctx.lineWidth = 2.4 * (1 - p) + 0.8;
       for (const [s, e, a] of this.rings_[i]) {
         ctx.strokeStyle = rgba([58, 62, 56], alpha * a);
         ctx.beginPath(); ctx.arc(this.x, this.y, r, s, e); ctx.stroke();
@@ -958,6 +913,31 @@ class Koi {
         b.x = a.x + dx / d * this.tseg; b.y = a.y + dy / d * this.tseg;
       }
     }
+  }
+
+  // a few points around the body, fins and tail, for the tracking hull
+  hullPoints() {
+    const D = this.drawn, N = this.N, M = this.M, Tl = this.tail, pts = [];
+    const c = D[Math.round(N * 0.4)], s = lerp(1.08, 0.82, this.depth);
+    const push = (x, y) => pts.push({ x: c.x + (x - c.x) * s, y: c.y + (y - c.y) * s });
+    for (let i = 0; i < N; i += 3) {
+      const a = D[Math.max(0, i - 1)], b = D[Math.min(N - 1, i + 1)];
+      let fx = a.x - b.x, fy = a.y - b.y;
+      const fl = Math.hypot(fx, fy) || 1; fx /= fl; fy /= fl;
+      const w = this.width(i / (N - 1)) + (i < N * 0.55 ? this.L * 0.24 : this.W * 0.5);
+      push(D[i].x - fy * w, D[i].y + fx * w);
+      push(D[i].x + fy * w, D[i].y - fx * w);
+      if (i === 0) push(D[0].x + fx * this.L * 0.12, D[0].y + fy * this.L * 0.12);
+    }
+    for (const j of [M >> 1, M - 1]) {
+      const a = Tl[j - 1], b = Tl[j];
+      let tx = b.x - a.x, ty = b.y - a.y;
+      const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
+      const w = this.L * (j === M - 1 ? 0.28 : 0.13);
+      push(b.x - ty * w, b.y + tx * w);
+      push(b.x + ty * w, b.y - tx * w);
+    }
+    return pts;
   }
 
   // depth: near the surface a fish is larger and vivid; deeper it shrinks and fades into the water
@@ -1514,8 +1494,8 @@ class Shrimp {
    ================================================================== */
 
 const DAMSEL_PALETTES = {
-  indigo:    { body: [30, 50, 70],  accent: [58, 122, 152], eye: [22, 40, 54], wing: [150, 172, 184], stigma: [28, 32, 36] },
-  vermilion: { body: [176, 38, 26], accent: [222, 72, 48],  eye: [112, 22, 14], wing: [198, 176, 164], stigma: [104, 20, 12] },
+  indigo:    { body: [16, 16, 16], accent: [40, 40, 40], eye: [6, 6, 6], wing: [120, 120, 120], stigma: [10, 10, 10] },
+  vermilion: { body: [28, 28, 28], accent: [70, 70, 70], eye: [8, 8, 8], wing: [140, 140, 140], stigma: [14, 14, 14] },
 };
 
 function leafToWorld(leaf, lx, ly) {
@@ -1827,6 +1807,18 @@ class Damselfly {
     });
   }
 
+  hullPoints() {
+    if (this.state === 'away') return null;
+    const s = 1 + 0.18 * this.z, L = this.L, ch = Math.cos(this.h), sh = Math.sin(this.h);
+    const pts = [];
+    const push = (fwd, side) => pts.push({ x: this.x + (ch * fwd - sh * side) * s, y: this.y + (sh * fwd + ch * side) * s });
+    push(L * 0.16, 0);
+    const span = lerp(L * 0.48, L * 0.09, this.fold);
+    for (const side of [1, -1]) { push(-L * 0.02, side * span); push(-L * 0.3, side * span * 0.8); }
+    for (const q of [this.abd[4], this.abd[this.abd.length - 1]]) pts.push({ x: this.x + (q.x - this.x) * s, y: this.y + (q.y - this.y) * s });
+    return pts;
+  }
+
   drawShadow(ctx) {
     if (this.state === 'away') return;
     const o = 2 + 40 * this.z, alpha = 0.075 * (1 - this.z * 0.45);
@@ -1973,14 +1965,18 @@ class Damselfly {
    ================================================================== */
 
 const scene = document.getElementById('scene');
-const paperCanvas = document.getElementById('paper');
-const pondCanvas = document.getElementById('pond');
-const leavesLayer = document.getElementById('leaves');
+const ditherCanvas = document.getElementById('dither');
+const overlayCanvas = document.getElementById('overlay');
 const header = document.querySelector('.site-header');
-const paperCtx = paperCanvas.getContext('2d');
-const pondCtx = pondCanvas.getContext('2d');
-const skyCanvas = document.getElementById('sky');
-const skyCtx = skyCanvas.getContext('2d');
+const ditherCtx = ditherCanvas.getContext('2d');
+const overlayCtx = overlayCanvas.getContext('2d');
+const tone = makeCanvas(1, 1);
+const toneCtx = tone.getContext('2d');
+// creatures are drawn on their own transparent layer first, so we can lay a soft
+// blurred copy beneath them: that halo dithers into the scattered dots at their edges
+const creatures = makeCanvas(1, 1), creaturesCtx = creatures.getContext('2d');
+const haloSmall = makeCanvas(1, 1), haloCtx = haloSmall.getContext('2d');
+const HALO_DOWN = 4;
 
 const world = {
   W: window.innerWidth, H: window.innerHeight, textRight: 0, mobile: false,
@@ -1990,42 +1986,59 @@ const world = {
   underLeaf(x, y) { return this.leaves.some(l => Math.hypot(l.x - x, l.y - y) < l.R * 0.95); },
 };
 
-const paperTile = makePaperTile(480);
 const grainTile = makeGrainTile(160);
+
+/* ---------- 1-bit dithering ---------- */
+
+// A fixed field of random thresholds. Because it never changes, still things stay
+// still; only what moves crawls with dots, like grain in old film.
+const THR_SIZE = 128;
+const THR = (() => {
+  const r = mulberry32(2718);
+  return Uint8Array.from({ length: THR_SIZE * THR_SIZE }, () => 1 + Math.floor(r() * 253));
+})();
+const INK_PX = 0xff0d0d0d;   // ABGR, little-endian: near-black
+const PAPER_PX = 0xffffffff; // pure white
+
+// tone curve: luminance → ink density, with a little extra contrast so cores go
+// solid and soft edges scatter into loose dots
+const TONE = Uint8Array.from({ length: 256 }, (_, L) => {
+  const d = 1 - L / 255;
+  return Math.round(Math.pow(clamp((d - 0.015) / 0.72, 0, 1), 0.8) * 255);
+});
+const toneLut = new Uint8Array(256);
+
+let TW = 1, TH = 1, outImg = null, out32 = null;
+
+function ditherInto(src, w, h, out, density = 1) {
+  for (let i = 0; i < 256; i++) toneLut[i] = TONE[i] * density;
+  for (let y = 0; y < h; y++) {
+    const row = (y & (THR_SIZE - 1)) * THR_SIZE, o = y * w;
+    for (let x = 0; x < w; x++) {
+      const i = (o + x) << 2;
+      const L = (src[i] * 77 + src[i + 1] * 150 + src[i + 2] * 29) >> 8;
+      out[o + x] = toneLut[L] > THR[row + (x & (THR_SIZE - 1))] ? INK_PX : PAPER_PX;
+    }
+  }
+}
 
 function sizeCanvases() {
   world.W = window.innerWidth;
   world.H = window.innerHeight;
-  for (const c of [paperCanvas, pondCanvas, skyCanvas]) {
-    c.width = Math.round(world.W * DPR);
-    c.height = Math.round(world.H * DPR);
-  }
+  TW = Math.ceil(world.W / PX); TH = Math.ceil(world.H / PX);
+  tone.width = TW; tone.height = TH;
+  creatures.width = TW; creatures.height = TH;
+  haloSmall.width = Math.ceil(TW / HALO_DOWN); haloSmall.height = Math.ceil(TH / HALO_DOWN);
+  ditherCanvas.width = TW; ditherCanvas.height = TH;
+  ditherCanvas.style.width = TW * PX + 'px';
+  ditherCanvas.style.height = TH * PX + 'px';
+  outImg = ditherCtx.createImageData(TW, TH);
+  out32 = new Uint32Array(outImg.data.buffer);
+  overlayCanvas.width = Math.round(world.W * SCREEN_DPR);
+  overlayCanvas.height = Math.round(world.H * SCREEN_DPR);
   const r = header.getBoundingClientRect();
   world.textRight = r.right - parseFloat(getComputedStyle(header).paddingRight) + 12;
   world.mobile = world.W - world.textRight < 300;
-}
-
-function drawPaper() {
-  const { W, H } = world, g = paperCtx;
-  g.setTransform(1, 0, 0, 1, 0, 0);
-  g.fillStyle = g.createPattern(paperTile, 'repeat');
-  g.fillRect(0, 0, paperCanvas.width, paperCanvas.height);
-  g.setTransform(DPR, 0, 0, DPR, 0, 0);
-  g.globalCompositeOperation = 'multiply';
-  // a few broad, aged stains
-  const rng = mulberry32(5);
-  for (let i = 0; i < 5; i++) {
-    const x = rng() * W, y = rng() * H, r = Math.max(W, H) * (0.25 + rng() * 0.35);
-    const st = g.createRadialGradient(x, y, 0, x, y, r);
-    st.addColorStop(0, 'rgba(220,204,170,0.035)');
-    st.addColorStop(1, 'rgba(220,204,170,0)');
-    g.fillStyle = st; g.fillRect(0, 0, W, H);
-  }
-  const v = g.createRadialGradient(W * 0.42, H * 0.45, Math.min(W, H) * 0.3, W * 0.5, H * 0.5, Math.hypot(W, H) * 0.72);
-  v.addColorStop(0, 'rgba(0,0,0,0)');
-  v.addColorStop(1, 'rgba(160,138,100,0.08)');
-  g.fillStyle = v; g.fillRect(0, 0, W, H);
-  g.globalCompositeOperation = 'source-over';
 }
 
 /* ---------- leaf layout ---------- */
@@ -2044,9 +2057,9 @@ function leafSpecs() {
   }
   const R1 = clamp(W * 0.34, 90, 170);
   return [
-    { key: 'corner', x: W - R1 * 0.18, y: R1 * 0.08, R: R1, seed: 777, rot: 2.1, delay: 0.35, alpha: 0.55 },
-    { key: 'main', x: W + R1 * 0.12, y: H * 0.64, R: R1 * 0.75, seed: 2024, rot: -0.3, delay: 0.7, alpha: 0.55 },
-    { key: 'low', x: W * 0.12, y: H + R1 * 0.2, R: R1 * 0.7, seed: 4242, rot: 1.2, delay: 1.0, alpha: 0.55 },
+    { key: 'corner', x: W - R1 * 0.18, y: R1 * 0.08, R: R1, seed: 777, rot: 2.1, delay: 0.35, alpha: 0.5 },
+    { key: 'main', x: W + R1 * 0.12, y: H * 0.64, R: R1 * 0.75, seed: 2024, rot: -0.3, delay: 0.7, alpha: 0.5 },
+    { key: 'low', x: W * 0.12, y: H + R1 * 0.2, R: R1 * 0.7, seed: 4242, rot: 1.2, delay: 1.0, alpha: 0.5 },
   ];
 }
 
@@ -2056,14 +2069,12 @@ function buildLeaves(animate, T) {
   const sig = specs.map(s => s.key + Math.round(s.R / 12)).join('|');
   if (sig === layoutSig && world.leaves.length) {
     // same leaves, new anchors
-    specs.forEach((s, i) => { world.leaves[i].ax = s.x; world.leaves[i].ay = s.y; world.leaves[i].el.style.opacity = s.alpha ?? 1; });
+    specs.forEach((s, i) => { world.leaves[i].ax = s.x; world.leaves[i].ay = s.y; world.leaves[i].alpha = s.alpha ?? 1; });
     return;
   }
   layoutSig = sig;
-  leavesLayer.innerHTML = '';
   world.leaves = specs.map(s => {
-    const leaf = new Leaf(s, paintLeaf(s.R, s.seed, paperTile, grainTile));
-    leavesLayer.appendChild(leaf.el);
+    const leaf = new Leaf(s, paintLeaf(s.R, s.seed, grainTile));
     if (animate) leaf.start = T + s.delay;
     else leaf.finish();
     leaf.update(0, T);
@@ -2078,8 +2089,8 @@ function spawnCreatures() {
   const inside = REDUCED;
   const koiSpecs = [
     { x: inside ? W * 0.62 : W + 70, y: H * 0.42, heading: Math.PI * 1.05, len: 68, color: VERMILION, seed: 11 },
-    { x: inside ? W * 0.85 : W * 0.72, y: inside ? H * 0.3 : H + 70, heading: -Math.PI * 0.6, len: 58, color: { main: [232, 50, 34], deep: [182, 24, 16], light: [248, 118, 92] }, seed: 23 },
-    { x: inside ? W * 0.7 : W + 120, y: H * 0.8, heading: Math.PI * 0.95, len: 50, color: { main: [214, 30, 24], deep: [164, 14, 10], light: [238, 92, 72] }, seed: 37 },
+    { x: inside ? W * 0.85 : W * 0.72, y: inside ? H * 0.3 : H + 70, heading: -Math.PI * 0.6, len: 58, color: { main: [58, 58, 58], deep: [14, 14, 14], light: [140, 140, 140] }, seed: 23 },
+    { x: inside ? W * 0.7 : W + 120, y: H * 0.8, heading: Math.PI * 0.95, len: 50, color: { main: [36, 36, 36], deep: [6, 6, 6], light: [110, 110, 110] }, seed: 37 },
   ];
   world.koi = (mobile ? koiSpecs.slice(0, 2) : koiSpecs).map(s => new Koi(s));
   const gx = mobile ? W * 0.55 : lerp(world.textRight, W, 0.45), gy = inside ? H * 0.2 : -40;
@@ -2095,9 +2106,210 @@ function spawnCreatures() {
     for (let i = 0; i < (mobile ? 3 : 4); i++) world.shrimp.push(new Shrimp(g, g.x + rand(-40, 40), g.y + rand(-25, 25), 300 + gi * 17 + i * 5));
   });
 
-  // damselflies arrive once the leaves have bloomed
+  // damselflies arrive once the pads have developed
   world.damsels = [new Damselfly({ palette: DAMSEL_PALETTES.indigo, seed: 501, delay: 3.2, scale: mobile ? 0.85 : 1 })];
   if (!mobile) world.damsels.push(new Damselfly({ palette: DAMSEL_PALETTES.vermilion, seed: 777, delay: 24 }));
+
+  world.tracks = makeTracks();
+}
+
+/* ---------- tracking: every creature gets a hull and an ID, like a detector's output ---------- */
+
+function makeTracks() {
+  const koiIds = ['#1', '#214', '#377'], flyIds = ['#856', '#902'], shrimpIds = ['#853', '#611'];
+  const tracks = [];
+  world.koi.forEach((k, i) => tracks.push({
+    id: koiIds[i], kind: 'KOI', primary: i === 0, seed: i * 7.3,
+    pts: () => k.hullPoints(),
+    state: () => k.flee > 0 ? 'FLEE' : k.goal ? (k.goal.kind === 'food' ? 'FEED' : 'CURIOUS') : k.mood.toUpperCase(),
+  }));
+  world.damsels.forEach((d, i) => tracks.push({
+    id: flyIds[i], kind: 'DAMSELFLY', seed: 20 + i * 5.1,
+    pts: () => d.hullPoints(),
+    state: () => d.state === 'perched' ? 'PERCHED' : d.state.toUpperCase(),
+  }));
+  world.shrimpGroups.forEach((g, i) => {
+    const members = world.shrimp.filter(s => s.group === g);
+    tracks.push({
+      id: shrimpIds[i], kind: `SHRIMP ×${members.length}`, seed: 40 + i * 3.7,
+      pts: () => {
+        const pts = [];
+        for (const m of members) {
+          const S = m.spine, a = Math.atan2(S[0].y - S[2].y, S[0].x - S[2].x), L = m.L;
+          const ca = Math.cos(a), sa = Math.sin(a);
+          pts.push({ x: S[0].x + ca * L * 0.7, y: S[0].y + sa * L * 0.7 });
+          pts.push({ x: S[0].x - sa * L * 0.22, y: S[0].y + ca * L * 0.22 });
+          pts.push({ x: S[0].x + sa * L * 0.22, y: S[0].y - ca * L * 0.22 });
+          pts.push({ x: S[S.length - 1].x, y: S[S.length - 1].y });
+        }
+        return pts;
+      },
+      state: () => members.some(m => m.flick > 0) ? 'ESCAPE'
+        : members.filter(m => m.mode === 'graze').length * 2 >= members.length ? 'GRAZE' : 'FORAGE',
+    });
+  });
+  tracks.push({
+    id: '#40', kind: `TADPOLE ×${world.tadpoles.length}`, seed: 60,
+    pts: () => {
+      const pts = [];
+      for (const t of world.tadpoles) {
+        const r = t.r * 1.7, e = t.spine[t.spine.length - 1];
+        pts.push({ x: t.x - r, y: t.y - r }, { x: t.x + r, y: t.y - r }, { x: t.x - r, y: t.y + r }, { x: t.x + r, y: t.y + r }, { x: e.x, y: e.y });
+      }
+      return pts;
+    },
+    state: () => world.tadpoles.some(t => t.flee > 0) ? 'SCATTER' : 'SCHOOL',
+  });
+  return tracks;
+}
+
+// monotone-chain convex hull
+function convexHull(pts) {
+  if (pts.length < 3) return pts;
+  const p = [...pts].sort((a, b) => a.x - b.x || a.y - b.y);
+  const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  const lower = [], upper = [];
+  for (const q of p) { while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop(); lower.push(q); }
+  for (let i = p.length - 1; i >= 0; i--) { const q = p[i]; while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop(); upper.push(q); }
+  upper.pop(); lower.pop();
+  return lower.concat(upper);
+}
+function insidePoly(x, y, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j];
+    if ((a.y > y) !== (b.y > y) && x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside;
+}
+
+const MONO = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+
+function tag(g, x, y, text, dark, alpha = 1) {
+  g.font = `600 10px ${MONO}`;
+  const w = Math.ceil(g.measureText(text).width) + 8;
+  g.globalAlpha = alpha;
+  g.fillStyle = dark ? '#0d0d0d' : 'rgba(13,13,13,0.45)';
+  g.fillRect(Math.round(x), Math.round(y), w, 15);
+  g.fillStyle = '#fff';
+  g.textBaseline = 'middle';
+  g.fillText(text, Math.round(x) + 4, Math.round(y) + 8);
+  g.globalAlpha = 1;
+  return w;
+}
+
+let fps = 60;
+function drawOverlay(T, dt) {
+  const g = overlayCtx, { W, H } = world;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  g.setTransform(SCREEN_DPR, 0, 0, SCREEN_DPR, 0, 0);
+  g.lineJoin = 'miter';
+
+  let visible = 0;
+  for (const tr of world.tracks || []) {
+    const pts = tr.pts();
+    if (!pts || pts.length < 3) continue;
+    const hull = convexHull(pts);
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, top = hull[0];
+    for (const q of hull) {
+      minX = Math.min(minX, q.x); maxX = Math.max(maxX, q.x); minY = Math.min(minY, q.y); maxY = Math.max(maxY, q.y);
+      if (q.y < top.y) top = q;
+    }
+    if (maxX < 0 || minX > W || maxY < 0 || minY > H) continue;
+    visible++;
+    const hot = pointer.active && insidePoly(pointer.x, pointer.y, hull);
+
+    g.strokeStyle = hot ? 'rgba(13,13,13,0.85)' : 'rgba(13,13,13,0.3)';
+    g.lineWidth = hot ? 1 : 0.75;
+    g.beginPath();
+    hull.forEach((q, i) => i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y));
+    g.closePath();
+    g.stroke();
+    if (hot) {
+      // corner ticks on the hovered target's bounding box
+      g.strokeStyle = '#0d0d0d'; g.lineWidth = 1.5;
+      const c = 7, b = [[minX - 4, minY - 4, 1, 1], [maxX + 4, minY - 4, -1, 1], [minX - 4, maxY + 4, 1, -1], [maxX + 4, maxY + 4, -1, -1]];
+      g.beginPath();
+      for (const [x, y, sx, sy] of b) { g.moveTo(x, y + sy * c); g.lineTo(x, y); g.lineTo(x + sx * c, y); }
+      g.stroke();
+    }
+
+    const conf = (0.94 + 0.05 * noise1(T * 0.4 + tr.seed)).toFixed(2);
+    const text = hot ? `${tr.id}  ${tr.kind} ${conf}  ·  ${tr.state()}` : tr.id;
+    tag(g, clamp(top.x - 6, 4, W - 60), clamp(top.y - 22, 4, H - 20), text, tr.primary || hot);
+  }
+
+  // click reticles: where the food went in
+  world.reticles = (world.reticles || []).filter(r => T - r.t < 1.6);
+  for (const r of world.reticles) {
+    const e = (T - r.t) / 1.6, a = 1 - e * e;
+    const k = 12 + 6 * easeOutCubic(Math.min(1, e * 3));
+    g.strokeStyle = `rgba(13,13,13,${0.8 * a})`;
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(r.x - k, r.y); g.lineTo(r.x - 4, r.y); g.moveTo(r.x + 4, r.y); g.lineTo(r.x + k, r.y);
+    g.moveTo(r.x, r.y - k); g.lineTo(r.x, r.y - 4); g.moveTo(r.x, r.y + 4); g.lineTo(r.x, r.y + k);
+    const b = k + 6, c = 5;
+    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      g.moveTo(r.x + sx * b, r.y + sy * (b - c)); g.lineTo(r.x + sx * b, r.y + sy * b); g.lineTo(r.x + sx * (b - c), r.y + sy * b);
+    }
+    g.stroke();
+    tag(g, r.x + b + 6, r.y - b, `FOOD ×${r.n}  (${Math.round(r.x)}, ${Math.round(r.y)})`, true, a);
+  }
+
+  // HUD
+  if (dt > 0) fps = lerp(fps, 1 / dt, 0.05);
+  g.font = `500 10px ${MONO}`;
+  g.textBaseline = 'alphabetic';
+  g.textAlign = 'right';
+  g.fillStyle = 'rgba(13,13,13,0.5)';
+  g.fillText(`TRACKING ${String(visible).padStart(2, '0')} · ${Math.round(fps)} FPS · ${TW}×${TH} 1-BIT`, W - 14, H - 12);
+  g.textAlign = 'left';
+}
+
+/* ---------- the title, dithered: its dots develop in on load ---------- */
+
+const titleCanvas = document.querySelector('.title-dither');
+const title = { tone: null, w: 0, h: 0, img: null, out: null, ctx: null, done: false };
+
+function prepareTitle() {
+  if (!titleCanvas) return;
+  const h1 = titleCanvas.closest('h1');
+  const cs = getComputedStyle(h1);
+  const fs = parseFloat(cs.fontSize);
+  const font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+  const text = h1.querySelector('.title-text').textContent.trim();
+  const m = makeCanvas(1, 1).getContext('2d');
+  m.font = font;
+  const w = Math.ceil((m.measureText(text).width + fs * 0.12) / PX), h = Math.ceil(fs * 1.22 / PX);
+  const c = makeCanvas(w, h), g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
+  g.setTransform(1 / PX, 0, 0, 1 / PX, 0, 0);
+  // solid at the top, loosening into scattered dots toward the baseline
+  const grad = g.createLinearGradient(0, fs * 0.2, 0, fs * 1.05);
+  grad.addColorStop(0, '#000');
+  grad.addColorStop(0.5, '#0a0a0a');
+  grad.addColorStop(1, '#8a8a8a');
+  g.fillStyle = grad;
+  g.font = font;
+  g.textBaseline = 'alphabetic';
+  g.fillText(text, fs * 0.02, fs * 0.94);
+  title.tone = g.getImageData(0, 0, w, h).data;
+  title.w = w; title.h = h;
+  titleCanvas.width = w; titleCanvas.height = h;
+  titleCanvas.style.width = w * PX + 'px';
+  titleCanvas.style.height = h * PX + 'px';
+  title.ctx = titleCanvas.getContext('2d');
+  title.img = title.ctx.createImageData(w, h);
+  title.out = new Uint32Array(title.img.data.buffer);
+  title.done = false;
+}
+function drawTitle(density) {
+  if (!title.tone || title.done) return;
+  ditherInto(title.tone, title.w, title.h, title.out, density);
+  title.ctx.putImageData(title.img, 0, 0);
+  if (density >= 1) title.done = true;
 }
 
 /* ---------- interaction ---------- */
@@ -2132,7 +2344,9 @@ scene.addEventListener('pointerdown', (e) => {
   for (const t of world.tadpoles) if (Math.hypot(t.x - x, t.y - y) < 60) t.scare(x, y);
   for (const s of world.shrimp) if (Math.hypot(s.x - x, s.y - y) < 110) s.scare(x, y);
   for (const d of world.damsels) if (Math.hypot(d.x - x, d.y - y) < 150) d.startle(x, y, world);
-  sprinkle(x, y, 6 + ((Math.random() * 4) | 0), 34, T);
+  const n = 6 + ((Math.random() * 4) | 0);
+  sprinkle(x, y, n, 34, T);
+  (world.reticles = world.reticles || []).push({ x, y, t: T, n });
   sprinkling = { x, y, t: T };
 });
 window.addEventListener('pointermove', (e) => {
@@ -2204,27 +2418,66 @@ function interact(dt, T) {
 /* ---------- loop ---------- */
 
 let lastT = performance.now() / 1000;
+let T0 = lastT;
 
-function drawPond(T) {
-  const g = pondCtx;
-  g.setTransform(1, 0, 0, 1, 0, 0);
-  g.clearRect(0, 0, pondCanvas.width, pondCanvas.height);
-  g.setTransform(DPR, 0, 0, DPR, 0, 0);
-  for (const s of world.shrimp) s.draw(g, T);
-  for (const k of world.koi) if (k.depth > 0.55) k.draw(g, T);
-  for (const t of world.tadpoles) t.draw(g);
-  for (const k of [...world.koi].sort((a, b) => b.depth - a.depth)) if (k.depth <= 0.55) k.draw(g, T);
-  for (const f of world.food) if (T >= f.born) f.draw(g, T);
-  for (const r of world.ripples) r.draw(g, T);
+// a soft cloud of stipple drifting in from the top-right corner
+function drawHaze(g) {
+  const { W, H, mobile } = world, r = Math.max(W, H) * (mobile ? 0.26 : 0.3);
+  const hz = g.createRadialGradient(W, 0, 0, W, 0, r);
+  hz.addColorStop(0, 'rgba(0,0,0,0.42)');
+  hz.addColorStop(0.3, 'rgba(0,0,0,0.1)');
+  hz.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = hz;
+  g.fillRect(W - r, 0, r, r);
 }
 
-function drawSky(T) {
-  const g = skyCtx;
+// draw a group of creatures onto the tone canvas with a soft blurred shadow-halo
+// beneath them (shrink to 1/HALO_DOWN and back up: a cheap blur that works everywhere)
+function withHalo(g, strength, drawFn) {
+  const c = creaturesCtx;
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.clearRect(0, 0, TW, TH);
+  c.setTransform(1 / PX, 0, 0, 1 / PX, 0, 0);
+  drawFn(c);
+  haloCtx.clearRect(0, 0, haloSmall.width, haloSmall.height);
+  haloCtx.imageSmoothingEnabled = true;
+  haloCtx.drawImage(creatures, 0, 0, haloSmall.width, haloSmall.height);
+  g.save();
   g.setTransform(1, 0, 0, 1, 0, 0);
-  g.clearRect(0, 0, skyCanvas.width, skyCanvas.height);
-  g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  g.imageSmoothingEnabled = true;
+  g.globalAlpha = strength;
+  g.drawImage(haloSmall, 0, 0, haloSmall.width * HALO_DOWN, haloSmall.height * HALO_DOWN);
+  g.globalAlpha = 1;
+  g.drawImage(creatures, 0, 0);
+  g.restore();
+}
+
+// draw the whole scene in greyscale, then threshold it to 1-bit
+function render(T, dt) {
+  const g = toneCtx;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.fillStyle = '#fff';
+  g.fillRect(0, 0, TW, TH);
+  g.setTransform(1 / PX, 0, 0, 1 / PX, 0, 0);
+  drawHaze(g);
+  withHalo(g, 0.6, (c) => {
+    for (const s of world.shrimp) s.draw(c, T);
+    for (const k of world.koi) if (k.depth > 0.55) k.draw(c, T);
+    for (const t of world.tadpoles) t.draw(c);
+    for (const k of [...world.koi].sort((a, b) => b.depth - a.depth)) if (k.depth <= 0.55) k.draw(c, T);
+  });
+  for (const f of world.food) if (T >= f.born) f.draw(g, T);
+  for (const r of world.ripples) r.draw(g, T);
+  for (const l of world.leaves) l.draw(g);
   for (const d of world.damsels) d.drawShadow(g);
-  for (const d of [...world.damsels].sort((a, b) => a.z - b.z)) d.draw(g, T);
+  withHalo(g, 0.5, (c) => { for (const d of [...world.damsels].sort((a, b) => a.z - b.z)) d.draw(c, T); });
+
+  // on load the whole frame "develops": density ramps up from blank paper
+  const develop = REDUCED ? 1 : smoothstep(0, 1.6, T - T0);
+  ditherInto(g.getImageData(0, 0, TW, TH).data, TW, TH, out32, develop);
+  ditherCtx.putImageData(outImg, 0, 0);
+  drawOverlay(T, dt);
+  drawTitle(REDUCED ? 1 : smoothstep(0.15, 1.5, T - T0));
 }
 
 function frame(now) {
@@ -2249,8 +2502,7 @@ function frame(now) {
   for (const l of world.leaves) { l.bloom(T); l.update(dt, T); }
   for (const d of world.damsels) d.update(dt, T, world);
 
-  drawPond(T);
-  drawSky(T);
+  render(T, dt);
   requestAnimationFrame(frame);
 }
 
@@ -2262,15 +2514,17 @@ let booted = false;
 function boot() {
   booted = true;
   sizeCanvases();
-  drawPaper();
-  const T0 = performance.now() / 1000;
+  T0 = performance.now() / 1000;
   world.T = lastT = T0;
   buildLeaves(!REDUCED, T0);
   spawnCreatures();
+  prepareTitle();
+  // the title is drawn with the page font, so redraw it once the webfont arrives
+  if (document.fonts) document.fonts.ready.then(() => { prepareTitle(); if (REDUCED) drawTitle(1); });
   document.documentElement.classList.add('ready');
 
   if (REDUCED) {
-    // a still painting: settle the fish into place and draw once
+    // a still picture: settle the creatures into place and draw once
     for (let i = 0; i < 240; i++) {
       for (const k of world.koi) k.update(1 / 60, T0 + i / 60, world);
       for (const t of world.tadpoles) t.update(1 / 60, T0 + i / 60, world);
@@ -2284,8 +2538,7 @@ function boot() {
       d.abd.forEach(q => { q.a = d.h + Math.PI; });
       d.updateAbdomen(0, T0);
     }
-    drawPond(T0);
-    drawSky(T0);
+    render(T0, 0);
   } else {
     requestAnimationFrame(frame);
   }
@@ -2300,9 +2553,9 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
     sizeCanvases();
-    drawPaper();
     buildLeaves(false, world.T);
-    if (REDUCED) drawPond(world.T);
+    prepareTitle();
+    if (REDUCED) render(world.T, 0);
   }, 150);
 });
 

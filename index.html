@@ -5,27 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jyo Pari</title>
   <meta name="description" content="Jyo Pari — PhD student at MIT working on continually learning models.">
-  <meta name="theme-color" content="#f8f5ec">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-  <!-- Pond: rice paper (back), fish + ripples, lotus leaves, damselflies in the air (front, beneath text) -->
+  <!-- Pond: the 1-bit dithered scene, with crisp tracking hulls and tags on top (beneath text) -->
   <div id="scene" aria-hidden="true">
-    <canvas id="paper"></canvas>
-    <canvas id="pond"></canvas>
-    <div id="leaves"></div>
-    <canvas id="sky"></canvas>
+    <canvas id="dither"></canvas>
+    <canvas id="overlay"></canvas>
   </div>
 
   <main id="app">
     <header class="site-header">
       <div class="title-row">
-        <h1 class="reveal">Jyo Pari</h1>
+        <h1><span class="title-text">Jyo Pari</span><canvas class="title-dither" aria-hidden="true"></canvas></h1>
       </div>
 
       <p class="bio reveal">
@@ -34,14 +32,14 @@
 
       <div class="social-links reveal">
         <a href="mailto:jyop@mit.edu" target="_blank" rel="noreferrer noopener">Email</a>
-        <span class="dot" aria-hidden="true"></span>
+        <span class="sep" aria-hidden="true">/</span>
         <a href="https://scholar.google.com/citations?user=WyIW46YAAAAJ&hl=en" target="_blank" rel="noreferrer noopener">Scholar</a>
-        <span class="dot" aria-hidden="true"></span>
+        <span class="sep" aria-hidden="true">/</span>
         <a href="https://x.com/jyo_pari" target="_blank" rel="noreferrer noopener">Twitter</a>
       </div>
 
       <nav class="links">
-        <h3 class="reveal">Papers + Mini Research + Ideas</h3>
+        <h3 class="reveal">Papers + Mini Research + Ideas <span class="count">08</span></h3>
         <a class="reveal" href="https://jyopari.github.io/posts/curriculum">
           <span class="link-content"><span class="tag">Mini Research</span> Optimizing the Optimization Trajectory</span>
           <span class="link-date">Sept 28, 2025</span>
@@ -75,7 +73,7 @@
           <span class="link-date">Nov 4, 2024</span>
         </a>
 
-        <h3 class="reveal">Literature Review</h3>
+        <h3 class="reveal">Literature Review <span class="count">06</span></h3>
         <a class="reveal" href="https://jyopari.github.io/posts/preconditioner">
           <span class="link-content">Preconditioners in Optimization</span>
           <span class="link-date">Nov 23, 2025</span>
@@ -101,7 +99,7 @@
           <span class="link-date">Fall 2023</span>
         </a>
 
-        <h3 class="reveal">Misc</h3>
+        <h3 class="reveal">Misc <span class="count">08</span></h3>
         <a class="reveal" href="https://jyopari.github.io/posts/quintic">
           <span class="link-content">Mystery of the Quintics</span>
           <span class="link-date">Jan 5, 2026</span>
@@ -136,7 +134,7 @@
         </a>
       </nav>
 
-      <p class="hint reveal">Click the water to sprinkle food — or drag to scatter a trail.</p>
+      <p class="hint reveal">Click the water to drop food · drag to scatter a trail · hover a creature to inspect it</p>
     </header>
   </main>
 
