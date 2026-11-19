@@ -71,22 +71,12 @@ body {
 .site-header h3 { pointer-events: auto; } /* …except on real content */
 
 .site-header h1 {
-  margin: 0 0 22px;
+  margin: 0 0 16px;
   font-family: var(--sans);
-  font-weight: 600;
-  font-size: 60px;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-/* with JS, the name is drawn as dithered pixels; the text stays for screen readers */
-.title-dither { display: none; image-rendering: pixelated; image-rendering: crisp-edges; }
-.js .title-dither { display: block; margin-left: -2px; }
-.js .title-text {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .bio {
@@ -141,32 +131,15 @@ body {
 .links { display: grid; gap: 0; pointer-events: none; }
 
 .links h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 36px 0 8px;
+  margin: 36px 0 6px;
   font-family: var(--mono);
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.1em;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink);
-}
-.links h3:first-child { margin-top: 0; }
-.links h3::after {
-  /* a dithered rule running out to the edge of the column */
-  content: "";
-  flex: 1;
-  height: 2px;
-  background: var(--checker);
-  opacity: 0.55;
-  order: 1;
-}
-.links h3 .count {
-  order: 2;
-  font-weight: 500;
   color: var(--ink-faint);
 }
+.links h3:first-child { margin-top: 0; }
 
 .links a {
   position: relative;
@@ -274,7 +247,7 @@ body {
 @media (max-width: 680px) {
   body { font-size: 14px; }
   .site-header { padding: 36px 20px 56px; }
-  .site-header h1 { font-size: 46px; }
+  .site-header h1 { font-size: 26px; }
   .bio { font-size: 15px; }
   .links a { gap: 10px; font-size: 14px; }
   .link-date { font-size: 10.5px; }

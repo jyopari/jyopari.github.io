@@ -2268,50 +2268,6 @@ function drawOverlay(T, dt) {
   g.textAlign = 'left';
 }
 
-/* ---------- the title, dithered: its dots develop in on load ---------- */
-
-const titleCanvas = document.querySelector('.title-dither');
-const title = { tone: null, w: 0, h: 0, img: null, out: null, ctx: null, done: false };
-
-function prepareTitle() {
-  if (!titleCanvas) return;
-  const h1 = titleCanvas.closest('h1');
-  const cs = getComputedStyle(h1);
-  const fs = parseFloat(cs.fontSize);
-  const font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
-  const text = h1.querySelector('.title-text').textContent.trim();
-  const m = makeCanvas(1, 1).getContext('2d');
-  m.font = font;
-  const w = Math.ceil((m.measureText(text).width + fs * 0.12) / PX), h = Math.ceil(fs * 1.22 / PX);
-  const c = makeCanvas(w, h), g = c.getContext('2d', { willReadFrequently: true });
-  g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
-  g.setTransform(1 / PX, 0, 0, 1 / PX, 0, 0);
-  // solid at the top, loosening into scattered dots toward the baseline
-  const grad = g.createLinearGradient(0, fs * 0.2, 0, fs * 1.05);
-  grad.addColorStop(0, '#000');
-  grad.addColorStop(0.5, '#0a0a0a');
-  grad.addColorStop(1, '#8a8a8a');
-  g.fillStyle = grad;
-  g.font = font;
-  g.textBaseline = 'alphabetic';
-  g.fillText(text, fs * 0.02, fs * 0.94);
-  title.tone = g.getImageData(0, 0, w, h).data;
-  title.w = w; title.h = h;
-  titleCanvas.width = w; titleCanvas.height = h;
-  titleCanvas.style.width = w * PX + 'px';
-  titleCanvas.style.height = h * PX + 'px';
-  title.ctx = titleCanvas.getContext('2d');
-  title.img = title.ctx.createImageData(w, h);
-  title.out = new Uint32Array(title.img.data.buffer);
-  title.done = false;
-}
-function drawTitle(density) {
-  if (!title.tone || title.done) return;
-  ditherInto(title.tone, title.w, title.h, title.out, density);
-  title.ctx.putImageData(title.img, 0, 0);
-  if (density >= 1) title.done = true;
-}
-
 /* ---------- interaction ---------- */
 
 const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, last: 0, active: false };
@@ -2477,7 +2433,6 @@ function render(T, dt) {
   ditherInto(g.getImageData(0, 0, TW, TH).data, TW, TH, out32, develop);
   ditherCtx.putImageData(outImg, 0, 0);
   drawOverlay(T, dt);
-  drawTitle(REDUCED ? 1 : smoothstep(0.15, 1.5, T - T0));
 }
 
 function frame(now) {
@@ -2518,9 +2473,6 @@ function boot() {
   world.T = lastT = T0;
   buildLeaves(!REDUCED, T0);
   spawnCreatures();
-  prepareTitle();
-  // the title is drawn with the page font, so redraw it once the webfont arrives
-  if (document.fonts) document.fonts.ready.then(() => { prepareTitle(); if (REDUCED) drawTitle(1); });
   document.documentElement.classList.add('ready');
 
   if (REDUCED) {
@@ -2554,7 +2506,6 @@ window.addEventListener('resize', () => {
   resizeTimer = setTimeout(() => {
     sizeCanvases();
     buildLeaves(false, world.T);
-    prepareTitle();
     if (REDUCED) render(world.T, 0);
   }, 150);
 });
