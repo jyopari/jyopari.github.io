@@ -86,13 +86,6 @@ body {
   line-height: 1.6;
   color: var(--ink-soft);
 }
-.bio b {
-  font-weight: 600;
-  color: var(--white);
-  background: var(--ink);
-  padding: 0 4px;
-  text-shadow: none;
-}
 .site-header a { color: inherit; text-decoration: none; }
 .bio a {
   color: var(--ink);
@@ -164,28 +157,6 @@ body {
   transform: translateY(-50%);
 }
 .links a:hover::before { background: var(--ink); width: 6px; height: 6px; left: 3px; }
-
-/* hover: detector-style corner brackets snap onto the row */
-.links a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background:
-    linear-gradient(var(--ink), var(--ink)) left top / 8px 1.5px,
-    linear-gradient(var(--ink), var(--ink)) left top / 1.5px 8px,
-    linear-gradient(var(--ink), var(--ink)) right top / 8px 1.5px,
-    linear-gradient(var(--ink), var(--ink)) right top / 1.5px 8px,
-    linear-gradient(var(--ink), var(--ink)) left bottom / 8px 1.5px,
-    linear-gradient(var(--ink), var(--ink)) left bottom / 1.5px 8px,
-    linear-gradient(var(--ink), var(--ink)) right bottom / 8px 1.5px,
-    linear-gradient(var(--ink), var(--ink)) right bottom / 1.5px 8px;
-  background-repeat: no-repeat;
-  transform: scale(1.04, 1.25);
-  transition: opacity 0.15s steps(3), transform 0.18s steps(3);
-}
-.links a:hover::after { opacity: 1; transform: none; }
 
 .link-content { flex: 1; }
 .links a:hover .link-content {
