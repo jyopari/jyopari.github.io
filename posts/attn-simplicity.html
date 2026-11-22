@@ -142,7 +142,8 @@ svg text { text-rendering: optimizeLegibility; }
 .geometry.with-polynomial .geometry-panels { grid-template-columns: repeat(4,minmax(0,1fr)); gap: .9rem; }
 .geometry-panel { min-width: 0; }
 .geometry-panel-title { font-size: .8125rem; font-weight: 500; line-height: 1.4; margin: 0 0 .65rem; color: #657078; }
-.geometry-svg { display: block; width: 100%; height: auto; touch-action: none; overflow: visible; }
+.geometry-svg { display: block; width: 100%; height: auto; touch-action: pan-y; overflow: visible; }
+.geometry-svg .geometry-point { touch-action:none; }
 .geometry-svg text { font-family: inherit; font-size: 12px; fill: #6b777d; }
 .geometry-svg .geometry-tick { font-size: 10px; fill: #9aa3a7; font-variant-numeric: tabular-nums; }
 .geometry-axis { fill: none; stroke: #dfe5e7; stroke-width: .8; }
@@ -228,6 +229,15 @@ td:last-child, th:last-child { padding-right: 0; }
 /* Coefficients sit in the outer margin while the visual stays in the reading column. */
 .coefficient-editor { margin:1.25rem 0 0; padding-top:.7rem; border-top:1px solid #dedede; }
 .coefficient-heading { font-size:.625rem; font-weight:500; letter-spacing:.09em; text-transform:uppercase; color:#777; margin-bottom:.85rem; }
+.geometry-polynomial-tools .geometry-interpolate { margin-inline:.2rem;color:#687789; }
+.geometry-interpolate[aria-pressed=true] { box-shadow:0 1px #687789; }
+.coefficient-hint { display:flex;align-items:center;gap:.5rem;margin:.7rem 0 0;padding-left:1.5rem;font-size:.8125rem;line-height:1.5;color:#4b5962; }
+.coefficient-hint svg { flex:0 0 25px;width:25px;height:30px;align-self:flex-start;margin-top:-.1rem; }
+.coefficient-hint path { fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round; }
+.coefficient-hint[hidden] { display:none; }
+.coefficient-hint.is-inviting { animation:coefficient-invitation 3.8s ease-in-out infinite; }
+@keyframes coefficient-invitation { 0%,100% {opacity:1;} 50% {opacity:.6;} }
+@media(prefers-reduced-motion:reduce) { .coefficient-hint.is-inviting {animation:none;} }
 .coefficient-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.4rem; }
 .coefficient-group-title { font-size:.6875rem; line-height:1.3; color:#666; margin-bottom:.5rem; }
 .coefficient-fields .coefficient-row { display:grid; grid-template-columns:1.15rem minmax(0,1fr) 3.9rem; gap:.45rem; align-items:center; min-height:1.4rem; }
@@ -416,6 +426,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>Despite the shared name, linear attention does not generally compute the least-squares solution. The network has to learn how to infer a new mapping from the examples in each sequence. Softmax attention can do this too: <a href="https://arxiv.org/html/2211.15661">Akyürek et&nbsp;al.</a> show that trained softmax transformers can closely match ordinary least squares. Both of our networks also contain nonlinear operations. Whether replacing softmax with linear attention helps in this smaller architecture is therefore an empirical question, rather than something implied by the task’s name.</p>
 
 <h3>Lookup on an 8 × 8 grid</h3>
+<p>Here, there is no shared rule connecting coordinates to labels. Each sequence gives the model a new lookup table, and it must retrieve the label at the queried coordinate.</p>
 <div class="lookup-task-copy">
 <figure id="lookup-task" data-figure-number="2" class="lookup-side" aria-label="Query coordinate and the label to predict"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 280" role="group" tabindex="0" aria-labelledby="lookup-grid-title" aria-describedby="lookup-grid-description" class="lookup-grid"><title id="lookup-grid-title">Retrieve the label at the marked coordinate</title><desc id="lookup-grid-description">An eight by eight grid of binary labels. Hover or tap near an intersection to select a query. Keyboard users can focus the grid and use arrow keys. The matching coordinate lines and digit are highlighted; the header shows the selected coordinates and label.</desc><style> .lookup-grid text{font-family:Lato,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
 .lookup-grid [data-lookup-point] circle{r:1.1px;fill:#9aa6af}
@@ -486,7 +497,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>Linear attention reaches lower error on regression, while softmax reaches higher accuracy on lookup. The direction holds on every seed, after tuning the learning rate separately for each task and attention type.</p>
 
 
-<p><a href="https://arxiv.org/abs/2501.12352">Wang, Shi, and Fox</a> connect these attention operations to regression. Basic linear attention predicts with a linear map obtained by one gradient step from zero on a least-squares problem mapping keys to values. Our normalization and multiplier set the scale of that step. QK-normalized softmax attention instead gives a kernel-weighted, locally constant regression estimate of the values at the query. These are descriptions of the attention operation in feature space, not a claim that our full network takes a gradient step on the task’s regression problem. Linear attention is not, in general, the exact least-squares solution.</p>
+<p><a href="https://arxiv.org/abs/2501.12352">Wang, Shi, and Fox</a> interpret attention as regression from keys to values. Linear attention gives the same prediction as starting a linear map at zero, taking one least-squares gradient step, and applying it to the query. In our formulation, the multiplier (g) acts as that step’s size when the loss is averaged over keys. This generally does not solve least squares exactly. QK-normalized softmax attention instead predicts a locally weighted average of the values. These interpretations describe the attention operation on internal features, rather than the full network’s learning algorithm.</p>
 <p>Is linear attention simply more data-efficient on this task, or does it also reach a better solution with more training? We increase the training budget tenfold, scaling the peak learning rate down by \(\sqrt{10}\). Linear attention still finishes with lower error in this seed-0 experiment. Full details and alternative schedules are in the <a href="#long-training-details">appendix</a>.</p>
 <figure class="wide long-figure" id="long-baseline" data-models="linear,softmax" data-recipe="scaled" data-figure-number="5" aria-label="Linear and softmax regression curves over 100000 updates with scaled peak learning rates"></figure>
 <p>Softmax has a nonlinear response, but linear attention still learns this regression task with lower error. <a href="https://arxiv.org/abs/math/0406077">Minimum description length</a> expresses a preference for explanations whose complexity is justified by the data. Here, we use that idea as motivation, rather than measuring description length. We would like a parameterization that can learn either kind of response, with an initialization that favors a simple solution.</p>
@@ -507,7 +518,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>This family contains linear attention exactly. It can also approximate softmax: define the truncated exponential</p>
 <div class="equation">\[T_P(s)=\sum_{r=0}^{P}\frac{s^r}{r!}.\]</div>
 <p>Setting \(G=H=T_P\) replaces the exponential in softmax with its Taylor polynomial. At finite degree this is an approximation, whose accuracy depends on the score range.</p>
-<p>Try the linear and truncated-softmax presets below, then move the coefficient sliders. Numerator coefficients change each value’s signed contribution; denominator coefficients change the shared normalization. The degree controls how many powers of the score are available. These controls edit the function directly, without retraining a model.</p>
+<p>The animation below moves the coefficients between linear attention and truncated softmax. You can move the query, keys, or values while it runs. Change a coefficient to take over, or use Interpolate to pause and restart. Numerator coefficients change each value’s signed contribution; denominator coefficients change the shared normalization. The degree controls how many powers of the score are available. These controls edit the function directly, without retraining a model.</p>
 <figure class="wide geometry" id="geometry-polynomial" data-figure-number="6" data-polynomial="true" aria-label="Interactive linear, polynomial, and softmax attention"></figure>
 <p>Learning these functions is related to <a href="https://arxiv.org/abs/2404.19756">Kolmogorov–Arnold Networks (KANs)</a>, which learn univariate spline functions on network edges. Our construction instead learns polynomial functions of attention scores.</p>
 <p>Polynomial attention itself is not a new idea. <a href="https://arxiv.org/abs/2310.01655">PolySketchFormer</a> studies polynomial kernels and sketching, while <a href="https://arxiv.org/abs/2403.02920">TaylorShift</a> develops efficient computations for second-order Taylor-softmax. Both normalize with the same polynomial response used to weight the values. Here, the numerator and denominator have independent learned coefficients, starting from linear attention.</p>
@@ -767,18 +778,17 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <section aria-labelledby="acknowledgments">
 <h3 id="acknowledgments">Acknowledgments</h3>
-<p>We thank Han Guo for his feedback on the draft.</p>
+<p>We thank Han Guo, Alex Zhang, and Idan Shenfeld for their feedback on the draft.</p>
 </section>
 
 <section class="citation" aria-labelledby="citation-heading">
 <h3 id="citation-heading">Citation</h3>
 <pre><code>@misc{pari2026simplicity,
-  title = {Simplicity Bias in Attention},
-  author = {Pari, Jyo and Duggal, Shivam and
-            Hanashiro, Rafael and Torroba-Hennigen, Lucas and
-            Agrawal, Pulkit and Kim, Yoon},
-  year = {2026},
-  month = nov
+  author = {Jyo Pari and Shivam Duggal and Rafael Hanashiro and
+            Lucas Torroba-Hennigen and Pulkit Agrawal and Yoon Kim},
+  title  = {Simplicity Bias in Attention},
+  year   = {2026},
+  url    = {https://jyopari.github.io/posts/attn-simplicity.html}
 }</code></pre>
 </section>
 
@@ -951,13 +961,13 @@ function geometry(root) {
    <label class="geometry-normalize"><input type="checkbox" aria-label="Normalize queries and keys"> QK norm</label>
    <div class="geometry-actions"><button type="button" data-action="add">+ Add pair</button><button type="button" data-action="remove" disabled>Remove</button><button type="button" data-action="reset">Reset</button></div>
   </div>
-  ${hasPoly ? `<div class="geometry-polynomial-tools"><div class="geometry-presets"><button type="button" data-preset="linear" aria-pressed="true">Linear</button><button type="button" data-preset="softmax" aria-pressed="false">Truncated softmax</button></div><div class="geometry-degrees" role="group" aria-label="Polynomial degree"><span>Degree</span>${[1,2,4,8].map(n => `<button type="button" data-degree="${n}" aria-pressed="${n === 8}">${n}</button>`).join('')}</div></div>` : ''}
+  ${hasPoly ? `<div class="geometry-polynomial-tools"><div class="geometry-presets"><button type="button" data-preset="linear" aria-pressed="true">Linear</button><button type="button" data-preset="softmax" aria-pressed="false">Truncated softmax</button></div><button type="button" class="geometry-interpolate" data-action="animate" aria-pressed="false" aria-label="Interpolate between linear and truncated-softmax coefficients">Interpolate</button><div class="geometry-degrees" role="group" aria-label="Polynomial degree"><span>Degree</span>${[1,2,4,8].map(n => `<button type="button" data-degree="${n}" aria-pressed="${n === 8}">${n}</button>`).join('')}</div></div>` : ''}
   <div class="geometry-panels">
    <div class="geometry-panel"><div class="geometry-panel-title">Keys & query</div><svg class="geometry-svg" data-panel="input" role="group" aria-label="Move the query or keys"></svg></div>
    ${modes.map(mode => `<div class="geometry-panel"><div class="geometry-panel-title" style="color:${colors[mode]}">${names[mode]} attention</div><svg class="geometry-svg" data-panel="${mode}" role="group" aria-label="${names[mode]} attention geometry"></svg></div>`).join('')}
   ${!hasPoly ? `<aside class="geometry-note" aria-label="Try the attention playground"><p>Drag the query, keys, or values.</p><p>Try turning on <span class="geometry-note-control">QK norm</span>.</p></aside>` : ''}
   </div>
-  ${hasPoly ? `<aside class="coefficient-editor" id="${root.id}-coefficients" aria-label="Polynomial coefficients"><div class="coefficient-heading">Coefficients</div><div class="coefficient-fields"></div></aside>` : ''}
+  ${hasPoly ? `<aside class="coefficient-editor" id="${root.id}-coefficients" aria-label="Polynomial coefficients"><div class="coefficient-heading">Coefficients</div><div class="coefficient-fields"></div><p class="coefficient-hint"><svg viewBox="0 0 28 34" aria-hidden="true"><path d="M3 31C23 29 23 17 21 4M15 10L21 4L26 11"/></svg><span>Try moving a coefficient</span></p></aside>` : ''}
   `;
 
  const plots = {}, gridCache = new Map();
@@ -1039,6 +1049,16 @@ function geometry(root) {
   gridCache.set(mode,result);return result;
  }
 
+ function drawOutput(mode) {
+  const f=plot(root.querySelector(`[data-panel=${mode}]`),1.8);plots[mode]=f;
+  const hull=M.convexHull(pairs.map(pair=>pair.v));
+  if(mode==='softmax' && hull.length>2)f.group.append(node('path',{d:line(hull,f.x,f.y)+'Z',class:'geometry-hull'}));
+  transformedGrid(mode).forEach(segments=>f.group.append(node('path',{d:segments.map(points=>line(points,f.x,f.y)).join(' '),stroke:colors[mode],class:'geometry-transformed-grid'})));
+  pairs.forEach((pair,index)=>point(f,pair.v,'value',index));
+  const result=evaluate(q,mode);
+  if(result.valid)point(f,result.output,'output',-1);
+  else f.group.append(node('text',{x:f.width/2,y:f.top+f.side/2,'text-anchor':'middle',class:'geometry-error'},'Undefined denominator'));
+ }
  function draw() {
   const focused=document.activeElement?.closest('.geometry-point');
   const restore=focused&&root.contains(focused)?targetFrom(focused):null;
@@ -1047,16 +1067,7 @@ function geometry(root) {
   const f=plot(root.querySelector('[data-panel=input]'),2.5); plots.input=f;
   grid.forEach(points=>f.group.append(node('path',{d:line(points,f.x,f.y),class:'geometry-source-grid'})));
   pairs.forEach((pair,index)=>point(f,pair.k,'key',index)); point(f,q,'query',-1);
-  const hull=M.convexHull(pairs.map(pair=>pair.v));
-  modes.forEach(mode=>{
-   const f=plot(root.querySelector(`[data-panel=${mode}]`),1.8);plots[mode]=f;
-   if(mode==='softmax' && hull.length>2)f.group.append(node('path',{d:line(hull,f.x,f.y)+'Z',class:'geometry-hull'}));
-   transformedGrid(mode).forEach(segments=>f.group.append(node('path',{d:segments.map(points=>line(points,f.x,f.y)).join(' '),stroke:colors[mode],class:'geometry-transformed-grid'})));
-   pairs.forEach((pair,index)=>point(f,pair.v,'value',index));
-   const result=evaluate(q,mode);
-   if(result.valid)point(f,result.output,'output',-1);
-   else f.group.append(node('text',{x:f.width/2,y:f.top+f.side/2,'text-anchor':'middle',class:'geometry-error'},'Undefined denominator'));
-  });
+  modes.forEach(drawOutput);
   if(restore)root.querySelector(`svg[data-panel="${restore.panel}"] .geometry-point[data-kind="${restore.kind}"][data-index="${restore.index}"] .hit`)?.focus({preventScroll:true});
   decorate();
  }
@@ -1136,12 +1147,13 @@ function geometry(root) {
     const input=document.createElement('input');input.type='number';input.step='any';input.disabled=fixed;
     input.setAttribute('aria-label',(kind==='a'?'Numerator':'Denominator')+' coefficient '+r);
     if(fixed){slider.title='Fixed at 1';input.title='Fixed at 1';}
-    const format=value=>Number(value.toPrecision(6)).toString();
+    const format=value=>value!==0&&Math.abs(value)<.001?value.toExponential(3):Number(value.toPrecision(6)).toString();
     const syncRange=()=>{
      const limit=Math.max(baseRange,Math.abs(coeff[kind][r])*1.2);
      slider.min=String(-limit);slider.max=String(limit);slider.value=String(coeff[kind][r]);slider.setAttribute('aria-valuetext',format(coeff[kind][r]));
     };
     const changed=()=>{preset=null;root.querySelectorAll('[data-preset]').forEach(button=>button.setAttribute('aria-pressed','false'));schedule(true);};
+    slider.dataset.coefficient=kind+r;input.dataset.coefficient=kind+r;
     syncRange();input.value=format(coeff[kind][r]);
     slider.addEventListener('input',()=>{coeff[kind][r]=slider.valueAsNumber;input.value=format(coeff[kind][r]);slider.setAttribute('aria-valuetext',input.value);changed();});
     input.addEventListener('input',()=>{if(Number.isFinite(input.valueAsNumber)){coeff[kind][r]=input.valueAsNumber;if(coeff[kind][r]<Number(slider.min)||coeff[kind][r]>Number(slider.max))syncRange();else slider.value=String(coeff[kind][r]);slider.setAttribute('aria-valuetext',format(coeff[kind][r]));changed();}});
@@ -1156,6 +1168,94 @@ function geometry(root) {
   coefficientControls();
  }
  draw();redrawers.push(draw);
+ if(hasPoly)coefficientAnimation();
+
+ function coefficientAnimation() {
+  const button=root.querySelector('[data-action=animate]');
+  const hint=root.querySelector('.coefficient-hint');
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const endpoints={linear:M.preset('linear',8),softmax:M.preset('softmax',8)};
+  const visible=new Set();
+  let requested=false,running=false,started=false,interacted=false,edited=false;
+  let raf=null,startTime=0,elapsed=0,lastFrame=0;
+  function buttonState() {
+   button.textContent='Interpolate';button.setAttribute('aria-pressed',String(requested));
+   button.setAttribute('aria-label',reducedMotion.matches?'Switch between linear and truncated-softmax coefficients':requested?'Pause coefficient interpolation':'Interpolate between linear and truncated-softmax coefficients');
+   root.dataset.animation=running?'playing':requested?'paused':'stopped';
+  }
+  function suspend() {
+   if(running)elapsed+=performance.now()-startTime;
+   running=false;cancelAnimationFrame(raf);raf=null;buttonState();
+  }
+  function stop() {suspend();requested=false;buttonState();}
+  function mix(amount) {
+   for(const kind of ['a','b'])coeff[kind]=endpoints.linear[kind].map((v,r)=>v+(endpoints.softmax[kind][r]-v)*amount);
+   preset=amount===0?'linear':amount===1?'softmax':null;
+   root.dataset.interpolation=amount.toFixed(4);
+   root.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.preset===preset));
+   root.querySelectorAll('[data-coefficient]').forEach(input=>{
+    const key=input.dataset.coefficient,value=coeff[key[0]][Number(key.slice(1))];
+    const formatted=value!==0&&Math.abs(value)<.001?value.toExponential(3):Number(value.toPrecision(6)).toString();
+    input.value=formatted;
+    if(input.type==='range')input.setAttribute('aria-valuetext',formatted);
+   });
+   // The interpolation changes only the polynomial panel. Keep point focus and dragging intact.
+   const focused=document.activeElement?.closest('.geometry-point');
+   const restore=focused&&plots.polynomial.svg.contains(focused)?targetFrom(focused):null;
+   gridCache.delete('polynomial');drawOutput('polynomial');
+   if(restore)root.querySelector(`svg[data-panel="polynomial"] .geometry-point[data-kind="${restore.kind}"][data-index="${restore.index}"] .hit`)?.focus({preventScroll:true});
+   decorate();
+  }
+  function tick(now) {
+   if(!running)return;
+   if(now-lastFrame>=50){
+    const phase=(elapsed+now-startTime)%10000;
+    const t=phase<800?0:phase<4800?(phase-800)/4000:phase<6000?1:1-(phase-6000)/4000;
+    mix(t*t*(3-2*t));lastFrame=now;
+   }
+   raf=requestAnimationFrame(tick);
+  }
+  function resume() {
+   if(running||!requested||document.hidden||!visible.size)return;
+   running=true;startTime=performance.now();lastFrame=0;buttonState();raf=requestAnimationFrame(tick);
+  }
+  function start() {
+   if(reducedMotion.matches)return;
+   stop();requested=true;started=true;elapsed=0;
+   coeff=M.preset('linear',8);preset='linear';coefficientControls();
+   mix(0);buttonState();resume();
+  }
+  button.addEventListener('click',()=>{
+   interacted=true;
+   if(reducedMotion.matches){
+    preset=preset==='softmax'?'linear':'softmax';coeff=M.preset(preset,8);
+    coefficientControls();schedule(true);return;
+   }
+   if(requested)stop();else start();
+  });
+  root.addEventListener('input',event=>{
+   if(!event.target.matches('[data-coefficient]')||event.target.disabled)return;
+   interacted=true;edited=true;stop();hint.hidden=true;hint.classList.remove('is-inviting');
+  },{capture:true});
+  // A preset or reset explicitly chooses coefficients, so preserve that choice.
+  root.addEventListener('click',event=>{
+   if(event.target.closest('[data-preset],[data-action=reset]')){interacted=true;stop();}
+  },{capture:true});
+  const observer=new IntersectionObserver(entries=>{
+   for(const entry of entries){
+    if(entry.isIntersecting&&entry.intersectionRatio>=.4)visible.add(entry.target);
+    else visible.delete(entry.target);
+   }
+   hint.classList.toggle('is-inviting',visible.has(root.querySelector('.coefficient-editor'))&&!edited);
+   if(visible.size){if(!started&&!interacted&&!reducedMotion.matches)start();else resume();}
+   else suspend();
+  },{threshold:.4});
+  observer.observe(root.querySelector('[data-panel=polynomial]'));
+  observer.observe(root.querySelector('.coefficient-editor'));
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)suspend();else resume();});
+  reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches)stop();});
+  buttonState();
+ }
 }
 
 function initializationFigure(root) {
@@ -1381,7 +1481,13 @@ ablationFigure(document.getElementById('ablation-analysis'));
 document.querySelectorAll('figure[data-figure-number]').forEach(root=>{
  const label=document.createElement('div');label.className='figure-index';label.textContent='Figure '+root.dataset.figureNumber;root.prepend(label);
 });
-let resizeFrame;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>redrawers.forEach(fn=>fn()));});
+let resizeFrame,layoutWidth=document.documentElement.clientWidth;
+window.addEventListener('resize',()=>{
+ const width=document.documentElement.clientWidth;
+ if(width===layoutWidth)return;
+ layoutWidth=width;cancelAnimationFrame(resizeFrame);
+ resizeFrame=requestAnimationFrame(()=>redrawers.forEach(fn=>fn()));
+});
 window.BlogEvidence=Object.freeze({revision:D.revision,mainRuns:D.runs.length,lrSettings:D.lr.length,ablations:D.ablations.length,initializationRuns:D.initialization.reduce((n,g)=>n+g.runs.length,0),longRuns:D.long_training.reduce((n,g)=>n+g.runs.length,0),projectionSweepRuns:D.projection_sweep.length});
 })();
 
