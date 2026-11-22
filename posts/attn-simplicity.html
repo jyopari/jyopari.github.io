@@ -70,8 +70,7 @@ a:hover { text-decoration-color: var(--ink); }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: .35rem 0; }
 figure { margin: 2.5rem 0 2.7rem; }
 .wide { position: static; width: 100%; max-width: 100%; margin-inline: 0; transform: none; }
-.small-note, .figure-note { font-size: .85rem; line-height: 1.6; color: var(--muted); }
-.figure-note { margin: 1.1rem 0 0; }
+.small-note { font-size: .85rem; line-height: 1.6; color: var(--muted); }
 .figure-heading { font-size: .8125rem; line-height: 1.45; font-weight: 500; margin: 0 0 .65rem; }
 .toolbar { display: flex; align-items: center; gap: .65rem 1.2rem; flex-wrap: wrap; margin-bottom: 1.35rem; }
 .toolbar label, .geometry-toolbar label { display: flex; align-items: center; gap: .45rem; font-size: .875rem; color: var(--muted); }
@@ -213,7 +212,7 @@ td:last-child, th:last-child { padding-right: 0; }
 .task-details .detail-content h3:first-child { margin-top: 1rem; }
 
 .initialization-figure .chart-readout span:not(:first-child) { margin-right:.65rem; white-space:nowrap; }
-.initialization-figure .chart-readout { font-size:.75rem; }
+.initialization-figure .chart-readout { font-size:.75rem;min-height:0; }
 
 .geometry { --linear:#687789; --softmax:#687789; --polynomial:#687789; }
 
@@ -278,7 +277,6 @@ td:last-child, th:last-child { padding-right: 0; }
 #lr-analysis .chart-readout { display:grid; grid-template-columns:repeat(3,max-content); column-gap:.4rem; font-size:.6875rem; align-content:start; min-height:3.2rem; }
 #lr-analysis .chart-readout span { margin:0; white-space:nowrap; }
 #lr-analysis .chart-readout span:first-child { grid-column:1 / -1; margin-bottom:.2rem; }
-#lr-analysis .figure-note { font-size:.75rem; margin-top:.65rem; }
 @media(max-width:650px) {
  .lr-selection #lr-analysis { float:none; width:100%; margin:1rem 0 1.5rem; }
 }
@@ -356,7 +354,6 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 /* Queued review: single comparisons and compact stability triptych. */
 .initialization-grid {grid-template-columns: minmax(0,1fr);}
-.initialization-grid .small-note:empty, .long-figure .figure-note:empty {display:none;}
 .stability-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;}
 .stability-grid h4 {font-size:.89rem;line-height:1.4;margin-bottom:.25rem;}
 .stability-grid .metric-name {font-size:.75rem;line-height:1.4;min-height:2.1em;margin-bottom:.25rem;}
@@ -394,7 +391,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
  h_{\mathrm{MDL}}\in\arg\min_h\left[L(h)+L(D\mid h)\right].
 \]</div>
 <p>Simplicity bias has been studied extensively in feedforward networks. <a href="https://arxiv.org/abs/2103.10427">Huh et&nbsp;al.</a> show how linear overparameterization can encourage representations with lower effective rank without changing expressive capacity. Weight decay encourages smaller weights, with <a href="https://arxiv.org/abs/2605.10878">theory in a specialized setting</a> connecting minimum weight norms to algorithmic complexity in fixed-precision looped networks. These suggest keeping the parameterization flexible and guiding learning toward simpler solutions.</p>
-<p>In attention, however, we usually fix the rule that converts query–key similarity scores into attention weights, choosing a particular form such as linear or softmax attention. What biases do these choices introduce? Can we find a more general formulation of attention, and revisit how to guide learning toward simpler solutions within it?</p>
+<p>In attention, however, we usually fix the rule that converts query–key similarities into weights, choosing a form such as linear or softmax attention. Softmax gives us a more complex nonlinear response, yet we find that linear attention performs better on a simple in-context regression task. On lookup/retrieval, the preference reverses. Can we find a more general formulation that lets the model learn the attention function, and revisit how to guide it toward simpler solutions?</p>
 </div>
 
 <h2 id="attention-functions">Linear attention and softmax</h2>
@@ -497,10 +494,10 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>Linear attention reaches lower error on regression, while softmax reaches higher accuracy on lookup. The direction holds on every seed, after tuning the learning rate separately for each task and attention type.</p>
 
 
-<p><a href="https://arxiv.org/abs/2501.12352">Wang, Shi, and Fox</a> interpret attention as regression from keys to values. Linear attention gives the same prediction as starting a linear map at zero, taking one least-squares gradient step, and applying it to the query. In our formulation, the multiplier (g) acts as that step’s size when the loss is averaged over keys. This generally does not solve least squares exactly. QK-normalized softmax attention instead predicts a locally weighted average of the values. These interpretations describe the attention operation on internal features, rather than the full network’s learning algorithm.</p>
+<p><a href="https://arxiv.org/abs/2501.12352">Wang, Shi, and Fox</a> interpret attention as regression from keys to values. Linear attention gives the same prediction as starting a linear map at zero, taking one least-squares gradient step, and applying it to the query. In our formulation, the multiplier \(g\) acts as that step’s size when the loss is averaged over keys. This generally does not solve least squares exactly. QK-normalized softmax attention instead predicts a locally weighted average of the values. These interpretations describe the attention operation on internal features, rather than the full network’s learning algorithm.</p>
 <p>Is linear attention simply more data-efficient on this task, or does it also reach a better solution with more training? We increase the training budget tenfold, scaling the peak learning rate down by \(\sqrt{10}\). Linear attention still finishes with lower error in this seed-0 experiment. Full details and alternative schedules are in the <a href="#long-training-details">appendix</a>.</p>
 <figure class="wide long-figure" id="long-baseline" data-models="linear,softmax" data-recipe="scaled" data-figure-number="5" aria-label="Linear and softmax regression curves over 100000 updates with scaled peak learning rates"></figure>
-<p>Softmax has a nonlinear response, but linear attention still learns this regression task with lower error. <a href="https://arxiv.org/abs/math/0406077">Minimum description length</a> expresses a preference for explanations whose complexity is justified by the data. Here, we use that idea as motivation, rather than measuring description length. We would like a parameterization that can learn either kind of response, with an initialization that favors a simple solution.</p>
+<p>These tasks favor different attention functions. We want a parameterization that can learn either response, starting from a simple function.</p>
 <h2 id="polynomial-family">Learning the attention function</h2>
 <p>Look again at the two attention operations. We can write both as a weighted sum divided by a sum:</p>
 <div class="equation paired-equations">
@@ -748,7 +745,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <h3 id="failure-details">Unprojected training and denominator failures</h3>
 <p>The extra unprojected sweep uses seed 2, the same 15 peak LRs, batch size 1,024, and the original 10,000-update flat-then-cosine schedule. Only the denominator projection is removed. No coefficients are frozen or regularized. Thirteen regression runs and eight lookup runs finish with finite results. The other nine runs produce a nonfinite training or validation result.</p>
 <p>The projected comparison in <a href="#projection-comparison">Figure 8</a> uses seed 2 from the original LR sweep. Its hardware is H100, while the unprojected sweep uses an RTX 2080 Ti. It is a comparison of these recorded sweeps, not a perfectly hardware-matched intervention.</p>
-<p>For the five diagnosed failures, same-GPU replays match all saved measurements in the checked prefixes and replay windows. We retain the original forward arithmetic and inspect the actual sum over visible keys, not just roots of the polynomial. In every examined case, finite scores and numerator values precede a zero computed denominator. The four other failures are not diagnosed.</p>
+<p>For the five diagnosed failures, same-GPU replays match all saved measurements in the checked prefixes and replay windows. We retain the original forward arithmetic and inspect the actual sum over visible keys, not just roots of the polynomial. In every examined case, finite scores and numerator values precede a zero computed denominator. The four other failures are not diagnosed. The denominator trace uses a scale that includes zero and is approximately logarithmic away from it.</p>
 <p>As a separate numerical check, we rescale only the denominator coefficients at each saved pre-failure checkpoint, then apply the normal projection after subsequent updates. All five short diagnostic windows remain finite. These interventions are stability checks, not complete retrainings or evidence of final task performance.</p>
 
 <details id="simplicity-details">
@@ -915,7 +912,7 @@ function bounds(values,log=false){let lo=Math.min(...values),hi=Math.max(...valu
 function seedSelect(id){return `<label>Show <select id="${id}"><option value="mean">Mean & seed range</option><option value="0">Seed 0</option><option value="1">Seed 1</option><option value="2">Seed 2</option></select></label>`;}
 function resultFigure(root){
  const models=root.dataset.models.split(',');let active=new Set(models);
- root.innerHTML=`<div class="toolbar">${seedSelect(root.id+'-seed')}<div class="figure-legend">${models.map(m=>`<button type="button" class="legend-button" data-model="${m}" aria-pressed="true" style="color:${colors[m]}"><span class="swatch"></span>${names[m]}</button>`).join('')}</div></div><div class="chart-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'2D linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Validation MSE · logarithmic scale':'Validation accuracy'}</div><svg data-task="${t}" role="img"></svg><div class="chart-readout" data-readout="${t}" aria-live="polite"></div></div>`).join('')}</div><figcaption class="figure-note">Mean and range across seeds 0–2.</figcaption>`;
+ root.innerHTML=`<div class="toolbar">${seedSelect(root.id+'-seed')}<div class="figure-legend">${models.map(m=>`<button type="button" class="legend-button" data-model="${m}" aria-pressed="true" style="color:${colors[m]}"><span class="swatch"></span>${names[m]}</button>`).join('')}</div></div><div class="chart-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'2D linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Validation MSE · logarithmic scale':'Validation accuracy'}</div><svg data-task="${t}" role="img"></svg><div class="chart-readout" data-readout="${t}" aria-live="polite"></div></div>`).join('')}</div>`;
  function draw(){
   const seed=root.querySelector('select').value;
   tasks.forEach(task=>{
@@ -1262,7 +1259,7 @@ function initializationFigure(root) {
  const groups=D.initialization.filter(g=>!root.dataset.bound||g.bound===Number(root.dataset.bound));
  const initializations=['linear','softmax'];
  const labels={linear:'Linear init',softmax:'Truncated-softmax init'};
- root.innerHTML=`<div class="toolbar">${seedSelect(root.id+'-seed')}<div class="figure-legend">${initializations.map(m=>`<span style="color:${colors[m]}"><span class="swatch"></span>${labels[m]}</span>`).join('')}</div></div><div class="chart-grid initialization-grid">${groups.map(g=>`<div class="chart-panel"><h4>Denominator bound ${g.bound}</h4><div class="metric-name">Validation MSE · logarithmic scale</div><svg data-bound="${g.bound}" role="img" aria-label="Regression initialization comparison with denominator bound ${g.bound}"></svg><div class="chart-readout" data-readout="${g.bound}" aria-live="polite"></div><p class="small-note">${g.bound===0.5?'Truncated-softmax initialization starts outside this bound.':''}</p></div>`).join('')}</div><figcaption class="figure-note">Mean and range across seeds 0–2. Hover to inspect an update, or select a seed.</figcaption>`;
+ root.innerHTML=`<div class="toolbar">${seedSelect(root.id+'-seed')}<div class="figure-legend">${initializations.map(m=>`<span style="color:${colors[m]}"><span class="swatch"></span>${labels[m]}</span>`).join('')}</div></div><div class="chart-grid initialization-grid">${groups.map(g=>`<div class="chart-panel"><h4>Denominator bound ${g.bound}</h4><div class="metric-name">Validation MSE · logarithmic scale</div><svg data-bound="${g.bound}" role="img" aria-label="Regression initialization comparison with denominator bound ${g.bound}"></svg><div class="chart-readout" data-readout="${g.bound}" aria-live="polite"></div></div>`).join('')}</div>`;
  function draw(){
   const seed=root.querySelector('select').value;
   groups.forEach(group=>{
@@ -1291,7 +1288,7 @@ function initializationFigure(root) {
 }
 
 function lrFigure(root){
- root.innerHTML=`<div class="toolbar"><label>Task <select><option value="regression">Regression · MSE</option><option value="lookup">Lookup · accuracy</option></select></label><div class="figure-legend">${Object.keys(colors).map(m=>`<span style="color:${colors[m]}"><span class="swatch"></span> ${names[m]}</span>`).join('')}</div></div><svg role="img"></svg><div class="chart-readout"></div><figcaption class="figure-note">Mean over seeds 0–2; shading shows their range. Outlined points mark selected LRs.</figcaption>`;
+ root.innerHTML=`<div class="toolbar"><label>Task <select><option value="regression">Regression · MSE</option><option value="lookup">Lookup · accuracy</option></select></label><div class="figure-legend">${Object.keys(colors).map(m=>`<span style="color:${colors[m]}"><span class="swatch"></span> ${names[m]}</span>`).join('')}</div></div><svg role="img"></svg><div class="chart-readout"></div>`;
  function draw(){const task=root.querySelector('select').value,metric=task==='regression'?'mean_loss':'mean_accuracy',loField=task==='regression'?'min_loss':'min_accuracy',hiField=task==='regression'?'max_loss':'max_accuracy';const rows=D.lr.filter(r=>r.task===task);const [lo,hi]=task==='regression'?bounds(rows.flatMap(r=>[r.min_loss,r.max_loss]),true):[.45,1.025];
   const f=frame(root.querySelector('svg'),{xMin:.00025,xMax:.032,logX:true,xTicks:[.00025,.004,.032],xFormat:v=>v===.00025?'0.00025':prettyLR(v),xLabel:'Peak learning rate',yMin:lo,yMax:hi,logY:task==='regression',yTicks:task==='regression'?[1e-5,1e-4,1e-3,1e-2,1e-1]:[.5,.6,.7,.8,.9,1],yFormat:task==='regression'?v=>v.toExponential(0):v=>Math.round(v*100)+'%',height:280});
   const read=root.querySelector('.chart-readout');const show=(lr)=>{const a=Object.keys(colors).map(m=>rows.find(r=>r.attention===m&&Math.abs(Math.log2(r.peak_lr/lr))<1e-10));read.replaceChildren();const label=document.createElement('span');label.textContent='Peak LR '+prettyLR(lr);read.append(label);a.forEach(r=>{const value=document.createElement('span');value.style.color=colors[r.attention];value.textContent=names[r.attention]+' '+(task==='regression'?fmt(r.mean_loss):percent(r.mean_accuracy));read.append(value);});};
@@ -1308,7 +1305,7 @@ function ablationFigure(root){
   {suffix:'-with-freeze',label:'Projection + freeze',color:'#DF7E66',dash:'7 3'},
   {suffix:'-degree-weighted-reg',label:'+ degree-weighted L2',color:'#E09351',dash:'7 2 2 2'}
  ];
- root.innerHTML='<div class="toolbar"><label>Task <select><option value="regression">Regression · MSE</option><option value="lookup">Lookup · accuracy</option></select></label><span class="mini-stat">Seed 2</span></div><div class="metric-name"></div><svg class="chart" role="img"></svg><div class="figure-legend ablation-legend"></div><div class="chart-readout" aria-live="polite"></div><figcaption class="figure-note">Validation measured every 1,000 optimizer updates. Curves stop at the last finite measurement if training fails.</figcaption>';
+ root.innerHTML='<div class="toolbar"><label>Task <select><option value="regression">Regression · MSE</option><option value="lookup">Lookup · accuracy</option></select></label><span class="mini-stat">Seed 2</span></div><div class="metric-name"></div><svg class="chart" role="img"></svg><div class="figure-legend ablation-legend"></div>';
  function draw(){
   const task=root.querySelector('select').value;
   const base=D.runs.find(r=>r.task===task&&r.model==='polynomial'&&r.seed===2);
@@ -1343,7 +1340,6 @@ function ablationFigure(root){
   }
   root.querySelector('.ablation-legend').innerHTML=styles.map((s,i)=>`<span style="color:${s.color}"><svg width="18" height="5" aria-hidden="true"><line x1="0" x2="18" y1="2" y2="2" stroke="currentColor" stroke-width="1.8" stroke-dasharray="${s.dash}"/></svg> ${s.label}${rows[i].successful?'':' · failed'}</span>`).join('');
   root.querySelector('.ablation-legend').hidden=!compact;
-  root.querySelector('.chart-readout').textContent='Peak LR '+prettyLR(base.lr)+'. Same recipe and seed; no LR retuning per ablation.'+(rows.some(r=>!r.successful)?' No extras becomes nonfinite after its last recorded validation.':'');
  }
  root.querySelector('select').addEventListener('change',draw);draw();redrawers.push(draw);
 }
@@ -1353,7 +1349,7 @@ function ablationFigure(root){
 function longFigure(root) {
  const models=root.dataset.models.split(',');
  let active=new Set(models);
- root.innerHTML=`<div class="toolbar">${root.dataset.recipe?'':`<label>Schedule <select aria-label="Long-training schedule">${D.long_training.map(g=>`<option value="${g.id}">${g.label}</option>`).join('')}</select></label>`}<div class="figure-legend">${models.map(m=>`<button type="button" class="legend-button" data-model="${m}" aria-pressed="true" style="color:${colors[m]}"><span class="swatch"></span>${names[m]}</button>`).join('')}</div></div><div class="metric-name">Regression validation MSE · seed 0 · logarithmic scale</div><svg role="img"></svg><div class="chart-readout" aria-live="polite"></div><figcaption class="figure-note"></figcaption>`;
+ root.innerHTML=`<div class="toolbar">${root.dataset.recipe?'':`<label>Schedule <select aria-label="Long-training schedule">${D.long_training.map(g=>`<option value="${g.id}">${g.label}</option>`).join('')}</select></label>`}<div class="figure-legend">${models.map(m=>`<button type="button" class="legend-button" data-model="${m}" aria-pressed="true" style="color:${colors[m]}"><span class="swatch"></span>${names[m]}</button>`).join('')}</div></div><div class="metric-name">Regression validation MSE · seed 0 · logarithmic scale</div><svg role="img"></svg><div class="chart-readout" aria-live="polite"></div>`;
  function draw(){
   const group=D.long_training.find(g=>g.id===(root.dataset.recipe||root.querySelector('select').value));
   const svg=root.querySelector('svg');
@@ -1377,7 +1373,7 @@ function longFigure(root) {
 function logLabel(v){return '10'+({'-7':'⁻⁷','-6':'⁻⁶','-5':'⁻⁵','-4':'⁻⁴','-3':'⁻³','-2':'⁻²','-1':'⁻¹','0':'⁰','1':'¹'}[Math.round(Math.log10(v))]||'^'+Math.round(Math.log10(v)));}
 const projectionColors={yes:'#94B594',no:'#B75347'};
 function projectionSweepFigure(root){
- root.innerHTML=`<div class="toolbar"><div class="figure-legend"><span style="color:${projectionColors.yes}"><span class="swatch"></span>With projection</span><span style="color:${projectionColors.no}"><span class="swatch"></span>Without projection</span></div><span class="mini-stat">Seed 2 · 10,000 updates</span></div><div class="chart-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'2D linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Final validation MSE · log scale':'Final validation accuracy'}</div><svg data-task="${t}" role="img"></svg><div class="chart-readout" data-readout="${t}" aria-live="polite"></div></div>`).join('')}</div><figcaption class="figure-note">Crosses mark nonfinite runs; lines stop across failed settings.</figcaption>`;
+ root.innerHTML=`<div class="toolbar"><div class="figure-legend"><span style="color:${projectionColors.yes}"><span class="swatch"></span>With projection</span><span style="color:${projectionColors.no}"><span class="swatch"></span>Without projection</span></div><span class="mini-stat">Seed 2 · 10,000 updates</span></div><div class="chart-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'2D linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Final validation MSE · log scale':'Final validation accuracy'}</div><svg data-task="${t}" role="img"></svg><div class="chart-readout" data-readout="${t}" aria-live="polite"></div></div>`).join('')}</div>`;
  function draw(){
   tasks.forEach(task=>{
    const rows=D.projection_sweep.filter(r=>r.task===task),reg=task==='regression',svg=root.querySelector(`[data-task=${task}]`);
@@ -1408,7 +1404,7 @@ function projectionSweepFigure(root){
  draw();redrawers.push(draw);
 }
 function stabilityFigure(root){
- root.innerHTML=`<div class="stability-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'Linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Final validation MSE':'Final validation accuracy'}</div><svg data-task="${t}" role="img"></svg></div>`).join('')}<div class="chart-panel"><h4>Denominator cancellation</h4><div class="metric-name">Minimum |D| / n · lookup</div><svg data-denominator role="img"></svg></div></div><figcaption class="figure-note">Direct polynomial training, seed 2. Crosses mark nonfinite runs. The denominator trace reaches zero at update 1,099; its scale includes zero and is approximately logarithmic away from it.</figcaption>`;
+ root.innerHTML=`<div class="stability-grid">${tasks.map(t=>`<div class="chart-panel"><h4>${t==='regression'?'Linear regression':'8 × 8 lookup'}</h4><div class="metric-name">${t==='regression'?'Final validation MSE':'Final validation accuracy'}</div><svg data-task="${t}" role="img"></svg></div>`).join('')}<div class="chart-panel"><h4>Denominator cancellation</h4><div class="metric-name">Minimum |D| / n · lookup</div><svg data-denominator role="img"></svg></div></div>`;
  function draw(){
   tasks.forEach(task=>{
    const rows=D.projection_sweep.filter(r=>r.task===task&&!r.projection).sort((a,b)=>a.lr-b.lr),reg=task==='regression',svg=root.querySelector(`[data-task=${task}]`);
