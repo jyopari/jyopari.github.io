@@ -357,6 +357,17 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 .geometry .geometry-actions button[data-action=add], .geometry .geometry-presets button[aria-pressed=true], .geometry .geometry-degrees button[aria-pressed=true] {color:#687789;}
 @media(max-width:620px){.stability-grid {grid-template-columns:minmax(0,1fr);gap:1.5rem;}.stability-grid h4 {font-size:1rem;}.stability-grid .metric-name {font-size:.85rem;min-height:0;}.stability-grid .chart text {font-size:12px;}}
 
+/* Align the full model description with its side diagram. */
+.model-setup {margin-block:2.25rem;}
+.model-layout {display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:1.6rem;align-items:start;}
+.model-layout .model-diagram {float:none;width:100%;max-width:100%;margin:0;}
+.model-copy {min-width:0;}
+.model-copy p:last-child {margin-bottom:0;}
+@media(max-width:650px){
+ .model-layout {grid-template-columns:minmax(0,1fr);gap:1.35rem;}
+ .model-layout .model-diagram {width:240px;margin:0 auto;}
+}
+
   </style>
 </head>
 <body>
@@ -366,18 +377,26 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
   <p class="author">Jyo Pari, Shivam Duggal, Rafael Hanashiro, Lucas Torroba-Hennigen<br>Pulkit Agrawal, Yoon Kim</p>
 </header>
 
-<p class="opening-summary">When many different solutions fit the data, we would like training to find the simplest one. This question has been studied extensively in feedforward networks. A useful principle is to keep the parameterization flexible, even overparameterized, and use regularization or initialization to favor simpler solutions. In attention, we usually choose the function that transforms query–key scores in advance, committing to a particular form such as linear or softmax attention. What biases do these choices introduce? Can we find a more general formulation of attention, and revisit how to guide learning toward simpler solutions within it?</p>
+<div class="opening-summary">
+<p>Occam’s razor suggests preferring the simplest explanation that fits the observations. Intuitively, an explanation is simpler if we can describe it more concisely. But this depends on the representation: the same function can have a short description in one form and a long description in another.</p>
+<p><a href="https://arxiv.org/html/math/0406077">Minimum description length (MDL)</a> turns this intuition into a tradeoff. We describe the model, then describe the data using that model. A more complicated model costs more to describe, but may help us describe the data more efficiently. With fixed encoding rules, let \(L(h)\) be the length in bits of a candidate model \(h\), and \(L(D\mid h)\) the length of dataset \(D\) encoded using it. Two-part MDL selects</p>
+<div class="equation">\[
+ h_{\mathrm{MDL}}\in\arg\min_h\left[L(h)+L(D\mid h)\right].
+\]</div>
+<p>Simplicity bias has been studied extensively in feedforward networks. <a href="https://arxiv.org/abs/2103.10427">Huh et&nbsp;al.</a> show how linear overparameterization can encourage lower-rank representations without changing expressive capacity. Weight decay encourages smaller weights, with <a href="https://arxiv.org/abs/2605.10878">related theory</a> connecting minimum weight norms to algorithmic complexity in fixed-precision looped networks. These suggest keeping the parameterization flexible and guiding learning toward simpler solutions.</p>
+<p>In attention, however, we usually fix the rule that converts query–key similarity scores into attention weights, choosing a particular form such as linear or softmax attention. What biases do these choices introduce? Can we find a more general formulation of attention, and revisit how to guide learning toward simpler solutions within it?</p>
+</div>
 
 <h2 id="attention-functions">Linear attention and softmax</h2>
 <p>We use bold lowercase for vectors, bold uppercase for matrices, and ordinary italic for scalars. Let \(\mathbf{q}\) be a query, and let \(\mathbf{k}_i\) and \(\mathbf{v}_i\) be the \(n\) keys and values it can attend to. Queries and keys have dimension \(d\). We L2-normalize them to obtain \(\hat{\mathbf{q}}\) and \(\hat{\mathbf{k}}_i\).</p>
-<p>Each attention layer learns a scalar \(\gamma\), initialized at zero. Its <em>gain</em>, \(g=e^\gamma\), is a positive multiplier on query–key similarity, initially one. We use it to compute the scores</p>
+<p>Each attention layer learns a scalar \(\gamma\), initialized at zero. We use \(g=e^\gamma\) as a learned positive <em>score multiplier</em>, initially one. Exponentiating keeps it positive while allowing \(\gamma\) to take any real value. We use it to compute the scores</p>
 <div class="equation">\[s_i=g\,\hat{\mathbf{q}}^\top\hat{\mathbf{k}}_i.\]</div>
 <p>Linear and softmax attention turn these scores into outputs differently:</p>
 <div class="equation paired-equations">
  <div>\[A_{\mathrm{linear}}(\mathbf{q})=\frac1n\sum_{i=1}^{n}s_i \mathbf{v}_i.\]</div>
  <div>\[A_{\mathrm{softmax}}(\mathbf{q})=\frac{\sum_{i=1}^{n}e^{s_i}\mathbf{v}_i}{\sum_{i=1}^{n}e^{s_i}}.\]</div>
 </div>
-<p>For softmax, the gain acts as an inverse temperature: increasing it makes the weights more selective. If \(T\) denotes temperature, then \(g=1/T\).</p>
+<p>For softmax, the multiplier acts as an inverse temperature: increasing it makes the weights more selective. If \(T\) denotes temperature, then \(g=1/T\).</p>
 <p>To see the geometry, the playground starts with unnormalized queries and keys, using scores \(s_i=g\mathbf{q}^\top \mathbf{k}_i/\sqrt d\). For fixed keys and values, linear attention is then linear in the query. Softmax bends this mapping and keeps the output inside the values’ convex hull. Turning on QK norm switches to the normalized scores used in training.</p>
 <figure class="wide geometry" id="geometry-baseline" data-polynomial="false" data-figure-number="1" aria-label="Interactive comparison of linear and softmax attention"></figure>
 <p>At first glance, softmax seems like the natural choice. It gives us a nonlinear response, and with suitable keys, values, and scales, it can approximate linear behavior locally. This is an intuition about flexibility rather than strict containment: softmax weights are positive and sum to one, while our linear attention uses signed weights.</p>
@@ -419,12 +438,18 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <section class="model-setup" aria-labelledby="model-training">
  <h3 id="model-training">Model and training</h3>
- <p>We use the same architecture for both tasks and all three attention types: \(N=6\) residual attention blocks of width 32, followed by an attention readout. The models have about 27,000 parameters. In the diagram, \(\mathbf{H}^{(\ell)}\) denotes the sequence of hidden states entering block \(\ell\).</p>
+ <div class="model-layout">
+  <div class="model-copy">
+   <p>We use the same architecture for both tasks and all three attention types: \(N=6\) residual attention blocks of width 32, followed by an attention readout. The models have about 27,000 parameters. In the diagram, \(\mathbf{H}^{(\ell)}\) denotes the sequence of hidden states entering block \(\ell\).</p>
+   <p>All attention operations are causal, including the current token itself, and use QK normalization with the learned multiplier defined above.</p>
+   <p>The blocks also contain RMSNorm and ReLU, so a network using linear attention is not globally linear.</p>
+   <p>For the main comparisons, we use a batch size of 1,024 and perform 10,000 updates, using seeds 0–2. We tune peak learning rate separately for each task and attention type. The rest of the optimizer settings are shared.</p>
+  </div>
  <figure id="model-block" data-figure-number="3" class="model-diagram" aria-label="One residual attention block, repeated N times">
   <div class="model-block">
    <svg viewBox="0 0 260 346" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="model-block-title model-block-description">
     <title id="model-block-title">Residual attention block</title>
-    <desc id="model-block-description">Hidden states pass through RMSNorm, causal attention with QK normalization and a learned gain, an output projection, and ReLU. A skip connection carries the original hidden states to a residual addition. This block is repeated six times.</desc>
+    <desc id="model-block-description">Hidden states pass through RMSNorm, causal attention with QK normalization and a learned multiplier, an output projection, and ReLU. A skip connection carries the original hidden states to a residual addition. This block is repeated six times.</desc>
     <defs><marker id="block-arrow" viewBox="0 0 5 5" refX="4.5" refY="2.5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L5 2.5L0 5Z" fill="#555"/></marker></defs>
     <g fill="none" stroke="#555" stroke-width="1.05" marker-end="url(#block-arrow)">
      <path d="M112 31V62"/><path d="M112 94V113"/><path d="M112 155V174"/><path d="M112 206V225"/><path d="M112 257V281"/><path d="M112 299V316"/>
@@ -440,7 +465,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
     <g class="model-block-label" text-anchor="middle">
      <text x="112" y="82">RMSNorm</text>
      <text x="112" y="131">Causal attention</text>
-     <text x="112" y="146" class="model-block-detail">QK norm · gain</text>
+     <text x="112" y="146" class="model-block-detail">QK norm · multiplier</text>
      <text x="112" y="194">Output projection</text>
      <text x="112" y="245">ReLU</text>
     </g>
@@ -453,11 +478,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
    <div class="model-block-math model-block-repeat">\(\times N\)</div>
   </div>
  </figure>
-
-
- <p>All attention operations are causal, including the current token itself, and use QK normalization with the learned gain defined above.</p>
- <p>The blocks also contain RMSNorm and ReLU, so a network using linear attention is not globally linear.</p>
- <p>For the main comparisons, we use a batch size of 1,024 and perform 10,000 updates, using seeds 0–2. We tune peak learning rate separately for each task and attention type. The rest of the optimizer settings are shared.</p>
+ </div>
 </section>
 
 <p>We first compare linear and softmax attention. Hover over the curves to inspect a validation point, or select a seed.</p>
@@ -514,23 +535,24 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
  \le\sum_{r=1}^{P}|b_r|g^r=m.
  \end{aligned}
 \]</div>
-<p>After each optimizer update, we compute \(m\) using the updated gain and coefficients. If \(m&gt;\rho\), we multiply all nonconstant denominator coefficients by \(\rho/m\). Otherwise, we leave them unchanged. This rescaling ensures \(m\le\rho\). The constant term stays at one, and the gain and numerator coefficients are unchanged by the rescaling.</p>
+<p>After each optimizer update, we compute \(m\) using the updated multiplier and coefficients. If \(m&gt;\rho\), we multiply all nonconstant denominator coefficients by \(\rho/m\). Otherwise, we leave them unchanged. This rescaling ensures \(m\le\rho\). The constant term stays at one, and the multiplier and numerator coefficients are unchanged by the rescaling.</p>
 <p>Every denominator term now lies between \(1-\rho\) and \(1+\rho\). Summing over the \(n\) visible keys gives</p>
 <div class="equation">\[n(1-\rho)\le D(\mathbf{q})\le n(1+\rho).\]</div>
 <p>We use \(\rho=0.5\), so the denominator stays between \(n/2\) and \(3n/2\). This keeps it positive and away from zero without clamping the forward computation. The same rule applies to every block and the readout, on both tasks. It restricts the denominator’s variation while leaving the numerator coefficients free.</p>
-<p>We call this update the <em>denominator projection</em>. The playground above allows free coefficient edits; training uses this additional constraint. The <a href="#failure-details">appendix</a> compares the complete learning-rate sweeps with and without it, and gives the diagnostic details.</p>
+<p>We call this update the <em>denominator projection</em>. The playground above allows free coefficient edits; training uses this additional constraint. Below, we compare the learning-rate sweeps with and without projection. Crosses mark runs that produce nonfinite results; the diagnostic details are in the <a href="#failure-details">appendix</a>.</p>
+<figure class="wide" id="projection-comparison" data-figure-number="8" aria-label="Polynomial learning-rate sweeps with and without denominator projection"></figure>
 </section>
 <h2 id="polynomial-performance">Polynomial attention on both tasks</h2>
 <p>We train polynomial attention with linear initialization and the denominator projection. We tune its learning rate using the same sweep and seeds as the baselines.</p>
 
-<figure class="wide result-figure" id="polynomial-results" data-figure-number="8" data-models="linear,softmax,polynomial" aria-label="Validation results including polynomial attention"></figure>
+<figure class="wide result-figure" id="polynomial-results" data-figure-number="9" data-models="linear,softmax,polynomial" aria-label="Validation results including polynomial attention"></figure>
 <p>Polynomial attention matches softmax on lookup and comes close to linear attention on regression, starting from linear attention in both tasks. The 100,000-update results for all three models are in the <a href="#long-training-details">appendix</a>.</p>
 
 <h2 id="initialization">Why start linear?</h2>
 <p>We next change the initialization while keeping the polynomial parameterization fixed. Linear attention is still expressible, so training could in principle recover it from another starting point.</p>
 <p>We test this on in-context linear regression. Instead of initializing \(G(s)=s\) and \(H(s)=1\), we initialize both functions to the degree-eight approximation of the exponential introduced above: \(G=H=T_8\). The polynomial family stays the same; only its starting coefficients change.</p>
 <p>We use the same training setup for both initializations. We also widen the denominator bound to \(\rho=1.8\) for both, so that neither starting function needs to be rescaled to satisfy the constraint at initialization. The original-bound comparison is in the <a href="#initialization-details">appendix</a>.</p>
-<figure class="wide initialization-figure" id="initialization-results" data-bound="1.8" data-figure-number="9" aria-label="Linear and truncated-softmax polynomial initialization with shared denominator bound 1.8"></figure>
+<figure class="wide initialization-figure" id="initialization-results" data-bound="1.8" data-figure-number="10" aria-label="Linear and truncated-softmax polynomial initialization with shared denominator bound 1.8"></figure>
 <div class="initialization-discussion">
 <figure class="initialization-landscape" id="initialization-landscape" aria-labelledby="landscape-caption"><svg xmlns="http://www.w3.org/2000/svg" viewBox="40 30 410 328" role="img" aria-labelledby="landscape-title landscape-desc">
 <title id="landscape-title">Initialization within the polynomial attention family</title>
@@ -661,7 +683,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <section class="lr-selection" aria-labelledby="lr-selection-heading">
 <h3 id="lr-selection-heading">Learning-rate selection</h3>
-<figure class="wide" id="lr-analysis" data-figure-number="10" aria-label="Final-recipe learning-rate sweeps"></figure>
+<figure class="wide" id="lr-analysis" data-figure-number="11" aria-label="Final-recipe learning-rate sweeps"></figure>
 <p>For each task/model pair, we try 15 peak LRs, \(10^{-3}2^{k/2}\) for \(k=-4,\ldots,10\), using seeds 0–2. We select the lowest mean final MSE for regression, and the highest mean final accuracy for lookup with cross-entropy breaking ties. We use one LR per task/model pair, shared across its seeds. The highlighted points are the selected settings.</p>
 <p>These three seeds are used for both selection and the final reruns. The reruns verify reproducibility, not performance on held-out seeds.</p>
 <p>Validation examples are fixed and shared within a task: 32,768 regression sequences or 8,192 lookup sequences per point. Fresh training sequences use separate RNG streams. Validation is measured before training and every 1,000 updates through update 10,000. Shading shows seed ranges, not confidence&nbsp;intervals.</p>
@@ -669,7 +691,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <h3>Polynomial ablations</h3>
 <p>We rerun seed 2 on each task at its selected polynomial LR. “No extras” uses neither projection nor coefficient freezing. “Freeze only” holds the coefficients for the first 1,000 updates without projection. “Projection + freeze” adds that hold to the final projected recipe. The final arm adds degree-weighted coefficient regularization with \(\lambda=0.01\) to projection alone, with no freezing. We do not retune LR separately for these ablations.</p>
-<figure class="wide" id="ablation-analysis" data-figure-number="11" aria-label="Polynomial stabilization and regularization ablations"></figure>
+<figure class="wide" id="ablation-analysis" data-figure-number="12" aria-label="Polynomial stabilization and regularization ablations"></figure>
 <p>Without the denominator projection, the lookup “no extras” run becomes nonfinite. We report that as a failure, not as a final accuracy. The freeze-only lookup run finishes at 61.73%; projection alone, projection plus freezing, and projection plus regularization all reach 100% for this seed.</p>
 <p>For the regularization arm, let \(\ell\) index the six attention blocks and the readout. The coefficients \(a_{\ell,r}\) and \(b_{\ell,r}\) belong to layer \(\ell\). With \(\mathcal L_{\mathrm{task}}\) denoting the task loss, the regularized objective is</p>
 <div class="equation">\[
@@ -685,11 +707,11 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
     <p>The final recipe uses <strong>no coefficient freezing and no coefficient regularizer</strong>. The polynomial coefficients have zero AdamW weight decay; the shared network parameters use weight decay 0.01. All three models use global gradient clipping at one and the same schedule shape: constant LR for 6,000 updates, then cosine decay to 10% over the remaining 4,000.</p>
     <table><tbody>
       <tr><th>Architecture</th><td>5 → 32 embedding; six single-head causal residual attention blocks; one final-query attention readout; two outputs. RMSNorm ε = 10⁻⁶, ReLU after each residual block’s output projection; no separate FFN or positional embedding.</td></tr>
-      <tr><th>Parameters and score gains</th><td>Linear and softmax models have 27,079 parameters. Polynomial attention adds 119 coefficients, giving 27,198. All models have seven learned positive score gains, one per block and one in the readout. We learn an unrestricted scalar \(\gamma\) for each gain and set \(g=\exp(\gamma)\), with \(\gamma_0=0\), so every gain starts at one.</td></tr>
-      <tr><th>Optimizer</th><td>AdamW, β = (0.9, 0.999), ε = 10⁻⁸. Weight decay 0.01 on shared weights and learned gains; zero on polynomial coefficients. Global gradient norm clip 1.</td></tr>
+      <tr><th>Parameters and score multipliers</th><td>Linear and softmax models have 27,079 parameters. Polynomial attention adds 119 coefficients, giving 27,198. All models have seven learned positive score multipliers, one per block and one in the readout. We learn an unrestricted scalar \(\gamma\) for each multiplier and set \(g=\exp(\gamma)\), with \(\gamma_0=0\), so every multiplier starts at one.</td></tr>
+      <tr><th>Optimizer</th><td>AdamW, β = (0.9, 0.999), ε = 10⁻⁸. Weight decay 0.01 on shared weights and learned multipliers; zero on polynomial coefficients. Global gradient norm clip 1.</td></tr>
       <tr><th>Budget</th><td>Batch 1,024; 10,000 updates; seeds 0–2. Same schedule shape and data generator for each attention type within a task.</td></tr>
       <tr><th>Schedule</th><td>Updates 1–6,000 at peak. For updates 6,001–10,000, t = (update − 6,001)/3,999 and LR = peak × [0.1 + 0.9(1 + cos(πt))/2].</td></tr>
-      <tr><th>Polynomial</th><td>Degree 8 in every block and readout, separate numerator and denominator coefficients. Exact linear initialization, fixed b₀ = 1, no coefficient freezing or coefficient regularization in main runs. Gain-aware denominator projection bound 0.5 after each update.</td></tr>
+      <tr><th>Polynomial</th><td>Degree 8 in every block and readout, separate numerator and denominator coefficients. Exact linear initialization, fixed b₀ = 1, no coefficient freezing or coefficient regularization in main runs. Denominator projection bound 0.5 after each update, using the current multiplier.</td></tr>
       <tr><th>Reproduction</th><td>The saved audit of the 18 main reruns reports exact matches to their reference model parameters, optimizer/RNG states, and metric journals on the tested H100 / Torch 2.8.0+cu128 setup.</td></tr>
     </tbody></table>
   </div>
@@ -697,25 +719,24 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <h3 id="long-training-details">Longer training</h3>
 <p>All nine longer runs use seed 0, batch size 1,024, and 100,000 updates. They start from fresh initializations and are not continuations of the 10,000-update checkpoints. Training sequences remain freshly sampled from the same distribution, so the longer runs also see ten times as many training sequences. Context lengths are unchanged.</p>
-<figure class="wide long-figure" id="long-all-models" data-models="linear,softmax,polynomial" data-figure-number="12" aria-label="All three attention types trained for 100000 regression updates"></figure>
+<figure class="wide long-figure" id="long-all-models" data-models="linear,softmax,polynomial" data-figure-number="13" aria-label="All three attention types trained for 100000 regression updates"></figure>
 <p>“Stretched schedule” uses the selected peak LRs: linear 0.0113137, softmax 0.004, and polynomial 0.008. It holds the peak for 60,000 updates, then uses cosine decay over the remaining 40,000. “Cosine from start” uses peak LR 0.004 for all three models and decays over the full 100,000 updates. “Scaled peak” divides each selected peak LR by \(\sqrt{10}\) and uses the stretched schedule. Every schedule ends at 10% of its peak. We treat the scaled peak as an additional optimization check, not a guaranteed LR scaling law for this model.</p>
 <p>All other optimizer settings, including AdamW weight decay 0.01, stay fixed. Keeping the weight-decay coefficient fixed over more updates changes the cumulative shrinkage. Polynomial uses linear initialization, no coefficient freezing or coefficient regularization, and denominator bound 0.5. All nine runs use the same RTX 2080 Ti; the main 10,000-update comparisons use H100 GPUs.</p>
 
 <h3 id="initialization-details">Initialization comparisons</h3>
 <p>Both initialization comparisons use seeds 0–2, batch size 1,024, 10,000 updates, and the same flat-then-cosine schedule with peak LR 0.008. We do not retune LR for each initialization. All 12 runs use the same RTX 2080 Ti. They are separate matched reruns; the main attention comparison uses H100 GPUs.</p>
-<figure class="wide initialization-figure" id="initialization-original-bound" data-bound="0.5" data-figure-number="13" aria-label="Initialization comparison with original denominator bound 0.5"></figure>
+<figure class="wide initialization-figure" id="initialization-original-bound" data-bound="0.5" data-figure-number="14" aria-label="Initialization comparison with original denominator bound 0.5"></figure>
 <details>
  <summary>Why compare two denominator bounds?</summary>
  <div class="detail-content">
-  <p>At gain one, the truncated-softmax denominator has coefficient budget \(\sum_{r=1}^{8}1/r!\approx1.7183\). It starts outside the main recipe’s bound of 0.5, so the projection rescales its denominator coefficients after the first update.</p>
+  <p>At \(g=1\), the truncated-softmax denominator has coefficient budget \(\sum_{r=1}^{8}1/r!\approx1.7183\). It starts outside the main recipe’s bound of 0.5, so the projection rescales its denominator coefficients after the first update.</p>
   <p>We therefore repeat both initializations with a bound of 1.8, which admits the truncated-softmax initialization unchanged. This wider bound no longer guarantees a positive denominator throughout training. All six runs finish with finite validation losses. The other settings are identical within each comparison: degree eight, no coefficient freezing, no coefficient regularization, and the same flat-then-cosine schedule.</p>
  </div>
 </details>
 
 <h3 id="failure-details">Unprojected training and denominator failures</h3>
 <p>The extra unprojected sweep uses seed 2, the same 15 peak LRs, batch size 1,024, and the original 10,000-update flat-then-cosine schedule. Only the denominator projection is removed. No coefficients are frozen or regularized. Thirteen regression runs and eight lookup runs finish with finite results. The other nine runs produce a nonfinite training or validation result.</p>
-<figure class="wide" id="projection-comparison" data-figure-number="14" aria-label="Polynomial learning-rate sweeps with and without denominator projection"></figure>
-<p>The projected comparison in <a href="#projection-comparison">Figure 14</a> uses seed 2 from the original LR sweep. Its hardware is H100, while the unprojected sweep uses an RTX 2080 Ti. It is a comparison of these recorded sweeps, not a perfectly hardware-matched intervention.</p>
+<p>The projected comparison in <a href="#projection-comparison">Figure 8</a> uses seed 2 from the original LR sweep. Its hardware is H100, while the unprojected sweep uses an RTX 2080 Ti. It is a comparison of these recorded sweeps, not a perfectly hardware-matched intervention.</p>
 <p>For the five diagnosed failures, same-GPU replays match all saved measurements in the checked prefixes and replay windows. We retain the original forward arithmetic and inspect the actual sum over visible keys, not just roots of the polynomial. In every examined case, finite scores and numerator values precede a zero computed denominator. The four other failures are not diagnosed.</p>
 <p>As a separate numerical check, we rescale only the denominator coefficients at each saved pre-failure checkpoint, then apply the normal projection after subsequent updates. All five short diagnostic windows remain finite. These interventions are stability checks, not complete retrainings or evidence of final task performance.</p>
 
@@ -743,6 +764,11 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>For attention, <a href="https://arxiv.org/abs/2006.16236">Katharopoulos et&nbsp;al.</a> develop recurrent kernel-feature linear attention; our signed identity-feature baseline is a simpler, different normalization. <a href="https://arxiv.org/abs/2103.02143">Random Feature Attention</a> approximates softmax through random features. <a href="https://arxiv.org/abs/2310.01655">PolySketchFormer</a> and <a href="https://arxiv.org/abs/2403.02920">TaylorShift</a> study polynomial/Taylor attention and its efficient evaluation. <a href="https://arxiv.org/abs/2402.18668">BASED</a> studies the state-size/recall tradeoff. Our emphasis here is the relationship between the task, the attention parameterization, and its initialization.</p>
 
 <p>There is also prior work on simplicity bias in attention itself. <a href="https://arxiv.org/abs/2512.20607">Zhang, Saxe, and Latham</a> study saddle-to-saddle dynamics and the progressive recruitment of attention heads. Our head count is fixed; we vary the attention function and its initialization. <a href="https://arxiv.org/abs/2110.08323">On Learning the Transformer Kernel</a> learns spectral feature distributions, and <a href="https://arxiv.org/abs/2402.10644">ReBased</a> learns transformations of a quadratic kernel to improve in-context recall. These are close precedents for letting the attention kernel adapt. Our experiments use independent degree-eight numerator and denominator polynomials, initialized to the signed linear operator, and compare the learned behavior on two contrasting tasks.</p>
+
+<section aria-labelledby="acknowledgments">
+<h3 id="acknowledgments">Acknowledgments</h3>
+<p>We thank Han Guo for his feedback on the draft.</p>
+</section>
 
 <section class="citation" aria-labelledby="citation-heading">
 <h3 id="citation-heading">Citation</h3>
@@ -921,7 +947,7 @@ function geometry(root) {
  root.classList.toggle('with-polynomial', hasPoly);
  root.innerHTML = `
   <div class="geometry-toolbar">
-   <label class="geometry-gain">Gain <input type="range" min="0.2" max="6" step="0.1" value="1" aria-label="Score gain"><output>1.0</output></label>
+   <label class="geometry-gain">Multiplier <input type="range" min="0.2" max="6" step="0.1" value="1" aria-label="Score multiplier"><output>1.0</output></label>
    <label class="geometry-normalize"><input type="checkbox" aria-label="Normalize queries and keys"> QK norm</label>
    <div class="geometry-actions"><button type="button" data-action="add">+ Add pair</button><button type="button" data-action="remove" disabled>Remove</button><button type="button" data-action="reset">Reset</button></div>
   </div>
