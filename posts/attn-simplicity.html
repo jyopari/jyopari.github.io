@@ -228,8 +228,8 @@ td:last-child, th:last-child { padding-right: 0; }
 /* Coefficients sit in the outer margin while the visual stays in the reading column. */
 .coefficient-editor { margin:1.25rem 0 0; padding-top:.7rem; border-top:1px solid #dedede; }
 .coefficient-heading { font-size:.625rem; font-weight:500; letter-spacing:.09em; text-transform:uppercase; color:#777; margin-bottom:.85rem; }
-.geometry-polynomial-tools .geometry-interpolate { margin-inline:.2rem;color:#687789; }
-.geometry-interpolate[aria-pressed=true] { box-shadow:0 1px #687789; }
+.geometry-polynomial-tools .geometry-interpolate { appearance:none;-webkit-appearance:none;margin-inline:.2rem;color:#687789;box-shadow:none;border:0;border-bottom:1px solid transparent; }
+.geometry-interpolate[aria-pressed=true] { border-bottom-color:#687789; }
 .coefficient-hint { display:flex;align-items:center;gap:.5rem;margin:.7rem 0 0;padding-left:1.5rem;font-size:.8125rem;line-height:1.5;color:#4b5962; }
 .coefficient-hint svg { flex:0 0 25px;width:25px;height:30px;align-self:flex-start;margin-top:-.1rem; }
 .coefficient-hint path { fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round; }
