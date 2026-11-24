@@ -444,7 +444,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>Its task is to predict \(\mathbf{y}_9=\mathbf{W}\mathbf{x}_9\). We train with mean squared error, averaged over the two output coordinates.</p>
 <p>Since \(\mathbf{W}\) changes between sequences, the model has to use the examples in its context to predict the new output.</p>
 
-<p>The name “linear attention” does not mean that the model solves linear regression. The attention operation does not generally compute least squares, and the network still has to learn how to infer a new mapping from each sequence. Softmax attention can do this too: <a href="https://arxiv.org/html/2211.15661">Akyürek et&nbsp;al.</a> show that trained softmax transformers can closely match ordinary least squares. Both of our networks contain nonlinear operations, so whether linear attention helps in this smaller architecture has to be tested.</p>
+<p>The name “linear attention” does not mean that the model solves linear regression. The attention operation does not generally compute least squares, and the network still has to learn how to infer a new mapping from each sequence. In fact, the original study by <a href="https://arxiv.org/html/2211.15661">Akyürek et&nbsp;al.</a> uses softmax transformers for in-context linear regression. It is therefore unclear a priori whether linear attention will perform better in this setting.</p>
 
 <h3>Lookup on an 8 × 8 grid</h3>
 <p>Here, there is no shared rule connecting coordinates to labels. Each sequence gives the model a new lookup table, and it must retrieve the label at the queried coordinate.</p>
