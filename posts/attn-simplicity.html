@@ -54,12 +54,34 @@ main {
   padding-block: 6rem 7rem;
   overflow-wrap: break-word;
 }
-.post-header { margin-bottom: 4rem; }
+.post-header { margin-bottom: 2.5rem; }
 h1, .author { font-family: "Times New Roman", Times, serif; font-weight: 400; }
 h1 { margin: 0 0 1.25rem; font-size: 1.75rem; line-height: 1.18; letter-spacing: -.025em; text-align: center; text-wrap: balance; }
 .author { margin: 0; font-size: 1rem; line-height: 1.65; text-align: center; }
 h2 { margin: 3rem 0 1rem; font-size: 1.15rem; line-height: 1.3; letter-spacing: -.025em; font-weight: 600; }
 h3 { margin: 2rem 0 .85rem; font-size: .95rem; line-height: 1.45; font-weight: 600; }
+.post-tldr {
+  margin: 0 0 2.8rem;
+  padding: 1.2rem 0 1.3rem;
+  border-block: 1px solid #dce2e4;
+}
+.post-tldr h2 {
+  margin: 0 0 .85rem;
+  font-size: .875rem;
+  line-height: 1.4;
+  letter-spacing: .025em;
+  font-weight: 500;
+  color: var(--muted);
+}
+.post-tldr p {
+  margin: 0;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  letter-spacing: -.008em;
+}
+
+
 p, ul, ol { margin: 0 0 1.3rem; }
 strong { font-weight: 600; }
 a { color: inherit; text-decoration-line: underline; text-decoration-color: #b4bcbe; text-decoration-thickness: 1px; text-underline-offset: .23em; transition: text-decoration-color .15s; }
@@ -182,7 +204,9 @@ td:last-child, th:last-child { padding-right: 0; }
 @media(max-width:650px) {
   main { width: calc(100% - 2rem); padding-block: 3.75rem 4rem; }
   h1 { font-size: 1.6rem; }
-  .post-header { margin-bottom: 3rem; }
+  .post-header { margin-bottom: 2rem; }
+  .post-tldr { margin-bottom: 2.25rem; }
+  .post-tldr p { font-size: 1.125rem; line-height: 1.55; }
   .author { font-size: .95rem; }
   .chart-grid, .two-up { grid-template-columns: 1fr; gap: 1.7rem; }
   .model-diagram { float:none; width:252px; margin:.5rem auto 1.75rem; }
@@ -384,14 +408,16 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
   <p class="author">Jyo Pari, Shivam Duggal, Rafael Hanashiro, Lucas Torroba-Hennigen<br>Pulkit Agrawal, Yoon Kim</p>
 </header>
 
+<aside class="post-tldr" aria-labelledby="tldr-heading">
+  <h2 id="tldr-heading">TL;DR</h2>
+  <p>Linear attention performs better on in-context regression, while softmax performs better on lookup/retrieval. We introduce a learnable polynomial family of attention functions that includes linear attention and can approximate softmax. We study initialization as a way to introduce a simplicity bias: start from linear attention and allow training to learn more complex functions. This reaches performance close to the better baseline on both tasks. Interestingly, on regression, initializing polynomial attention as linear attention performs better than a softmax-like initialization, despite identical expressive capacity. This suggests that a simple starting function can introduce a useful simplicity bias through its effect on training dynamics.</p>
+</aside>
+
 <div class="opening-summary">
-<p>Occam’s razor suggests preferring the simplest explanation that fits the observations. Intuitively, an explanation is simpler if we can describe it more concisely. But this depends on the representation: the same function can have a short description in one form and a long description in another.</p>
-<p><a href="https://arxiv.org/html/math/0406077">Minimum description length (MDL)</a> turns this intuition into a tradeoff. We describe the model, then describe the data using that model. A more complicated model costs more to describe, but may help us describe the data more efficiently. With fixed encoding rules, let \(L(h)\) be the length in bits of a candidate model \(h\), and \(L(D\mid h)\) the length of dataset \(D\) encoded using it. Two-part MDL selects</p>
-<div class="equation">\[
- h_{\mathrm{MDL}}\in\arg\min_h\left[L(h)+L(D\mid h)\right].
-\]</div>
-<p>Simplicity bias has been studied extensively in feedforward networks. <a href="https://arxiv.org/abs/2103.10427">Huh et&nbsp;al.</a> show how linear overparameterization can encourage representations with lower effective rank without changing expressive capacity. Weight decay encourages smaller weights, with <a href="https://arxiv.org/abs/2605.10878">theory in a specialized setting</a> connecting minimum weight norms to algorithmic complexity in fixed-precision looped networks. These suggest keeping the parameterization flexible and guiding learning toward simpler solutions.</p>
-<p>In attention, however, we usually fix the rule that converts query–key similarities into weights, choosing a form such as linear or softmax attention. Softmax gives us a more complex nonlinear response, yet we find that linear attention performs better on a simple in-context regression task. On lookup/retrieval, the preference reverses. Can we find a more general formulation that lets the model learn the attention function, and revisit how to guide it toward simpler solutions?</p>
+<p>When many solutions fit the data, which one does training find? Occam’s razor suggests preferring a simpler explanation. As neural networks grow larger, they can represent increasingly complicated functions. Initialization and regularization are therefore important tools for encouraging training to find simpler solutions that generalize well.</p>
+<p>This idea has been studied extensively in feedforward networks. <a href="https://arxiv.org/abs/2103.10427">Huh et&nbsp;al.</a> show that linear overparameterization can encourage representations with lower effective rank without changing expressive capacity. Weight decay encourages smaller weights. These are different ways to encourage simplicity bias within a flexible model.</p>
+<p>In attention, we usually fix the rule that converts query–key similarities into weights, choosing a form such as linear or softmax attention. That choice also introduces a bias: the more complex nonlinear response of softmax may help on some tasks and hurt on others. Can we find a more general formulation of attention, and revisit how to guide learning toward simpler solutions within it?</p>
+<p>We explore a family with learnable polynomial transformations of the attention scores. It includes linear attention exactly and can approximate softmax. We initialize it as linear attention, with the additional coefficients free to change during training. This gives us a flexible attention function and a simple starting point, allowing us to investigate both the choice of attention function and the effect of initialization.</p>
 </div>
 
 <h2 id="attention-functions">Linear attention and softmax</h2>
@@ -450,8 +476,8 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
   <div class="model-copy">
    <p>We use the same architecture for both tasks and all three attention types: \(N=6\) residual attention blocks of width 32, followed by an attention readout. The models have about 27,000 parameters. In the diagram, \(\mathbf{H}^{(\ell)}\) denotes the sequence of hidden states entering block \(\ell\).</p>
    <p>All attention operations are causal, including the current token itself, and use QK normalization with the learned multiplier defined above.</p>
-   <p>The blocks also contain RMSNorm and ReLU, so a network using linear attention is not globally linear.</p>
-   <p>For the main comparisons, we use a batch size of 1,024 and perform 10,000 updates, using seeds 0–2. We tune peak learning rate separately for each task and attention type. The rest of the optimizer settings are shared.</p>
+   <p>The design follows the familiar pattern of a feedforward network: a learned linear map followed by ReLU, repeated across layers. Here, attention supplies a context-dependent mixing operation, followed by an output projection and ReLU. This lets us compare linear attention with the more complex nonlinear response of softmax within the same structure, without a separate MLP. The analogy is only structural: attention depends on the input sequence, and QK normalization, RMSNorm, and ReLU make even the linear-attention network nonlinear overall.</p>
+   <p>For the main comparisons, we use a batch size of 1,024 and perform 10,000 updates, using three different seeds (0–2). We tune peak learning rate separately for each task and attention type. The rest of the optimizer settings are shared.</p>
   </div>
  <figure id="model-block" data-figure-number="3" class="model-diagram" aria-label="One residual attention block, repeated N times">
   <div class="model-block">
@@ -491,7 +517,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <p>We first compare linear and softmax attention. Hover over the curves to inspect a validation point, or select a seed.</p>
 <figure class="wide result-figure" id="baseline-results" data-figure-number="4" data-models="linear,softmax" aria-label="Validation results for linear and softmax attention"></figure>
-<p>Linear attention reaches lower error on regression, while softmax reaches higher accuracy on lookup. The direction holds on every seed, after tuning the learning rate separately for each task and attention type.</p>
+<p>Linear attention reaches lower error on regression, while softmax reaches higher accuracy on lookup. The direction holds across all three reported seeds (0–2), after tuning the learning rate separately for each task and attention type.</p>
 
 
 <p><a href="https://arxiv.org/abs/2501.12352">Wang, Shi, and Fox</a> interpret attention as regression from keys to values. Linear attention gives the same prediction as starting a linear map at zero, taking one least-squares gradient step, and applying it to the query. In our formulation, the multiplier \(g\) acts as that step’s size when the loss is averaged over keys. This generally does not solve least squares exactly. QK-normalized softmax attention instead predicts a locally weighted average of the values. These interpretations describe the attention operation on internal features, rather than the full network’s learning algorithm.</p>
@@ -554,7 +580,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>We train polynomial attention with linear initialization and the denominator projection. We tune its learning rate using the same sweep and seeds as the baselines.</p>
 
 <figure class="wide result-figure" id="polynomial-results" data-figure-number="9" data-models="linear,softmax,polynomial" aria-label="Validation results including polynomial attention"></figure>
-<p>Polynomial attention matches softmax on lookup and comes close to linear attention on regression, starting from linear attention in both tasks. The 100,000-update results for all three models are in the <a href="#long-training-details">appendix</a>.</p>
+<p>Across the three reported seeds (0–2), polynomial attention matches softmax on lookup and comes close to linear attention on regression, starting from linear attention in both tasks. The 100,000-update results for all three models are in the <a href="#long-training-details">appendix</a>.</p>
 
 <h2 id="initialization">Why start linear?</h2>
 <p>We next change the initialization while keeping the polynomial parameterization fixed. Linear attention is still expressible, so training could in principle recover it from another starting point.</p>
@@ -647,7 +673,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <rect x="199" y="342" width="82" height="4" fill="url(#refined-loss-scale)" stroke="#d5dfe7" stroke-width=".4"/>
 <text x="297" y="347" class="refined-map-text" fill="#8a969f" style="font-size:10.5px">Higher loss</text>
 </svg><figcaption id="landscape-caption">Illustrative function-space slice.</figcaption></figure>
-<p>Linear initialization finishes with lower error on all three seeds. The linear attention function is available under either initialization, but starting elsewhere does not recover the same performance within this training budget. Even with the same parameterization, changing the initialization changes the final error.</p>
+<p>Linear initialization finishes with lower error across all three reported seeds (0–2). The linear attention function is available under either initialization, but starting elsewhere does not recover the same performance within this training budget. Even with the same parameterization, changing the initialization changes the final error.</p>
 <p>Starting linear helps on this task. We have not measured whether the runs end up in different basins or whether their final attention functions differ in simplicity. The landscape illustrates the idea; it is not a measurement of these models.</p>
 </div>
 
@@ -720,7 +746,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
       <tr><th>Budget</th><td>Batch 1,024; 10,000 updates; seeds 0–2. Same schedule shape and data generator for each attention type within a task.</td></tr>
       <tr><th>Schedule</th><td>Updates 1–6,000 at peak. For updates 6,001–10,000, t = (update − 6,001)/3,999 and LR = peak × [0.1 + 0.9(1 + cos(πt))/2].</td></tr>
       <tr><th>Polynomial</th><td>Degree 8 in every block and readout, separate numerator and denominator coefficients. Exact linear initialization, fixed b₀ = 1, no coefficient freezing or coefficient regularization in main runs. Denominator projection bound 0.5 after each update, using the current multiplier.</td></tr>
-      <tr><th>Reproduction</th><td>The saved audit of the 18 main reruns reports exact matches to their reference model parameters, optimizer/RNG states, and metric journals on the tested H100 / Torch 2.8.0+cu128 setup.</td></tr>
+      <tr><th>Reproduction</th><td>The saved audit of the 18 main reruns reports exact matches to their reference model parameters, optimizer/RNG states, and metric journals on the audited execution setup.</td></tr>
     </tbody></table>
   </div>
 </details>
@@ -729,10 +755,10 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 <p>All nine longer runs use seed 0, batch size 1,024, and 100,000 updates. They start from fresh initializations and are not continuations of the 10,000-update checkpoints. Training sequences remain freshly sampled from the same distribution, so the longer runs also see ten times as many training sequences. Context lengths are unchanged.</p>
 <figure class="wide long-figure" id="long-all-models" data-models="linear,softmax,polynomial" data-figure-number="13" aria-label="All three attention types trained for 100000 regression updates"></figure>
 <p>“Stretched schedule” uses the selected peak LRs: linear 0.0113137, softmax 0.004, and polynomial 0.008. It holds the peak for 60,000 updates, then uses cosine decay over the remaining 40,000. “Cosine from start” uses peak LR 0.004 for all three models and decays over the full 100,000 updates. “Scaled peak” divides each selected peak LR by \(\sqrt{10}\) and uses the stretched schedule. Every schedule ends at 10% of its peak. We treat the scaled peak as an additional optimization check, not a guaranteed LR scaling law for this model.</p>
-<p>All other optimizer settings, including AdamW weight decay 0.01, stay fixed. Keeping the weight-decay coefficient fixed over more updates changes the cumulative shrinkage. Polynomial uses linear initialization, no coefficient freezing or coefficient regularization, and denominator bound 0.5. All nine runs use the same RTX 2080 Ti; the main 10,000-update comparisons use H100 GPUs.</p>
+<p>All other optimizer settings, including AdamW weight decay 0.01, stay fixed. Keeping the weight-decay coefficient fixed over more updates changes the cumulative shrinkage. Polynomial uses linear initialization, no coefficient freezing or coefficient regularization, and denominator bound 0.5. The longer runs use a different hardware setup from the main 10,000-update comparisons.</p>
 
 <h3 id="initialization-details">Initialization comparisons</h3>
-<p>Both initialization comparisons use seeds 0–2, batch size 1,024, 10,000 updates, and the same flat-then-cosine schedule with peak LR 0.008. We do not retune LR for each initialization. All 12 runs use the same RTX 2080 Ti. They are separate matched reruns; the main attention comparison uses H100 GPUs.</p>
+<p>Both initialization comparisons use seeds 0–2, batch size 1,024, 10,000 updates, and the same flat-then-cosine schedule with peak LR 0.008. We do not retune LR for each initialization. These are separate matched reruns, with the same hardware setup for both initializations.</p>
 <figure class="wide initialization-figure" id="initialization-original-bound" data-bound="0.5" data-figure-number="14" aria-label="Initialization comparison with original denominator bound 0.5"></figure>
 <details>
  <summary>Why compare two denominator bounds?</summary>
@@ -744,30 +770,14 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <h3 id="failure-details">Unprojected training and denominator failures</h3>
 <p>The extra unprojected sweep uses seed 2, the same 15 peak LRs, batch size 1,024, and the original 10,000-update flat-then-cosine schedule. Only the denominator projection is removed. No coefficients are frozen or regularized. Thirteen regression runs and eight lookup runs finish with finite results. The other nine runs produce a nonfinite training or validation result.</p>
-<p>The projected comparison in <a href="#projection-comparison">Figure 8</a> uses seed 2 from the original LR sweep. Its hardware is H100, while the unprojected sweep uses an RTX 2080 Ti. It is a comparison of these recorded sweeps, not a perfectly hardware-matched intervention.</p>
-<p>For the five diagnosed failures, same-GPU replays match all saved measurements in the checked prefixes and replay windows. We retain the original forward arithmetic and inspect the actual sum over visible keys, not just roots of the polynomial. In every examined case, finite scores and numerator values precede a zero computed denominator. The four other failures are not diagnosed. The denominator trace uses a scale that includes zero and is approximately logarithmic away from it.</p>
+<p>The projected comparison in <a href="#projection-comparison">Figure 8</a> uses seed 2 from the original LR sweep. The projected and unprojected sweeps use different hardware setups, so this comparison is not a fully matched intervention.</p>
+<p>For the five diagnosed failures, replays on the original execution setup match all saved measurements in the checked prefixes and replay windows. We retain the original forward arithmetic and inspect the actual sum over visible keys, not just roots of the polynomial. In every examined case, finite scores and numerator values precede a zero computed denominator. The four other failures are not diagnosed. The denominator trace uses a scale that includes zero and is approximately logarithmic away from it.</p>
 <p>As a separate numerical check, we rescale only the denominator coefficients at each saved pre-failure checkpoint, then apply the normal projection after subsequent updates. All five short diagnostic windows remain finite. These interventions are stability checks, not complete retrainings or evidence of final task performance.</p>
 
-<details id="simplicity-details">
- <summary>Simplicity, MDL, and Bayesian Occam’s razor</summary>
- <div class="detail-content">
-  <p>One way to express a preference for simple explanations is to minimize a complexity measure \(C(f)\) among functions with equally good or nearly equally good data fit. Let \(\mathcal L_D\) be the loss on dataset \(D\), and let \(\mathcal L_D^\star=\inf_f\mathcal L_D(f)\) be its best possible value. A tolerance \(\varepsilon\ge0\) specifies how close a fit must be to that value. One possible formulation is</p>
-  <div class="equation">\[
-   f^\star\in\underset{f:\,\mathcal L_D(f)\le\mathcal L_D^\star+\varepsilon}{\arg\min}C(f).
-  \]</div>
-  <p>This expresses a preference; it is not the objective we optimize in these experiments.</p>
-  <p>In two-part <a href="https://arxiv.org/abs/math/0406077">MDL</a>, a hypothesis \(h\) costs \(L(h)\) bits to describe, and the data cost another \(L(D\mid h)\) bits when encoded using it. With the coding rules fixed, the selected hypothesis minimizes</p>
-  <div class="equation">\[h_{\mathrm{MDL}}\in\arg\min_h\big[L(h)+L(D\mid h)\big].\]</div>
-  <p><a href="https://authors.library.caltech.edu/records/r7qgh-q6g10">Bayesian Occam’s razor</a> gives a related model-selection perspective. For model family \(\mathcal M\), parameter \(\theta\), prior \(p(\theta\mid\mathcal M)\), and likelihood \(p(D\mid\theta,\mathcal M)\), the model evidence is</p>
-  <div class="equation">\[
-   p(D\mid\mathcal M)=\int p(D\mid\theta,\mathcal M)\,p(\theta\mid\mathcal M)\,d\theta.
-  \]</div>
-  <p>It averages fit over the prior rather than considering only the best-fitting parameters. A flexible model whose good fits occupy little prior probability can therefore have lower evidence. This depends on the prior and is not an automatic preference for fewer parameters. Our runs do not perform Bayesian inference or measure evidence; the connection is motivational.</p>
- </div>
-</details>
+
 
 <h3>Related work</h3>
-<p>The simplicity framing above draws on <a href="https://arxiv.org/abs/math/0406077">Grünwald’s MDL tutorial</a>, <a href="https://arxiv.org/abs/1805.08522">the simplicity bias of the parameter-function map</a>, <a href="https://arxiv.org/abs/1806.08734">spectral bias</a>, and <a href="https://arxiv.org/abs/2103.10427">low-rank simplicity bias</a>. These concern different measures of simplicity and do not establish that training minimizes description length. In a more specialized setting, <a href="https://arxiv.org/abs/2605.10878">Mușat</a> proves an asymptotic relation between minimum weight norms and Kolmogorov complexity, with a logarithmic factor, for constant-precision looped networks. This is a statement about minimum-norm representations, not a guarantee that gradient-based training finds them. The in-context regression setting follows the line of work represented by <a href="https://arxiv.org/abs/2211.15661">Akyürek et&nbsp;al.</a></p>
+<p>The simplicity framing above draws on <a href="https://arxiv.org/abs/1805.08522">the simplicity bias of the parameter-function map</a>, <a href="https://arxiv.org/abs/1806.08734">spectral bias</a>, and <a href="https://arxiv.org/abs/2103.10427">low-rank simplicity bias</a>. These works study different notions of simplicity. In a more specialized setting, <a href="https://arxiv.org/abs/2605.10878">Mușat</a> proves an asymptotic relation between minimum weight norms and Kolmogorov complexity, with a logarithmic factor, for constant-precision looped networks. This is a statement about minimum-norm representations, not a guarantee that gradient-based training finds them. The in-context regression setting follows the line of work represented by <a href="https://arxiv.org/abs/2211.15661">Akyürek et&nbsp;al.</a></p>
 <p><a href="https://arxiv.org/abs/2501.12352">Test-time regression</a> connects sequence layers to parametric and nonparametric regression. Its higher-order local polynomial regression construction is different from our learned polynomials of attention scores. <a href="https://arxiv.org/abs/2404.19756">KAN</a> is another precedent for replacing fixed nonlinearities with learned functions, using splines on network edges.</p>
 <p>For attention, <a href="https://arxiv.org/abs/2006.16236">Katharopoulos et&nbsp;al.</a> develop kernel-feature attention that can be evaluated recurrently. Their construction uses nonnegative similarities and normalizes by their sum; our baseline uses signed dot products and divides by the number of visible keys. <a href="https://arxiv.org/abs/2103.02143">Random Feature Attention</a> approximates softmax through random features. <a href="https://arxiv.org/abs/2310.01655">PolySketchFormer</a> and <a href="https://arxiv.org/abs/2403.02920">TaylorShift</a> study polynomial/Taylor attention and its efficient evaluation. <a href="https://arxiv.org/abs/2402.18668">BASED</a> studies the state-size/recall tradeoff. Our emphasis here is the relationship between the task, the attention parameterization, and its initialization.</p>
 
@@ -775,7 +785,7 @@ figure[data-figure-number] { scroll-margin-top:2rem; }
 
 <section aria-labelledby="acknowledgments">
 <h3 id="acknowledgments">Acknowledgments</h3>
-<p>We thank Han Guo, Alex Zhang, Idan Shenfeld, and Ryan Bahlous-Boldi for their feedback on the draft.</p>
+<p>We thank Han Guo, Alex Zhang, Idan Shenfeld, Ryan Bahlous-Boldi, Oliver Sieberling, and Omar for their feedback on the draft.</p>
 </section>
 
 <section class="citation" aria-labelledby="citation-heading">
